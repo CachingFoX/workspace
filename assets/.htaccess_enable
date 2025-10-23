@@ -1,0 +1,5 @@
+
+### normal
+RewriteRule ^index.php$ index.html
+RewriteRule ^beta.php$ index.html
+RewriteRule ^map.php$ index.html

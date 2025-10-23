@@ -1,0 +1,7 @@
+
+### Maintenance
+RewriteRule ^$ disabled.html
+RewriteRule ^index.html$ disabled.html
+RewriteRule ^index.php$ disabled.html
+RewriteRule ^beta.php$ disabled.html
+RewriteRule ^map.php$ disabled.html
