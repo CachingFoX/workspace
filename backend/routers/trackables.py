@@ -4,8 +4,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from models import trackable as models
 from schemas import trackable as schemas
+from schemas import trackable_tag as schemaTagRelation
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
+from sqlalchemy import or_
 import httpx
 
 
@@ -29,26 +31,40 @@ def read_trackables(db: Session = Depends(get_db)):
     return db.query(models.Trackable).all()
 
 
+def _get_trackable_object(id, db: Session):
+    id = id.upper()
+    trackable = (
+        db.query(models.Trackable)
+        .filter(
+            or_(models.Trackable.public_code == id, models.Trackable.private_code == id)
+        )
+        .first()
+    )
+    return trackable
+
+
 @router.get("/{trackable_id}", response_model=schemas.TrackableRead)
 def read_trackable_by_public_code(trackable_id: str, db: Session = Depends(get_db)):
     trackable_id = trackable_id.upper()
-    if trackable_id.startswith("TB"):
-        trackable = (
-            db.query(models.Trackable)
-            .filter(models.Trackable.public_code == trackable_id)
-            .first()
-        )
-    else:
-        trackable = (
-            db.query(models.Trackable)
-            .filter(models.Trackable.private_code == trackable_id)
-            .first()
-        )
+    trackable = _get_trackable_object(trackable_id, db)
     if not trackable:
         raise HTTPException(
             status_code=404, detail=f"Trackable '{trackable_id}' does not exist"
         )
     return trackable
+
+
+@router.get(
+    "/{trackable_id}/tags", response_model=list[schemaTagRelation.TrackableTagRelation]
+)
+def read_tags(trackable_id: str, db: Session = Depends(get_db)):
+    trackable_id = trackable_id.upper()
+    trackable = _get_trackable_object(trackable_id, db)
+    if not trackable:
+        raise HTTPException(
+            status_code=404, detail=f"Trackable '{trackable_id}' does not exist"
+        )
+    return trackable.tags
 
 
 @router.patch("/{trackable_id}", response_model=schemas.TrackableRead)
