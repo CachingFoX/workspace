@@ -32,13 +32,22 @@ def read_trackables(db: Session = Depends(get_db)):
 @router.get("/{trackable_id}", response_model=schemas.TrackableRead)
 def read_trackable_by_public_code(trackable_id: str, db: Session = Depends(get_db)):
     trackable_id = trackable_id.upper()
-    trackable = (
-        db.query(models.Trackable)
-        .filter(models.Trackable.private_code == trackable_id)
-        .first()
-    )
+    if trackable_id.startswith("TB"):
+        trackable = (
+            db.query(models.Trackable)
+            .filter(models.Trackable.public_code == trackable_id)
+            .first()
+        )
+    else:
+        trackable = (
+            db.query(models.Trackable)
+            .filter(models.Trackable.private_code == trackable_id)
+            .first()
+        )
     if not trackable:
-        raise HTTPException(status_code=404, detail="Trackable does not exist")
+        raise HTTPException(
+            status_code=404, detail=f"Trackable '{trackable_id}' does not exist"
+        )
     return trackable
 
 
