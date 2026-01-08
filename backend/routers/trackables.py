@@ -3,7 +3,7 @@ from database import SessionLocal
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from models import trackable as models
-from schemas import trackable as schemas
+from schemas import trackable as schemaTrackable
 from schemas import trackable_tag as schemaTagRelation
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
@@ -26,7 +26,7 @@ def get_db():
         db.close()
 
 
-@router.get("/", response_model=list[schemas.TrackableRead])
+@router.get("/", response_model=list[schemaTrackable.TrackableRead])
 def read_trackables(db: Session = Depends(get_db)):
     return db.query(models.Trackable).all()
 
@@ -43,7 +43,7 @@ def _get_trackable_object(id, db: Session):
     return trackable
 
 
-@router.get("/{trackable_id}", response_model=schemas.TrackableRead)
+@router.get("/{trackable_id}", response_model=schemaTrackable.TrackableRead)
 def read_trackable_by_public_code(trackable_id: str, db: Session = Depends(get_db)):
     trackable_id = trackable_id.upper()
     trackable = _get_trackable_object(trackable_id, db)
@@ -67,10 +67,59 @@ def read_tags(trackable_id: str, db: Session = Depends(get_db)):
     return trackable.tags
 
 
-@router.patch("/{trackable_id}", response_model=schemas.TrackableRead)
+"""
+@router.post(
+    "/{trackable_id}/tags", response_model=list[schemaTagRelation.TrackableTagRelation]
+)
+def add_tag(trackable_id: str, db: Session = Depends(get_db)):
+    trackable_id = trackable_id.upper()
+    trackable = _get_trackable_object(trackable_id, db)
+    if not trackable:
+        raise HTTPException(
+            status_code=404, detail=f"Trackable '{trackable_id}' does not exist"
+        )
+    return trackable.tags
+"""
+
+'''
+@router.get(
+    "/{trackable_id}/tags/{tag_id}",
+    response_model=list[schemaTagRelation.TrackableTagRelation],
+)
+def read_tag(trackable_id: str, tag_id: int, db: Session = Depends(get_db)):
+    trackable_id = trackable_id.upper()
+    trackable = _get_trackable_object(trackable_id, db)
+    if not trackable:
+        raise HTTPException(
+            status_code=404, detail=f"Trackable '{trackable_id}' does not exist"
+        )
+
+    relation = (
+        db.query(modelsTrackableTag.TrackableTag)
+        .options(joinedload(modelsTrackableTag.TrackableTag.tag))
+        .filter(
+            modelsTrackableTag.TrackableTag.trackable_id == trackable.id,
+            modelsTrackableTag.TrackableTag.tag_id == tag_id,
+        )
+        .first()
+    )
+
+    return relation
+    """
+    trackable = _get_trackable_object(trackable_id, db)
+    if not trackable:
+        raise HTTPException(
+            status_code=404, detail=f"Trackable '{trackable_id}' does not exist"
+        )
+    return trackable.tags
+    """
+'''
+
+
+@router.patch("/{trackable_id}", response_model=schemaTrackable.TrackableRead)
 def update_trackable(
     trackable_id: str,
-    update: schemas.TrackableUpdate,
+    update: schemaTrackable.TrackableUpdate,
     db: Session = Depends(get_db),
 ):
     try:
@@ -100,7 +149,7 @@ def update_trackable(
 
 
 """
-@router.get("/id/{id}", response_model=schemas.TrackableRead)
+@router.get("/id/{id}", response_model=schemaTrackable.TrackableRead)
 def read_trackable_by_db_id(id: str, db: Session = Depends(get_db)):
     trackable = db.query(models.Trackable).filter(models.Trackable.id == id).first()
     if not trackable:
@@ -109,8 +158,10 @@ def read_trackable_by_db_id(id: str, db: Session = Depends(get_db)):
 """
 
 
-@router.post("/", response_model=schemas.TrackableRead)
-def create_trackable(trackable: schemas.TrackableCreate, db: Session = Depends(get_db)):
+@router.post("/", response_model=schemaTrackable.TrackableRead)
+def create_trackable(
+    trackable: schemaTrackable.TrackableCreate, db: Session = Depends(get_db)
+):
     try:
         existing_trackable = (
             db.query(models.Trackable)
@@ -147,7 +198,9 @@ def create_trackable(trackable: schemas.TrackableCreate, db: Session = Depends(g
         raise HTTPException(status_code=422, detail="Trackable already exist.")
 
 
-@router.get("/geocaching/{trackable_id}", response_model=schemas.TrackableExtern)
+@router.get(
+    "/geocaching/{trackable_id}", response_model=schemaTrackable.TrackableExtern
+)
 async def get_trackable_info(trackingcode: str):
     """
     Ruft Informationen über einen Geocaching Trackable ab.
