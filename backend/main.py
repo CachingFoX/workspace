@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from database import engine, Base
-from routers import trackables  # importiert den Router
+from routers import tags, trackables, trackable_tags  # importiert den Router
 from fastapi.middleware.cors import CORSMiddleware
 
-Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)  # TODO here or in database.py
 
 app = FastAPI(title="Beispiel App mit Routern")
 
@@ -19,7 +19,9 @@ app.add_middleware(
 
 
 # Router einbinden
+app.include_router(tags.router)
 app.include_router(trackables.router)
+app.include_router(trackable_tags.router)
 
 # --------------------
 # Starten mit:

@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from schemas.trackable_tag import TrackableTagRelation
 
 
 # --------------------
@@ -38,6 +39,8 @@ class TrackableRead(BaseModel):
     icon_url: str | None = None
     description: str | None = None
     activation_code: str | None = None
+
+    tags: list[TrackableTagRelation]
 
     class Config:
         orm_mode = True

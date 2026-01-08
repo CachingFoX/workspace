@@ -1,10 +1,11 @@
 from sqlalchemy import Column, Integer, String, Boolean
 from database import Base
-from sqlalchemy.orm import validates
+from sqlalchemy.orm import relationship, validates
+from models.tablenames import Tablenames as tablenames
 
 
 class Trackable(Base):
-    __tablename__ = "trackables"
+    __tablename__ = tablenames.Trackable
 
     id = Column(Integer, primary_key=True, index=True)
     public_code = Column(String, unique=True, index=True)
@@ -30,3 +31,9 @@ class Trackable(Base):
                 f"Public code must be start with 'TB'. '{value}' is invalid."
             )
         return value
+
+    tags = relationship(
+        "TrackableTag",
+        back_populates="trackable",
+        cascade="all, delete-orphan",
+    )
