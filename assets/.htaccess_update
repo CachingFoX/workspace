@@ -1,0 +1,7 @@
+
+### Maintenance
+RewriteRule ^$ update.html
+RewriteRule ^index.html$ update.html
+RewriteRule ^index.php$ update.html
+RewriteRule ^beta.php$ update.html
+RewriteRule ^map.php$ update.html

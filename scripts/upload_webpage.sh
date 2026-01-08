@@ -2,7 +2,8 @@
 
 basepath=$(dirname $(readlink -f ${0}))
 
-source "${basepath}/disable_webpage.sh"
+cat ./assets/.htaccess_base > .htaccess
+cat ./assets/.htaccess_update >> .htaccess
 
 echo "📤 upload webpage"
 
@@ -10,6 +11,8 @@ lftp -u "$FTP_UPLOAD_USER","$FTP_UPLOAD_PASSWORD" $FTP_SERVER <<EOF | tee -a "up
 set ftp:ssl-allow no
 set cmd:trace yes        # alle Befehle anzeigen
 set xfer:log yes         # Dateiübertragungen loggen
+PUT ./assets/update.html
+PUT .htaccess
 PUT ./dist/favicon.ico
 PUT ./dist/index.html
 MIRROR -R --verbose ./dist/images /images
