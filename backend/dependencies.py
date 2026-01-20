@@ -12,6 +12,10 @@ def get_settings(request: Request) -> ApiSettings:
     return request.app.state.settings
 
 
+def get_version(request: Request) -> str:
+    return request.app.version
+
+
 # Nur den Basisnamen nehmen, um Pfadmanipulation zu verhindern
 """
 def get_safe_basename(path_parameter_name: str):

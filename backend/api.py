@@ -18,6 +18,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+__version__ = "0.8.15"
+
 """
 TODO
 @app.on_event("startup")
@@ -28,10 +30,14 @@ def startup():
 """
 
 
+def startup():
+    logger.info("startup")
+
+
 def create_api(settings: ApiSettings):
     # logging.debug(f"create_api({settings})")
 
-    _api = FastAPI(title="TOD")  # TODo
+    _api = FastAPI(title="TrackableAPI", version=__version__, on_startup=[startup])
     _api.state.settings = settings
 
     init_db(settings)

@@ -58,12 +58,12 @@ def create_sqlite_db_directory(database_url: str, base_dir: Path | None = None) 
 def init_db(settings: ApiSettings):
     global __SessionLocal
     # create folder
-    database_url = create_sqlite_db_directory(settings.database_url)
+    settings.database_url = create_sqlite_db_directory(settings.database_url)
 
-    logger.info(f"use database {database_url}")
+    logger.info(f"use database {settings.database_url}")
 
     engine = create_engine(
-        database_url,
+        settings.database_url,
         connect_args={"check_same_thread": False},
         poolclass=settings.poolclass,
     )
