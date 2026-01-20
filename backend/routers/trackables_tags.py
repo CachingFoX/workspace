@@ -7,8 +7,8 @@ from backend.schemas import (
 )
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
-from crud.trackable import _get_trackable_by_internal_id
-from crud.tag import _exists_tag
+from backend.crud.trackable import _get_trackable_by_internal_id
+from backend.crud.tag import _exists_tag
 from backend.database import get_db
 
 router = APIRouter(

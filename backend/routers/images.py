@@ -1,8 +1,9 @@
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.responses import FileResponse
+
+from backend.settings import ApiSettings
+from backend.dependencies import get_settings, get_only_basename
 import os
-from settings import ApiSettings
-from dependencies import get_settings
 
 router = APIRouter(
     prefix="/images",
@@ -11,20 +12,16 @@ router = APIRouter(
 
 
 # CRUD
-
-
 @router.get("/{filename}")
-async def get_image(filename: str, settings: ApiSettings = Depends(get_settings)):
-    # Nur den Basisnamen nehmen, um Pfadmanipulation zu verhindern
-    safe_filename = os.path.basename(filename)
-
+async def get_image(
+    safe_filename: str = Depends(get_only_basename("filename")),
+    settings: ApiSettings = Depends(get_settings),
+):
     file_path = os.path.join(settings.upload_path, safe_filename)
-
-    file_path = file_path.lower()
 
     # Prüfen, ob die Datei existiert
     if not os.path.isfile(file_path):
-        raise HTTPException(status_code=404, detail="File not found")
+        raise HTTPException(status_code=404, detail=f"File {safe_filename} not found")
 
     # Datei zurückgeben
     return FileResponse(file_path)

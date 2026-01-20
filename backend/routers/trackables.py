@@ -6,7 +6,7 @@ from backend.schemas.trackable import (
     TrackableUpdate as schemaTrackableUpdate,
     TrackableCreate as schemaTrackableCreate,
 )
-from crud.trackable import (
+from backend.crud.trackable import (
     _get_trackable_by_internal_id,
     _exists_trackable_by_tracking_number,
     _patch,

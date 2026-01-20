@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 from backend.models import modelTag
 from backend.schemas import tag as schema
-from crud.tag import _create, _exists_tag, _update, _delete
+from backend.crud.tag import _create, _exists_tag, _update, _delete
 
 router = APIRouter(
     prefix="/tags",

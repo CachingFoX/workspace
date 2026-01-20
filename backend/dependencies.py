@@ -1,11 +1,29 @@
-from fastapi import Depends, Request
+from fastapi import Depends, Request, Path
 from typing_extensions import Annotated
 from backend.database import get_db
 from sqlalchemy.orm import Session
-from settings import ApiSettings
+from backend.settings import ApiSettings
+import os
 
 DbSession = Annotated[Session, Depends(get_db)]
 
 
 def get_settings(request: Request) -> ApiSettings:
     return request.app.state.settings
+
+
+# Nur den Basisnamen nehmen, um Pfadmanipulation zu verhindern
+"""
+def get_safe_basename(path_parameter_name: str):
+    async def dependency(filename: str = Path(..., alias=path_parameter_name)):
+        return os.path.basename(filename)
+
+    return dependency
+"""
+
+
+def get_only_basename(path_parameter_name: str):
+    async def dependency(filename: str = Path(..., alias=path_parameter_name)):
+        return os.path.basename(filename)
+
+    return dependency

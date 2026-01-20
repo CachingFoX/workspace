@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from backend.schemas import trackable as schemaTrackable
-from crud.trackable import _get_trackable_by_tracking_number
+from backend.crud.trackable import _get_trackable_by_tracking_number
 from sqlalchemy.orm import Session
 
 # from dependencies import DbSession

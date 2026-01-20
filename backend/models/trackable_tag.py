@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, Boolean, ForeignKey, UniqueConstraint
-from database2 import Base
+from backend.database2 import Base
 from sqlalchemy.orm import relationship
 
 __classname__ = "TrackableTag"

@@ -1,12 +1,9 @@
 from fastapi import APIRouter, Depends
-from dependencies import get_settings
-from settings import ApiSettings
+from backend.dependencies import get_settings
+from backend.settings import ApiSettings
 
-# from schemas.root import Root as schemaRoot
 
-router = APIRouter(
-    prefix="",
-)
+router = APIRouter(prefix="")
 
 
 @router.get("/")

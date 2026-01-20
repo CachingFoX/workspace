@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, func
-from database2 import Base
+from backend.database2 import Base
 from sqlalchemy.orm import relationship, validates
 from backend.models.image import Image as modelImage
 # from backend.models.trackable_tag import __classname__ as XXX

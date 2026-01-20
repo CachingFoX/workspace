@@ -1,5 +1,5 @@
-from api import create_api
-from settings import ApiSettings
+from backend.api import create_api
+from backend.settings import ApiSettings
 
 settings = ApiSettings(database_url="sqlite:///./app.db", upload_path="./uploads")
 

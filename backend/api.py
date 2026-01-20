@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 import os
-from routers import (
+from backend.routers import (
     geocaching,
     images,
     root,
@@ -11,9 +11,12 @@ from routers import (
     trackingnumber,
 )  # importiert den Router
 from fastapi.middleware.cors import CORSMiddleware
-from backend.database import init_db  # Base, engine,
-from settings import ApiSettings
+from backend.database import init_db
+from backend.settings import ApiSettings
+from pathlib import Path
 import logging
+
+logger = logging.getLogger(__name__)
 
 """
 TODO
@@ -26,19 +29,23 @@ def startup():
 
 
 def create_api(settings: ApiSettings):
-    logging.debug(f"create_api({settings})")
-
-    # TODO if _api:
-    #    return _api
+    # logging.debug(f"create_api({settings})")
 
     _api = FastAPI(title="TOD")  # TODo
     _api.state.settings = settings
 
     init_db(settings)
 
-    # check upload folder
+    # --- check upload folder
+    upload_path = Path(settings.upload_path)
+    if not upload_path.is_absolute():
+        absolute_path = (Path.cwd() / upload_path).resolve()
+    settings.upload_path = str(absolute_path)
+    logger.info(f"Upload directory: {settings.upload_path}")
+
     os.makedirs(settings.upload_path, exist_ok=True)
 
+    # --- middleware
     _api.add_middleware(
         CORSMiddleware,
         allow_origins=[
@@ -50,7 +57,7 @@ def create_api(settings: ApiSettings):
         allow_headers=["*"],  # Authorization, Content-Type, ...
     )
 
-    # Router einbinden
+    # --- router einbinden
     _api.include_router(root.router)
     _api.include_router(trackingnumber.router)
     _api.include_router(trackables.router)

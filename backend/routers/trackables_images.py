@@ -5,9 +5,9 @@ from backend.models import modelImage
 from backend.schemas import schemaTrackableTagRelation, schemaImageEmbbed
 from sqlalchemy.orm import Session
 from backend.database import get_db
-from settings import ApiSettings
-from dependencies import get_settings
-from crud.trackable import (
+from backend.settings import ApiSettings
+from backend.dependencies import get_settings
+from backend.crud.trackable import (
     _get_trackable_by_internal_id,
 )
 
