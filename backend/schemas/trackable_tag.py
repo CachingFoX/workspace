@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from schemas.tag import TagRead
+from backend.schemas.tag import TagRead as schemaTagRead
 
 
 # =========================
@@ -20,7 +20,7 @@ class TrackableTagIn(BaseModel):
 class TrackableTagOut(BaseModel):
     id: int
     trackable_id: int
-    tag: TagRead  # verschachteltes Objekt
+    tag: schemaTagRead  # verschachteltes Objekt
     hidden: bool
 
     class Config:
@@ -30,7 +30,7 @@ class TrackableTagOut(BaseModel):
 # Schema für die TrackableTag-Relation
 class TrackableTagRelation(BaseModel):
     id: int
-    tag: TagRead
+    tag: schemaTagRead
     hidden: bool
 
     class Config:

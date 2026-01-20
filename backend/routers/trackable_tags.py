@@ -2,13 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session, joinedload
 from typing import List
 
-from database import get_db
-
-# from models import TrackableTag, Trackable, Tag
-from models.tag import Tag as modelTag
-from models.trackable import Trackable as modelTrackable
-from models.trackable_tag import TrackableTag as modelTrackableTag
-from schemas import trackable_tag as schema
+from backend.database import get_db
+from backend.models import modelTag, modelTrackable, modelTrackableTag
+from backend.schemas import trackable_tag as schema
 
 
 router = APIRouter(prefix="/trackable-tags", tags=["TrackableTags"])

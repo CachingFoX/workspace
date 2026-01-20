@@ -30,12 +30,12 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
+				"charliermarsh.ruff",
+				"dbaeumer.vscode-eslint",
+				"EditorConfig.EditorConfig",
 				"ms-python.python",
 				"ms-python.vscode-pylance",
-				"charliermarsh.ruff",
-				"Vue.volar",
-				"dbaeumer.vscode-eslint",
-				"EditorConfig.EditorConfig"
+				"Vue.volar"
 			],
 			"settings": {
 				"python.pythonPath": "/usr/local/bin/python3",

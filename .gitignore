@@ -35,3 +35,5 @@ public/images
 .devcontainer/devcontainer.env
 
 __pycache__
+
+backend/uploads/*

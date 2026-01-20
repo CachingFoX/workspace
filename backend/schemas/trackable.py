@@ -1,5 +1,9 @@
 from pydantic import BaseModel
-from schemas.trackable_tag import TrackableTagRelation
+from backend.schemas.trackable_tag import (
+    TrackableTagRelation as schemaTrackableTagRelation,
+)
+from backend.schemas.image import ImageEmbbed as schemaImageEmbbed
+from datetime import datetime
 
 
 # --------------------
@@ -39,8 +43,11 @@ class TrackableRead(BaseModel):
     icon_url: str | None = None
     description: str | None = None
     activation_code: str | None = None
+    created: datetime | None = None
+    updated: datetime | None = None
 
-    tags: list[TrackableTagRelation]
+    tags: list[schemaTrackableTagRelation]
+    images: list[schemaImageEmbbed]
 
     class Config:
         orm_mode = True

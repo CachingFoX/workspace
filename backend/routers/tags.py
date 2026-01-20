@@ -1,9 +1,9 @@
-from database import get_db
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.exc import IntegrityError
+from backend.database import get_db
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
-from models import tag as model
-from schemas import tag as schema
+from backend.models import modelTag
+from backend.schemas import tag as schema
+from crud.tag import _create, _exists_tag, _update, _delete
 
 router = APIRouter(
     prefix="/tags",
@@ -11,84 +11,30 @@ router = APIRouter(
 )
 
 
-# CRUD
 @router.post("/", response_model=schema.TagRead)
 def create_tag(newTag: schema.TagCreate, db: Session = Depends(get_db)):
-    try:
-        existing_tag = db.query(model.Tag).filter(model.Tag.name == newTag.name).first()
-
-        if existing_tag:
-            raise HTTPException(
-                status_code=409,
-                detail=f"A tag with name '{newTag.name}' already exists",
-            )
-
-        db_tag = model.Tag(
-            name=newTag.name,
-            unique_name=newTag.name,
-        )
-
-        db.add(db_tag)
-        db.commit()
-        db.refresh(db_tag)
-        return db_tag
-    except ValueError as e:
-        # ValidationError aus @validates abfangen
-        db.rollback()
-        raise HTTPException(status_code=422, detail=str(e))
-    except IntegrityError:
-        db.rollback()
-        raise HTTPException(
-            status_code=422, detail=f"A tag with name '{newTag.name}' already exists"
-        )
+    _create(newTag.name, db)
 
 
 @router.get("/", response_model=list[schema.TagRead])
-def read_tags(db: Session = Depends(get_db)):
-    return db.query(model.Tag).all()
+def read_all_tags(db: Session = Depends(get_db)):
+    return db.query(modelTag).all()
 
 
-@router.get("/{id}", response_model=schema.TagRead)
-def read_tag(id: str, db: Session = Depends(get_db)):
-    tag = db.query(model.Tag).filter(model.Tag.id == id).first()
-    if not tag:
-        raise HTTPException(status_code=404, detail=f"Tag '{id}' does not exist")
-    return tag
+@router.get("/{tag_id}", response_model=schema.TagRead)
+def read_tag(tag_id: str, db: Session = Depends(get_db)):
+    return _exists_tag(tag_id, db)
 
 
-@router.patch("/{id}", response_model=schema.TagRead)
+@router.patch("/{tag_id}", response_model=schema.TagRead)
 def update_tag(
     tag_id: str,
-    update: schema.TagUpdate,
+    data: schema.TagUpdate,
     db: Session = Depends(get_db),
 ):
-    try:
-        tag = db.query(model.Tag).filter(model.Tag.id == tag_id).first()
-        if not tag:
-            raise HTTPException(
-                status_code=404, detail=f"Tag with '{id}' does not exist"
-            )
-
-        tag.name = update.name
-        tag.unique_name = update.name
-
-        db.commit()
-        db.refresh(tag)
-        return tag
-
-    except ValueError as e:
-        db.rollback()
-        raise HTTPException(status_code=422, detail=str(e))
-    except IntegrityError:
-        db.rollback()
-        raise HTTPException(status_code=409, detail="Tag can not be modified.")
+    _update(tag_id, data, db)
 
 
-@router.delete("/{id}", status_code=204)
-def delete_user(id: int, db: Session = Depends(get_db)):
-    tag = db.query(model.Tag).filter(model.Tag.id == id).first()
-    if not tag:
-        raise HTTPException(status_code=404, detail=f"Tag with id '{id}' not found")
-
-    db.delete(tag)
-    db.commit()
+@router.delete("/{tag_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_tag(tag_id: int, db: Session = Depends(get_db)):
+    _delete(tag_id, db)
