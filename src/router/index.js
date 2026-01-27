@@ -1,30 +1,96 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import List from '../views/list.vue';
+import { useBaseStore } from '../stores/base.js'
 // import About from '../views/About.vue';
 import NewTrackable from '../NewTrackable.vue'; // ../views/...
-import TrackableDetails from '../views/TrackableDetails.vue';
+import TrackablesListView from '../views/TrackablesListView.vue';
+import TrackableView from '../views/TrackableView.vue';
+import TrackableNewView from '../views/TrackableNewView.vue';
+import TrackableUnknownView from '../views/TrackableUnknownView.vue'
+import TestView from '../views/TestView.vue';
+import LoginView from '../views/LoginView.vue';
+import LogoutView from '../views/LogoutView.vue';
+import DashboardView from '../views/DashboardView.vue';
+import MainView from '../views/MainView.vue';
+
+//
 
 const routes = [
   {
     path: '/',
-    name: 'List',
-    component: List
+    name: 'Root',
+    component: DashboardView
   },
   {
-    path: '/new',
-    name: 'About',
-    component: NewTrackable
+    path: '/login',
+    name: 'Login',
+    component: LoginView,
+    meta: { noAuthRequired: true }
   },
   {
-    path: '/trackable/:id',  // :id ist der Parameter
+    path: '/logout',
+    name: 'Logout',
+    component: LogoutView,
+  },
+  {
+    path: '/dashboard',
+    name: 'Dashboard',
+    component: DashboardView,
+  },
+  {
+    path: '/main',
+    name: 'Main',
+    component: MainView,
+  },
+  {
+    path: '/trackables',
+    name: 'Trackables',
+    component: TrackablesListView
+  },
+  {
+    path: '/trackable/new/:id?',
+    name: 'NewTrackable',
+    component: TrackableNewView
+  },
+  {
+    path: '/trackable/unknown/:id',
+    name: 'UnknownTrackable',
+    component: TrackableUnknownView
+  },
+  {
+    path: '/trackable/:id',
     name: 'Trackable Details',
-    component: TrackableDetails
-  }
+    component: TrackableView
+  },
+
+  {
+    path: '/test',
+    name: 'Test',
+    component: TestView
+  },
 ];
 
 const router = createRouter({
   history: createWebHistory(), // nutzt die HTML5-History-API (schöne URLs ohne #)
   routes
 });
+
+// Global Guard
+router.beforeEach((to, from, next) => {
+  const storeBase = useBaseStore();
+
+  if (!to.meta.noAuthRequired && !storeBase.isLoggedIn) {
+    // User ist nicht eingeloggt → Login-Seite mit Referenz weiterleiten
+    console.info("user is not login")
+    next({
+      name: 'Login',
+      query: { refer: to.fullPath }
+    })
+    // next();
+  } else {
+    next() // alles okay, weiter
+  }
+})
+
 
 export default router;

@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, ref, computed } from 'vue'
+import { ref, computed } from 'vue'
 import 'primeflex/primeflex.css';
 import 'primeicons/primeicons.css'
 import Image from 'primevue/image';

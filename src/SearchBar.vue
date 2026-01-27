@@ -1,7 +1,7 @@
 <script setup>
 import './main.css'
 import 'primeflex/primeflex.css';
-import { defineProps, ref, watch, computed } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { onBeforeUnmount } from 'vue'
 import Badge from 'primevue/badge';
 import Checkbox from 'primevue/checkbox';

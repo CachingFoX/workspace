@@ -1,6 +1,6 @@
 
 <script setup>
-import { defineProps, ref } from 'vue'
+import { ref } from 'vue'
 import DataView from 'primevue/dataview';
 import 'primeflex/primeflex.css';
 import Chip from 'primevue/chip';
