@@ -4,7 +4,14 @@ export function createTrackableService({
   baseUrl,
   httpClient,
   tokenProvider,
+  fnError,
 }) {
+  const _name = "TrackableService";
+
+  const registerErrorNotification = (fn) => {
+    fnError = fn;
+  }
+
   const getHeaders = () => {
     const token = tokenProvider?.();
 
@@ -25,11 +32,10 @@ export function createTrackableService({
     });
 
     if (!response.ok) {
-      const errorBody = await response.text(); // oder .json()
-      throw new Error(`Failed to add trackable (${response.status}): ${errorBody}`);
+      fnError(_name, `Failed to add trackable ${data.private_code}/${data.public_code}`, response)
+    } else {
+      return response.json();
     }
-
-    return response.json();
   };
 
   const readTrackable = async (trackable_id) => {
@@ -39,11 +45,10 @@ export function createTrackableService({
     });
 
     if (!response.ok) {
-      const errorBody = await response.text(); // oder .json()
-      throw new Error(`Read trackable ${trackable_id} fails: (${response.status}): ${errorBody}`);
+      fnError(_name, `Read trackable ${trackable_id} fails`, response)
+    } else {
+      return response.json();
     }
-
-    return;
   };
 
   const updateTrackable = async (trackable_id, fields) => {
@@ -54,11 +59,10 @@ export function createTrackableService({
     });
 
     if (!response.ok) {
-      const errorBody = await response.text(); // oder .json()
-      throw new Error(`Update field/s ${fields} of trackable ${trackable_id} fails: (${response.status}): ${errorBody}`);
+      fnError(_name, `Update field/s ${fields} of trackable ${trackable_id} fails`, response)
+    } else {
+      return response.json();
     }
-
-    return;
   };
 
   const deleteTrackable = async (trackable_id) => {
@@ -68,11 +72,10 @@ export function createTrackableService({
     });
 
     if (!response.ok) {
-      const errorBody = await response.text();
-      throw new Error(`Delete trackable ${trackable_id} fails with status ${response.status}: ${errorBody}`);
+      fnError(_name, `Delete trackable ${trackable_id} fails`, response)
+    } else {
+      return response.json();
     }
-
-    return;
   };
 
   /* --- special methods --- */
@@ -83,10 +86,10 @@ export function createTrackableService({
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch trackables (${response.status})`);
+      fnError(_name, `Fetch trackables failed`, response)
+    } else {
+      return response.json();
     }
-
-    return response.json();
   };
 
   const getAllTrackablesByOwner = async (owner) => {
@@ -105,15 +108,15 @@ export function createTrackableService({
     });
 
     if (!response.ok) {
-      const errorBody = await response.text();
-      throw new Error(`Failed to fetch trackable by tracking number (${response.status}): $(errorBody)`);
+      fnError(_name, `Fetch trackable by tracking number fails`, response)
+    } else {
+      return response.json();
     }
-
-    return response.json();
   };
 
 
   return {
+    registerErrorNotification,
     // crud trackable
     createTrackable,
     readTrackable,

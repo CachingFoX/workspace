@@ -1,24 +1,28 @@
 <script setup>
 import './main.css'
 import Toast from 'primevue/toast';
-/*
-import 'primeflex/primeflex.css';
+import { onBeforeMount } from 'vue';
+import { trackableService } from "./di/trackables.js"
+import { useToast } from 'primevue';
 
-import { computed,ref } from 'vue'
-import { onBeforeMount, onMounted } from 'vue'
-import { useDataStore } from '@/stores/data'
-import { useSearchFilterStore} from '@/stores/search'
-import { useFilteredDataStore } from '@/stores/filtereddata'
+const toast = useToast();
 
-const storeFilteredData = useFilteredDataStore();
-const store = useSearchFilterStore();
-const dataStore = useDataStore();
+async function onError(owner, message, response) {
+  const status = response.status;
+  const body = await response.text();
+  console.error(owner, message, status, body);
+  toast.add({
+    severity: 'error',
+    summary: `API Error at ${owner}`,
+    detail: `${message} (${status}): ${body}`,
+    life: 10000,
+  });
+  throw new Error(`${owner}: ${message} (${status}): ${body}`);
+}
 
 onBeforeMount(() => {
-  dataStore.initData();
-  storeFilteredData.doFilter();
+  trackableService.registerErrorNotification(onError);
 });
-*/
 </script>
 
 <template>
