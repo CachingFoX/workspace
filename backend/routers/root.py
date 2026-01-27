@@ -2,7 +2,6 @@ from fastapi import APIRouter, Depends
 from backend.dependencies import get_settings, get_version
 from backend.settings import ApiSettings
 
-
 router = APIRouter(prefix="")
 
 

@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 import os
 from backend.routers import (
+    auth,
     geocaching,
     images,
     root,
@@ -64,6 +65,7 @@ def create_api(settings: ApiSettings):
     )
 
     # --- router einbinden
+    _api.include_router(auth.router)
     _api.include_router(root.router)
     _api.include_router(trackingnumber.router)
     _api.include_router(trackables.router)
