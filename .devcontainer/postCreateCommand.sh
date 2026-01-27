@@ -13,3 +13,5 @@ sudo apt install python3-fastapi
 sudo apt install python3-sqlalchemy
 sudo apt install uvicorn
 
+sudo apt-get install python3-jose
+sudo apt search python3-passlib
