@@ -15,16 +15,10 @@ import Image from 'primevue/image';
 import { useRouter, useRoute } from 'vue-router';
 import Galleria from 'primevue/galleria';
 import { useToast } from "primevue/usetoast";
-import { trackableService, useTrackableStore } from "../di/trackables.js"
+import { useTrackableStore } from "../di/trackables.js"
 import TextEdit from './TextEdit.vue'
 import ConfirmDialog from 'primevue/confirmdialog';
 import { useConfirm } from "primevue/useconfirm";
-
-const confirm = useConfirm();
-const router = useRouter();
-const route = useRoute();
-const toast = useToast();
-
 // components
 import EditMarker from '../components/Edit.vue'
 import TagList from '../components/TagList.vue'
@@ -33,12 +27,16 @@ import Upload from '../components/Upload.vue'
 import TrackableGridItem from '../components/TrackableGridItem.vue';
 import BaseLayout from './layout/BaseLayout.vue';
 
+const confirm = useConfirm();
+const router = useRouter();
+const route = useRoute();
+const toast = useToast();
 const storeTrackable = useTrackableStore();
 const data = storeTrackable.data;
 const isImageLoaded = ref(false)
 
 const xOwner = computed(() => {
-  return data.activated ? data.owner : "not activated"
+  return storeTrackable.activated ? storeTrackable.owner : "not activated"
 });
 
 const xDescription = computed({
@@ -66,12 +64,11 @@ const items = [
   { 'name': 'Trackable Code', 'model': 'private_code', 'type': 'read-only' },
   { 'name': 'Public Code', 'model': 'public_code', 'type': 'read-only' },
   { 'name': 'Serie', 'model': 'series', 'type': 'read-only' },
-  // { 'name': 'Owner', 'model': xOwner, 'type': 'read-only' },
+  { 'name': 'Owner', 'model': xOwner, 'type': 'read-only' },
   { 'name': 'Created', 'model': 'created', 'type': 'read-only' },
   { 'name': 'Updated', 'model': 'updated', 'type': 'read-only'},
-  { 'name': 'Activation Code', 'model': xActivationCode, 'type': 'edit'},
-  { 'name': 'Description', 'model': xDescription, 'type': 'textarea'},
-  // { 'name': '', 'model': ''},
+  { 'name': 'Activation Code', 'model': xActivationCode, 'model_name': 'activation_code', 'type': 'edit'},
+  { 'name': 'Description', 'model': xDescription, 'model_name': "description", 'type': 'edit', 'textarea': true},
 ]
 
 function goToListItem(id) {
@@ -94,7 +91,7 @@ async function onDelete() {
     },
     accept: async () => {
       try {
-        await trackableService.deleteTrackable(data.id);
+        await storeTrackable.deleteTrackable(data.id);
         router.push('/trackables');
       } catch (error) {
         toast.add({ severity: 'error', summary: 'API Error', detail: error.message, life: 3000 });
@@ -103,6 +100,18 @@ async function onDelete() {
     },
     reject: () => {}
   })
+}
+
+function zzz(x) {
+  if (typeof x == 'string') {
+    return data[x]
+  } else {
+    return x.value;
+  }
+}
+
+function onChange(fields) {
+  storeTrackable.updateTrackableFields(fields);
 }
 </script>
 
@@ -135,14 +144,11 @@ async function onDelete() {
           :label="item.name" :attribute="item.model" :type="item.type">
           <template #read-only>
             <div class="px-2">
-              <span class="px-1" style="border: 1px solid transparent;">{{ data[item.model] }}</span>
+              <span class="px-1" style="border: 1px solid transparent;">{{ zzz(item.model) }}</span>
             </div>
           </template>
           <template #edit>
-            <TextEdit v-model="item.model.value"/>
-          </template>
-          <template #textarea>
-            <TextEdit v-model="item.model.value" textarea/>
+            <TextEdit v-model="item.model.value" :name="item.model_name ?? ''" :textarea="item.textarea" apianswer @save="onChange"/>
           </template>
         </TrackableGridItem>
         <TrackableGridItem label="Tags">

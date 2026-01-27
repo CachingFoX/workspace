@@ -13,10 +13,12 @@ const props = defineProps({
   modelValue: { type: String, default: "" },
   placeholder: { type: String, default: "Click to edit" },
   textarea: { type: Boolean, default: false },
+  name: { type: String, default: "" },
+  apianswer: { type: Boolean, default: false },
 });
 
 // Emits
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue", "save"]);
 
 // States
 const editing = ref(false);
@@ -42,6 +44,12 @@ const save = () => {
   editing.value = false;
   if (internalValue.value != props.modelValue) {
     emit("update:modelValue", internalValue.value);
+    let answer = { 'field': props.name, 'value': internalValue.value}
+    if (props.apianswer) {
+      answer = {}
+      answer[props.name] = internalValue.value;
+    }
+    emit("save", answer)
   }
 };
 

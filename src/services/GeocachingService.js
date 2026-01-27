@@ -27,7 +27,25 @@ export function createGeocachingService({
     return response.json();
   };
 
+  // links to geocaching.com
+  function getLinkGeocachingTrackable(tracking_number) {
+    return `https://www.geocaching.com/track/details.aspx?tracker=${tracking_number}`;
+  }
+  function getLinkGeocachingTrackableActivation(tracking_number, activation_code) {
+    return `https://www.geocaching.com/track/Activate.aspx?trknum=${tracking_number}&activationCode=${activation_code}`;
+  }
+  function getLinkGeocachingUserProfile(username) {
+    return `https://www.geocaching.com/p/default.aspx?u=${username}`;
+  }
+  function openNewTab(url) {
+    window.open(url, '_blank');
+  }
+
   return {
     getTrackableData,
+    getLinkGeocachingTrackable,
+    getLinkGeocachingTrackableActivation,
+    getLinkGeocachingUserProfile,
+    openNewTab,
   };
 }

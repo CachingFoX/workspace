@@ -15,13 +15,21 @@ const router = useRouter();
 const route = useRoute();
 
 watch(
-  () => storeTrackable.status,
+  () => storeTrackable.state,
   (newState, oldState) => {
+    console.log("storeTrackable.state changed:", oldState, "-->", newState)
     if (newState === STATE_UNKNOWN) {
       router.push("/trackable/unknown/"+storeTrackable.load_code);
     } else {
-      console.log("status changed:", oldState, "-->", newState)
     }
+  }
+)
+
+watch(
+  () => storeTrackable.progress,
+  (newState, oldState) => {
+    console.log("storeTrackable.progress changed:", oldState, "->", newState);
+    // TODO show progress spinner with blocked background in UI
   }
 )
 
@@ -36,11 +44,11 @@ onMounted(async () => {
       <Navbar/>
     </template>
     <template v-slot:mainstage>
-      <TrackableLoad         v-if="storeTrackable.status == STATE_NO_INIT"/>
-      <TrackableLoad    v-else-if="storeTrackable.status == STATE_LOADING"/>
-      <TrackableDetails v-else-if="storeTrackable.status == STATE_READY" />
+      <TrackableLoad         v-if="storeTrackable.state == STATE_NO_INIT"/>
+      <TrackableLoad    v-else-if="storeTrackable.state == STATE_LOADING"/>
+      <TrackableDetails v-else-if="storeTrackable.state == STATE_READY" />
       <CenterLayout     v-else>
-        Unhandled state '{{storeTrackable.status}}'
+        Unhandled state '{{storeTrackable.state}}'
       </CenterLayout>
     </template>
   </BaseLayout>

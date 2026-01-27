@@ -1,49 +1,76 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 
-export const STATE_NO_INIT = "no_init";
-export const STATE_LOADING = "loading";
-export const STATE_UNKNOWN = "unknown";
-export const STATE_READY = "ready";
-export const STATE_FAIL = "fail";
+export const STATE_NO_INIT = "NO_INIT";
+export const STATE_LOADING = "LOADING";
+export const STATE_UNKNOWN = "UNKNOWN";
+export const STATE_READY = "READY";
+export const STATE_FAIL = "FAIL";
 
 export const createTrackableStore = (trackableService) => {
   return defineStore('trackable', () => {
     // --- State ---
-    const _status = ref(STATE_NO_INIT);
+    const _state = ref(STATE_NO_INIT);
+    const _progress = ref(false)
     const _data = ref({});
     const _load_code = ref('');
 
     // --- Actions ---
     const loadTrackable = async (tracking_number) => {
-      _status.value = STATE_NO_INIT;
+      _state.value = STATE_NO_INIT;
       _data.value = {};
       _load_code.value = tracking_number;
 
       try {
-        _status.value = STATE_LOADING;
-        const result = await trackableService.getTrackableByNumber(tracking_number);
-        _data.value = result;
-        _status.value = STATE_READY;
+        _progress.value = true;
+        _state.value = STATE_LOADING;
+        _data.value = await trackableService.getTrackableByNumber(tracking_number);
+        _state.value = STATE_READY;
+        _progress.value = false;
       } catch (error) {
-        _status.value = STATE_FAIL;
-        // TODO toast.add({ severity: 'error', summary: 'API Error', detail: error.message, life: 3000 });
-        console.log(error);
+        _state.value = STATE_FAIL;
+        _progress.value = false;
       }
     };
+
+    const updateTrackableFields = async (fields) => {
+      Object.assign(_data.value, fields); // TODO in the future _data.value.properties ????
+      try {
+        _progress.value = true;
+        await trackableService.updateTrackable(_data.value.id, fields);
+        _progress.value = false;
+      } catch (error) {
+        _progress.value = false;
+      }
+    }
+
+    const deleteTrackable = async () => {
+      try {
+        _progress.value = true;
+        await trackableService.updateTrackable(_data.value.id, fields);
+        _data.value = {}
+        _state.value = STATE_NO_INIT
+        _progress.value = false;
+      } catch (error) {
+        _progress.value = true;
+      }
+    }
 
     // --- Getter ---
     const data = computed(() => _data.value);
     const load_code = computed(() => _load_code.value);
-    const status = computed(() => _status.value);
-
+    const state = computed(() => _state.value);
+    const progress = computed(() => _progress.value);
 
     // --- Expose ---
     return {
       data,
       load_code,
-      status,
-      loadTrackable
+      state,
+      progress,
+      loadTrackable,
+      updateTrackableFields,
+      deleteTrackable,
     };
   });
 };
@@ -112,10 +139,10 @@ export const useTrackableViewStore = defineStore('trackable-viewx', () => {
   const _route = useRoute()
 
   const trackable_data = ref({});
-  const _status = ref(STATE_NO_INIT);
+  const _state = ref(STATE_NO_INIT);
 
   function fetch(tracking_code) {
-    _status.value = STATE_LOADING;
+    _state.value = STATE_LOADING;
     trackable_data.value = {};
 
     try {
@@ -124,14 +151,14 @@ export const useTrackableViewStore = defineStore('trackable-viewx', () => {
           trackable_data.value = result.trackable;
           // TODO tagStore.loadAllTags();
           // TODO loadTrackableTags(private_code);
-          _status.value = STATE_READY;
+          _state.value = STATE_READY;
         } else {
-          _status.value = STATE_UNKNOWN;
+          _state.value = STATE_UNKNOWN;
         }
       });
     } catch (err) {
       console.error(err);
-      _status.value = STATE_FAIL;
+      _state.value = STATE_FAIL;
     } finally {
     }
   }
@@ -141,12 +168,12 @@ export const useTrackableViewStore = defineStore('trackable-viewx', () => {
   }
 
   const trackable_reference_code = computed(() => '??????');
-  const status = computed(() => _status.value);
+  const state = computed(() => _state.value);
 
   return {
     fetch,
     init,
-    status,
+    state,
     trackable_data,
     trackable_reference_code,
   }
