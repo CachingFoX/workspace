@@ -91,7 +91,7 @@ async function onDelete() {
     },
     accept: async () => {
       try {
-        await storeTrackable.deleteTrackable(data.id);
+        await storeTrackable.deleteTrackable();
         router.push('/trackables');
       } catch (error) {
         toast.add({ severity: 'error', summary: 'API Error', detail: error.message, life: 3000 });
