@@ -67,6 +67,7 @@ def get_current_user(token: str = Depends(OAuth2PasswordBearer(tokenUrl="token")
         username: str = payload.get("sub")
         role: str = payload.get("role")
         version: int = payload.get("version")
+        expires = payload.get("expires")
 
         if username is None:
             logging.warning("username is not set")
@@ -86,7 +87,13 @@ def get_current_user(token: str = Depends(OAuth2PasswordBearer(tokenUrl="token")
             logging.warning("version doesn't match")
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
-        return {"username": username, "name": username, "role": role, "avatar": "?"}
+        return {
+            "username": username,
+            "name": username,
+            "role": role,
+            "avatar": "?",
+            "expires": expires,
+        }
 
     except JWTError:
         raise HTTPException(
@@ -113,6 +120,9 @@ def create_new_token(username: str, password: str):
             "sub": user["username"],
             "role": user["role"],
             "version": user["version"],
+            "expires": str(
+                datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+            ),
         },
         expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES),
     )

@@ -3,7 +3,8 @@ from backend.models import modelTag, modelTrackableTag
 from backend.schemas import (
     schemaTrackableTagOut,
     schemaTagId,
-    schemaTrackableTagRelation,
+    schemaAttachedTag,
+    transformAttachedTags,
 )
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
@@ -46,10 +47,10 @@ def attach_tag(
     return link
 
 
-@router.get("/", response_model=list[schemaTrackableTagRelation])
+@router.get("/", response_model=list[schemaAttachedTag])
 def read_all_tags(trackable_id: int, db: Session = Depends(get_db)):
     trackable = _get_trackable_by_internal_id(trackable_id, db)
-    return trackable.tags
+    return transformAttachedTags(trackable.tags, True)
 
 
 @router.delete("/{tag_id}", status_code=204)
@@ -59,16 +60,18 @@ def dettach_tag(
     db: Session = Depends(get_db),
 ):
     # check if trackable exists
-    trackable = _get_trackable_by_internal_id(trackable_id, db)
+    trackable = _get_trackable_by_internal_id(
+        trackable_id, db
+    )  # TODO gibt es nicht inzwischen eine bessere funktion dafür
 
-    # check if tag exists
+    # TODO check if tag exists
     tag = _exists_tag(tag_id, db)
 
     relation = (
         db.query(modelTrackableTag)
         .filter(
             and_(
-                modelTrackableTag.trackable_id == trackable.id,
+                modelTrackableTag.trackable_id == trackable_id,
                 modelTrackableTag.tag_id == tag_id,
             )
         )

@@ -9,6 +9,17 @@ from backend.schemas.trackable_tag import (
     TrackableTagIn as schemaTrackableTagIn,
     TrackableTagOut as schemaTrackableTagOut,
     TrackableTagRelation as schemaTrackableTagRelation,
+    TrackableAttachedTag as schemaAttachedTag,
+    transformAttachedTags,
+)
+from backend.schemas.trackable_property import (
+    TrackableAttachedProperty2 as schemaAttachedProperty,
+    TrackablePropertyResolved as schemaTrackablePropertyResolved,
+    transformAttachedProperties,
+    TrackablePropertyResolved as schemaTrackableProperty,
+    transformItems,
+    TrackablePropertyNew as schemaTrackablePropertyNew,
+    TrackablePropertyUpdate as schemaTrackablePropertyUpdate,
 )
 from backend.schemas.trackable import (
     TrackableRead as schemaTrackableRead,

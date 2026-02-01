@@ -1,7 +1,5 @@
 from sqlalchemy import Column, Integer, String
-from database2 import Base
-from sqlalchemy.orm import validates
-import re
+from backend.database2 import Base
 
 
 class Property(Base):
@@ -9,12 +7,4 @@ class Property(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String, index=True)
-    unique_name = Column(String, unique=True, index=True)
-
-    @validates("unique_name")
-    def validate_unique_name(self, key, value):
-        return re.sub(r"[^a-z0-9]", "", value.lower())
-
-    # trackables = relationship(
-    #    "TrackableTag", back_populates="tag", cascade="all, delete-orphan"
-    # )
+    type = Column(String, index=True)

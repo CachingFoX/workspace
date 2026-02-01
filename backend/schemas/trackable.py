@@ -1,8 +1,12 @@
 from pydantic import BaseModel
-from backend.schemas.trackable_tag import (
-    TrackableTagRelation as schemaTrackableTagRelation,
-)
 from backend.schemas.image import ImageEmbbed as schemaImageEmbbed
+from backend.schemas.trackable_tag import TrackableAttachedTag as schemaAttachedTag
+from backend.schemas.trackable_tag import transformAttachedTags
+from backend.schemas.trackable_property import (
+    TrackableAttachedProperty2 as schemaAttachedProperty,
+)
+from backend.schemas.trackable_property import transformAttachedProperties
+
 from datetime import datetime
 
 
@@ -46,11 +50,29 @@ class TrackableRead(BaseModel):
     created: datetime | None = None
     updated: datetime | None = None
 
-    tags: list[schemaTrackableTagRelation]
+    tags: list[schemaAttachedTag]
     images: list[schemaImageEmbbed]
+    properties: list[schemaAttachedProperty]
 
-    class Config:
-        orm_mode = True
+    @classmethod
+    def from_orm_with_transform(cls, trackable):
+        return cls(
+            id=trackable.id,
+            private_code=trackable.private_code,
+            public_code=trackable.public_code,
+            title=trackable.title,
+            owner=trackable.owner,
+            activated=trackable.activated,
+            series=trackable.series,
+            icon_url=trackable.icon_url,
+            description=trackable.description,
+            activation_code=trackable.activation_code,
+            created=trackable.created,
+            updated=trackable.updated,
+            tags=transformAttachedTags(trackable.tags, True),
+            properties=transformAttachedProperties(trackable.properties, True),
+            images=trackable.images,  # TODO
+        )
 
 
 class TrackableUpdate(BaseModel):

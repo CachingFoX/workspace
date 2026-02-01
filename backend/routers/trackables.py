@@ -35,14 +35,20 @@ def create_trackable(trackable: schemaTrackableCreate, db: Session = Depends(get
     return _create(trackable, db)
 
 
+def listTransformHelper(cls, xlist):
+    return [cls.from_orm_with_transform(item) for item in xlist]
+
+
 @router.get("/", response_model=list[schemaTrackableRead])
 def read_all_trackables(db: Session = Depends(get_db)):
-    return db.query(modelTrackable).all()
+    trackable = db.query(modelTrackable).all()
+    return listTransformHelper(schemaTrackableRead, trackable)
 
 
 @router.get("/{trackable_id}", response_model=schemaTrackableRead)
 def read_trackable(trackable_id: int, db: Session = Depends(get_db)):
-    return _get_trackable_by_internal_id(trackable_id, db)
+    trackables = _get_trackable_by_internal_id(trackable_id, db)
+    return schemaTrackableRead.from_orm_with_transform(trackables)
 
 
 @router.patch("/{trackable_id}", response_model=schemaTrackableRead)
@@ -51,7 +57,8 @@ def update_trackable(
     update: schemaTrackableUpdate,
     db: Session = Depends(get_db),
 ):
-    return _patch(trackable_id, update, db)
+    trackable = _patch(trackable_id, update, db)
+    return schemaTrackableRead.from_orm_with_transform(trackable)
 
 
 @router.delete("/{trackable_id}", status_code=status.HTTP_204_NO_CONTENT)

@@ -64,3 +64,9 @@ class Trackable(Base):
         back_populates="trackable",
         cascade="all, delete-orphan",
     )
+
+    properties = relationship(
+        "TrackableProperty",
+        back_populates="trackable",
+        cascade="all, delete-orphan",
+    )

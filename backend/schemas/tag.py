@@ -16,6 +16,7 @@ class TagRead(BaseModel):
     id: int
     name: str
     unique_name: str
+    use: int | None = None
 
     class Config:
         orm_mode = True

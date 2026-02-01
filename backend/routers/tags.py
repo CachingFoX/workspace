@@ -1,9 +1,15 @@
 from backend.database import get_db
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
-from backend.models import modelTag
 from backend.schemas import tag as schema
-from backend.crud.tag import _create, _exists_tag, _update, _delete
+from backend.crud.tag import (
+    _create,
+    _exists_tag,
+    _update,
+    _delete,
+    _read_all_with_use,
+)
+
 
 router = APIRouter(
     prefix="/tags",
@@ -18,7 +24,7 @@ def create_tag(newTag: schema.TagCreate, db: Session = Depends(get_db)):
 
 @router.get("/", response_model=list[schema.TagRead])
 def read_all_tags(db: Session = Depends(get_db)):
-    return db.query(modelTag).all()
+    return _read_all_with_use(db)
 
 
 @router.get("/{tag_id}", response_model=schema.TagRead)

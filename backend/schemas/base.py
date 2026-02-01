@@ -10,3 +10,4 @@ class User(BaseModel):
     name: str
     role: str
     avatar: str | None = None
+    expires: str | None = None
