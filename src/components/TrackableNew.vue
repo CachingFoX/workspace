@@ -8,7 +8,7 @@ import Skeleton from 'primevue/skeleton';
 import Button from 'primevue/button';
 import { useToast } from "primevue/usetoast";
 import { createGeocachingService } from '@/services/GeocachingService';
-import { defaultAPIConfiguration } from '@/services/services'
+import { defaultAPIConfiguration } from '@/di/services.js'
 
 // --- Service ---
 const geocachingService = createGeocachingService(defaultAPIConfiguration);

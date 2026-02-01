@@ -7,7 +7,7 @@ const KEY_USERNAME = KEY_PREFIX + 'username';
 
 // TODO store früh - vor dem router - initalisieren
 
-export const useBaseStore = defineStore('base', () => {
+export const useBaseStore = defineStore('base-X', () => {
   // TODO: on mount setzen bzw onMount aufrufen
   let _username = ref(localStorage.getItem(KEY_USERNAME) || null);
   let _bearer_token = ref(localStorage.getItem(KEY_AUTH_TOKEN) || null);

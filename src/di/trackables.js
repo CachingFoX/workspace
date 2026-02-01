@@ -1,13 +1,27 @@
+import { createCommonService } from '@/services/CommonService';
+import { createBaseStore } from '@/stores/BaseStore.js';
+import { createTagService } from '@/services/TagService';
 import { createTrackableService } from '@/services/TrackableService';
-import { createTrackableListStore } from '@/stores/trackableListStore';
+import { createTrackablePropertiesService } from '@/services/TrackablePropertiesService';
+import { createTokenService } from '@/services/TokenService';
+import { createTagsStore } from '@/stores/tags.js';
 import { createTrackableStore } from '@/stores/trackableStore';
-import { defaultAPIConfiguration } from '@/services/services'
-const baseUrl = 'http://localhost:8000'
+import { createTrackableListStore } from '@/stores/trackableListStore';
+import { createTokenStore } from '@/stores/TokenStore';
+import { defaultAPIConfiguration } from '@/di/services'
 
 // --- Service ---
+export const commonService = createCommonService(defaultAPIConfiguration);
+export const tagService = createTagService(defaultAPIConfiguration);
+export const tokenService = createTokenService(defaultAPIConfiguration);
 export const trackableService = createTrackableService(defaultAPIConfiguration);
+export const trackablePropertiesService = createTrackablePropertiesService(defaultAPIConfiguration);
 
 // --- Stores ---
+export const useBaseStore = createBaseStore(commonService);
+export const useTagsStore = createTagsStore(tagService);
+export const useTokenStore = createTokenStore(tokenService);
 export const useTrackableListStore = createTrackableListStore(trackableService);
-export const useTrackableStore = createTrackableStore(trackableService);
+export const useTrackableStore = createTrackableStore(trackableService, trackablePropertiesService);
 
+// TODO Geocaching Store and Service

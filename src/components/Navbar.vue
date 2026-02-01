@@ -12,7 +12,6 @@ import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
 import NavbarIcon from './NavbarIcon.vue';
 import Avatar from 'primevue/avatar';
-import Dialog from 'primevue/dialog';
 import { useBaseStore } from '../stores/base.js'
 
 const storeBase = useBaseStore();
@@ -76,14 +75,19 @@ const items = ref([
         route: '/dashboard'
     },
     {
-        label: 'All Trackables',
+        label: 'Trackables',
         icon: 'pi pi-list',
         route: '/trackables'
     },
     {
-        label: 'All Series',
+        label: 'Series',
         icon: 'pi pi-list',
         route: '/trackables'
+    },
+    {
+        label: 'Tags',
+        icon: 'pi pi-tags',
+        route: '/tags'
     },
   /*
     {

@@ -1,42 +1,23 @@
 <script setup>
-import 'primeflex/primeflex.css';
-import BaseLayout from '@/components/layout/BaseLayout.vue';
+import { onMounted, ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import Navbar from '@/components/Navbar.vue';
 import { useTrackableListStore } from '@/di/trackables';
-import { onMounted } from 'vue';
 import Divider from 'primevue/divider';
-import Button from 'primevue/button';
-import Tag from 'primevue/tag';
-import Card from 'primevue/card';
+import DataView from 'primevue/dataview';
+import SelectButton from 'primevue/selectbutton';
+import Select from 'primevue/select';
+import BaseLayout from '@/components/layout/BaseLayout.vue';
+import Navbar from '@/components/Navbar.vue';
+import TrackableCard from '@/components/TrackableCard.vue';
+import TrackableListItem from '@/components/TrackableListItem.vue';
 
 const storeTrackables = useTrackableListStore();
 const router = useRouter();
 const route = useRoute()
 
 
-function makeIconUrl(icon_url) {
-  if (icon_url === null) {
-    return null;
-  }
-  if (icon_url.startsWith("http")) {
-    return icon_url
-  }
-  return 'https://www.geocaching.com'+icon_url;
-}
-
-function makeImageUrl(image_filename) {
-  return 'http://localhost:8000/images/'+image_filename
-}
-
-function goToTrackable(tracking_code) {
-  router.push("/trackable/"+tracking_code)
-}
-
-function goToOwner(owner) {
-  // TODO router.push("/trackables/owner/"+owner)
-}
-
+const layout = ref('grid');
+const options = ref(['list', 'grid']);
 
 onMounted(()=>{
   storeTrackables.fetchTrackables();
@@ -49,129 +30,49 @@ onMounted(()=>{
       <Navbar/>
     </template>
     <template v-slot:mainstage>
+      <DataView :value="storeTrackables.items" :layout="layout">
+        <template #header>
+          <div class="flex justify-content-between align-items-center">
+            <Select>
+            </Select>
+            <SelectButton v-model="layout" :options="options" :allowEmpty="false">
+              <template #option="{ option }">
+                <i :class="[option === 'list' ? 'pi pi-bars' : 'pi pi-table']" />
+              </template>
+            </SelectButton>
+          </div>
+        </template>
+
+        <template #list="slotProps">
+          <template v-for="(item, index) in slotProps.items" class="">
+            <div class="px-2"><Divider v-if="index" class="-1"/></div>
+            <TrackableListItem :trackable="item" class="p-2"/>
+          </template>
+        </template>
+
+        <template #grid="slotProps">
+          <div class="p-1 flex flex-wrap justify-content-center">
+            <template v-for="(item, index) in slotProps.items">
+              <TrackableCard :trackable="item"/>
+            </template>
+          </div>
+        </template>
+      </DataView>
+    </template>
+
+    <template v-slot:mainstagex>
       <div class="p-1 flex flex-wrap justify-content-center">
         <template v-for="(item, index) in storeTrackables.items">
-          <Card style="width: 256px; overflow: xhidden" class="mx-2 my-2" :id="`trackable-item-${item.id}`">
-            <template #header>
-              <div class="px-3 pt-3">
-                <div style="position: relative; aspect-ratio: 1 / 1;" class="p-3">
-
-                  <div style="position: absolute; bottom: 0; right: 0; z-index: 1000;">
-                    <Tag
-                      :style="{ cursor: item.owner ? 'pointer' : 'default'}"
-                      :class="{ 'user-tag': item.owner }"
-                      :icon="item.owner ? 'pi pi-user' : 'pi pi-times'"
-                      :severity="item.owner ? 'info' : 'secondary'"
-                      :value="item.owner ? item.owner : 'not activated'"
-                      class="m-1"
-                      style="border: 1px solid var(--p-surface-300);"
-                      @click.stop="item.owner ? goToOwner(item.owner) : void(0)"></Tag>
-                  </div>
-
-                  <div style="position: absolute; top: 0; left: 0; z-index: 1000;" class="pt-1 pl-1" v-if="item.images.length ">
-                      <img :src="makeIconUrl(item.icon_url)" class="card"/>
-                  </div>
-
-                  <!--
-                  <div style="position: absolute; bottom: 0; left: 0; z-index: 1000;">
-                    <Tag
-                      severity="primary"
-                      :value="item.private_code"
-                      class="m-1"
-                      style="border: 1px solid var(--p-surface-300);"
-                      @click.stop="item.owner ? goToOwner(item.owner) : void(0)"></Tag>
-                  </div>
-
-                  <div style="position: absolute; bottom: 0; right: 0; z-index: 1000;">
-                    <Tag
-                      severity="primary"
-                      :value="item.public_code"
-                      class="m-1"
-                      style="border: 1px solid var(--p-surface-300);"
-                      @click.stop="item.owner ? goToOwner(item.owner) : void(0)"></Tag>
-                  </div>
-                -->
-                  <div class="card-image-container border w-full flex justify-content-center align-items-center">
-                    <img
-                      :src="item.images.length ? makeImageUrl(item.images[0]?.filename) : makeIconUrl(item.icon_url)"
-                      class="card"
-                      :class="{ 'card-img': item.images.length, 'card-icon': !item.images.length }"
-                    />
-                  </div>
-                </div>
-              </div>
-            </template>
-            <template #title><div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;  max-width: 100%; width: 100%;">{{ item.title }}</div></template>
-            <template #subtitle><div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;  max-width: 100%; width: 100%;">{{ item.series }}</div>
-            </template>
-            <template #contentx>
-                <p class="m-0">
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                </p>
-            </template>
-            <template #footer>
-                <div class="flex gap-1 mt-1">
-
-                    <Button label="Details" class="w-full" @click="goToTrackable(item.public_code)"/>
-                    <Button icon="pi pi-tag" class="px-3" @click="goToTrackable(item.public_code)"/>
-                    <!-- <Button v-if="item.owner" icon="pi pi-user" class="px-3" @click="goToTrackable(item.public_code)"/>-->
-                </div>
-            </template>
-          </Card>
+          <TrackableCard :trackable="item"/>
         </template>
       </div>
     </template>
-    <template v-slot:mainstagex>
+    <template v-slot:mainstagey>
       <div class="p-1">
         <template v-for="(item, index) in storeTrackables.items">
           <Divider v-if="index"/>
-          <div class="flex trackable-list-item" :id="`trackable-item-${item.id}`">
-            <div style="width: 100px; height: 100px;">
-              <img :src="makeImageUrl(item.images[0]?.filename)" style="width: 100%; height: 100%"/>
-            </div>
-            <!-- main -->
-            <div class="flex-grow-1 p-1">
-              <div class="flex flex-column h-full">
-                <!-- start: heading with icon-->
-                <div class="flex flex-row align-items-center gap-1 flex-shrink-0 flex-grow-0 clickable" @click="goToTrackable(item.public_code)">
-                  <div style="width: 40px; height: 40px;">
-                    <img v-if="item.icon_url" :src="makeIconUrl(item.icon_url)" style="width: 100%; height: 100%;"/>
-                    <div v-else class="flex justify-content-center align-items-center w-full h-full" style="border-radius: 20px; background-color: #ccc;">
-                      <div >?</div>
-                    </div>
-                  </div>
-                  <div class="flex flex-column">
-                    <div class="trackable-list-item-title font-bold text-lg">{{ item.title }}</div>
-                    <div class="trackable-list-item-subtitle text-sm text-500">{{ item.series }}</div>
-                  </div>
-                </div>
-                <!-- end: heading -->
-                <div class="flex flex-row align-items-end gap-1 flex-shrink-1 flex-grow-1">
-                  <div>
-                    <Tag
-                      :style="{ cursor: item.owner ? 'pointer' : 'default'}"
-                      :class="{ 'user-tag': item.owner }"
-                      :icon="item.owner ? 'pi pi-user' : 'pi pi-times'"
-                      :severity="item.owner ? 'info' : 'secondary'"
-                      :value="item.owner ? item.owner : 'not activated'"
-                      class="mr-1"
-                      @click.stop="item.owner ? goToOwner(item.owner) : void(0)"></Tag>
-                  </div>
-                </div>
-
-
-              </div>
-            </div>
-            <!-- left -->
-            <div>
-              <a :href="'https://www.geocaching.com/track/details.aspx?tracker='+item.public_code"
-              @click.stop
-               target="_blank">{{ item.public_code }}</a>
-            </div>
-          </div>
-
+          <TrackableListItem :trackable="item"/>
         </template>
-
       </div>
     </template>
   </BaseLayout>

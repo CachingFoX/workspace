@@ -12,6 +12,7 @@ import LoginView from '../views/LoginView.vue';
 import LogoutView from '../views/LogoutView.vue';
 import DashboardView from '../views/DashboardView.vue';
 import MainView from '../views/MainView.vue';
+import TagsAdministrationView from '@/views/TagsAdministrationView.vue';
 
 //
 
@@ -41,6 +42,11 @@ const routes = [
     path: '/main',
     name: 'Main',
     component: MainView,
+  },
+  {
+    path: '/tags',
+    name: 'Tags Administration',
+    component: TagsAdministrationView,
   },
   {
     path: '/trackables',

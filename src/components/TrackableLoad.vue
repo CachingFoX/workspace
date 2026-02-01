@@ -10,7 +10,7 @@ const storeTrackable = useTrackableStore();
 <template>
   <HLayout top="1" bottom="2" centered>
     <ProgressSpinner />
-    <div class="text-2xl mt-5">Fetch data for trackable {{storeTrackable.load_code}}</div>
+    <div class="text-2xl mt-5">Fetch data for trackable {{storeTrackable.trackingNumber}}</div>
   </HLayout>
 </template>
 

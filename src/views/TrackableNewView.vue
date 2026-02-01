@@ -2,7 +2,6 @@
 import { defineStore } from 'pinia'
 import { ref, watch, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router';
-import { TagService } from "../services/TagService.js";
 import ProgressSpinner from 'primevue/progressspinner';
 import InputText from 'primevue/inputtext';
 import Skeleton from 'primevue/skeleton';

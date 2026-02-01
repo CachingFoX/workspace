@@ -78,6 +78,50 @@ export function createTrackableService({
     }
   };
 
+  // ---
+
+  const attachTag = async (trackableId, tagId) => {
+    const response = await httpClient(`${baseUrl}/trackables/${trackableId}/tags`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({
+        'id': tagId
+      }),
+    });
+
+    if (!response.ok) {
+      fnError(_name, `Failed to attach tag ${tagId} at trackable ${trackableId}`, response)
+    } else {
+      return response.json();
+    }
+  };
+
+  const readTags = async (trackableId) => {
+    const response = await httpClient(`${baseUrl}/trackables/${trackableId}/tags`, {
+      method: 'GET',
+      headers: getHeaders(),
+    });
+
+    if (!response.ok) {
+      fnError(_name, `Failed to read tags of trackable ${trackableId}`, response)
+    } else {
+      return response.json();
+    }
+  };
+
+  const dettachTag = async (trackableId, tagId) => {
+    const response = await httpClient(`${baseUrl}/trackables/${trackableId}/tags/${tagId}`, {
+      method: 'DELETE',
+      headers: getHeaders(),
+    });
+
+    if (!response.ok) {
+      fnError(_name, `Failed to dettach tag ${tagId} at trackable ${trackableId}`, response)
+    } else {
+      return;
+    }
+  };
+
   /* --- special methods --- */
   const getAllTrackables = async () => {
     const response = await httpClient(`${baseUrl}/trackables/`, {
@@ -122,6 +166,10 @@ export function createTrackableService({
     readTrackable,
     updateTrackable,
     deleteTrackable,
+    // ---
+    attachTag,
+    readTags,
+    dettachTag,
     // all trackables methods
     getAllTrackables,
     getAllTrackablesByOwner,

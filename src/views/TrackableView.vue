@@ -9,8 +9,10 @@ import Navbar from '@/components/Navbar.vue';
 import { STATE_UNKNOWN, STATE_LOADING, STATE_NO_INIT, STATE_READY } from '../stores/trackableStore.js'
 import { useRoute, useRouter } from 'vue-router';
 import { useTrackableStore } from "../di/trackables.js"
+import { useTagsStore } from "@/di/trackables.js"
 
 const storeTrackable = useTrackableStore();
+const storeTags = useTagsStore();
 const router = useRouter();
 const route = useRoute();
 
@@ -19,7 +21,7 @@ watch(
   (newState, oldState) => {
     console.log("storeTrackable.state changed:", oldState, "-->", newState)
     if (newState === STATE_UNKNOWN) {
-      router.push("/trackable/unknown/"+storeTrackable.load_code);
+      router.push("/trackable/unknown/"+storeTrackable.trackingNumber);
     } else {
     }
   }
@@ -33,7 +35,16 @@ watch(
   }
 )
 
+watch(
+  () => storeTags.progress,
+  (newState, oldState) => {
+    console.log("storeTags.progress changed:", oldState, "->", newState);
+    // TODO show progress spinner with blocked background in UI
+  }
+)
+
 onMounted(async () => {
+  await storeTags.load();
   storeTrackable.loadTrackable(route.params.id.toUpperCase());
 })
 </script>
