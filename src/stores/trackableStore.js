@@ -51,11 +51,13 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
     const deleteTrackable = async () => {
       try {
         _progress.value = true;
-        await trackableService.updateTrackable(_data.value.id, fields);
+        await trackableService.deleteTrackable(_data.value.id);
         _data.value = {}
         _state.value = STATE_NO_INIT
         _progress.value = false;
       } catch (error) {
+        console.error(error);
+      } finally {
         _progress.value = true;
       }
     }

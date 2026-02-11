@@ -66,7 +66,7 @@ export function createTrackableService({
   };
 
   const deleteTrackable = async (trackable_id) => {
-    const response = await httpClient(`${baseUrl}/trackables/${id}`, {
+    const response = await httpClient(`${baseUrl}/trackables/${trackable_id}`, {
       method: 'DELETE',
       headers: getHeaders(),
     });
@@ -74,7 +74,7 @@ export function createTrackableService({
     if (!response.ok) {
       fnError(_name, `Delete trackable ${trackable_id} fails`, response)
     } else {
-      return response.json();
+      return;
     }
   };
 
