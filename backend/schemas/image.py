@@ -8,8 +8,7 @@ class ImageEmbbed(BaseModel):
     comment: str | None = None
     gallery: bool | None = None
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
     """
     id = Column(Integer, primary_key=True)

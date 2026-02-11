@@ -18,8 +18,7 @@ class TrackableAttachedProperty2(BaseModel):
     value: str
     property_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
     @classmethod
     def from_orm_with_transform(cls, property):
@@ -48,23 +47,20 @@ class TrackableProperty(BaseModel):
     property_id: int
     text: str
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
 
 class TrackablePropertyNew(BaseModel):
     property_id: int
     property_value: str
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
 
 class TrackablePropertyUpdate(BaseModel):
     property_value: str
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
 
 class TrackablePropertyResolved(BaseModel):
@@ -74,8 +70,7 @@ class TrackablePropertyResolved(BaseModel):
     property_value: str | None
     property_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
     @classmethod
     def from_orm_with_transform(cls, item):

@@ -6,8 +6,7 @@ class Property(BaseModel):
     name: str
     type: str
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
 
 """# Schema für die TrackableProperty-Relation
@@ -16,6 +15,8 @@ class TrackablePropertyRelation(BaseModel):
     tag: schemaTagRead
     hidden: bool
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
+
 """

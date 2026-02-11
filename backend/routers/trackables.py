@@ -32,7 +32,8 @@ def create_trackable(trackable: schemaTrackableCreate, db: Session = Depends(get
     _exists_trackable_by_tracking_number(trackable.public_code, db)
 
     # create new trackable
-    return _create(trackable, db)
+    trackable = _create(trackable, db)
+    return schemaTrackableRead.from_orm_with_transform(trackable)
 
 
 def listTransformHelper(cls, xlist):
@@ -47,8 +48,8 @@ def read_all_trackables(db: Session = Depends(get_db)):
 
 @router.get("/{trackable_id}", response_model=schemaTrackableRead)
 def read_trackable(trackable_id: int, db: Session = Depends(get_db)):
-    trackables = _get_trackable_by_internal_id(trackable_id, db)
-    return schemaTrackableRead.from_orm_with_transform(trackables)
+    trackable = _get_trackable_by_internal_id(trackable_id, db)
+    return schemaTrackableRead.from_orm_with_transform(trackable)
 
 
 @router.patch("/{trackable_id}", response_model=schemaTrackableRead)

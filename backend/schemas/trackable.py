@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from backend.schemas.image import ImageEmbbed as schemaImageEmbbed
 from backend.schemas.trackable_tag import TrackableAttachedTag as schemaAttachedTag
 from backend.schemas.trackable_tag import transformAttachedTags
@@ -22,6 +22,16 @@ class TrackableCreate(BaseModel):
     icon_url: str
     owner: str | None = None
 
+    @field_validator("public_code")
+    @classmethod
+    def validate_public_code(cls, value):
+        value = value.upper()
+        if value[0:2].upper() != "TB":
+            raise ValueError(
+                f"Public code must be start with 'TB'. '{value}' is invalid."
+            )
+        return value
+
 
 class TrackableExtern(BaseModel):
     private_code: str
@@ -32,8 +42,7 @@ class TrackableExtern(BaseModel):
     icon_url: str
     owner: str | None = None
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
 
 class TrackableRead(BaseModel):
@@ -86,5 +95,4 @@ class TrackableUpdate(BaseModel):
     description: str | None = None
     activation_code: str | None = None
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}

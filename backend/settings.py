@@ -1,4 +1,4 @@
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 from sqlalchemy.pool import StaticPool
 from typing import Type
 
@@ -7,14 +7,14 @@ class ApiSettings(BaseSettings):
     debug: bool = False
     database_url: str
     upload_path: str
-    poolclass: Type = None
+    poolclass: Type | None = None
 
     class Config:
         env_file = ".env"
 
 
 class ApiSettingsInMemory(ApiSettings):
-    database_url = "sqlite:///:memory:"
+    database_url: str = "sqlite:///:memory:"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

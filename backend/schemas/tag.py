@@ -4,8 +4,7 @@ from pydantic import BaseModel
 class TagId(BaseModel):
     id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
 
 class TagCreate(BaseModel):
@@ -18,12 +17,10 @@ class TagRead(BaseModel):
     unique_name: str
     use: int | None = None
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
 
 class TagUpdate(BaseModel):
     name: str
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}

@@ -10,8 +10,7 @@ class TrackableTagIn(BaseModel):
     tag_id: int
     hidden: bool
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
 
 # =========================
@@ -23,8 +22,7 @@ class TrackableTagOut(BaseModel):
     tag: schemaTagRead  # verschachteltes Objekt
     hidden: bool
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
 
 # Schema für die TrackableTag-Relation
@@ -33,8 +31,7 @@ class TrackableTagRelation(BaseModel):
     tag: schemaTagRead
     hidden: bool
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
 
 class TrackableAttachedTag(BaseModel):
@@ -44,8 +41,7 @@ class TrackableAttachedTag(BaseModel):
     hidden: bool
     tag_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
     @classmethod
     def from_orm_with_transform(cls, tag):
@@ -61,5 +57,5 @@ class TrackableAttachedTag(BaseModel):
 def transformAttachedTags(tags, sort=False):
     attachedTags = [TrackableAttachedTag.from_orm_with_transform(tag) for tag in tags]
     if sort:
-        attachedTags.sort(key=lambda item: (item.name))
+        attachedTags.sort(key=lambda item: item.name)
     return attachedTags
