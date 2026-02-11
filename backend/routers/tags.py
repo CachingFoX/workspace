@@ -19,7 +19,7 @@ router = APIRouter(
 
 @router.post("/", response_model=schema.TagRead)
 def create_tag(newTag: schema.TagCreate, db: Session = Depends(get_db)):
-    _create(newTag.name, db)
+    return _create(newTag.name, db)
 
 
 @router.get("/", response_model=list[schema.TagRead])

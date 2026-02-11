@@ -1,5 +1,10 @@
 from fastapi import APIRouter
-from backend.crud.property import _read_all_properties, _patch, _attach_new_property
+from backend.crud.property import (
+    _read_all_properties,
+    _patch,
+    _attach_new_property,
+    _delete_trackable_property,
+)
 from fastapi import Depends
 from backend.schemas import (
     schemaTrackableProperty,
@@ -10,6 +15,7 @@ from backend.schemas import (
 )
 from sqlalchemy.orm import Session
 from backend.database import get_db
+from backend.crud.trackable import _get_trackable_by_internal_id as exists_trackable
 
 router = APIRouter(
     prefix="/trackables/{trackable_id}/properties",
@@ -17,18 +23,18 @@ router = APIRouter(
 )
 
 
-@router.post("/", response_model=schemaTrackableProperty)
-def create_property(
+@router.post("", response_model=schemaTrackableProperty)
+def create_trackableproperty(
     newProperty: schemaTrackablePropertyNew,
     trackable_id: int,
     db: Session = Depends(get_db),
 ):
-    result = _attach_new_property(trackable_id, newProperty, db)
-    return result
+    exists_trackable(trackable_id, db)
+    return _attach_new_property(trackable_id, newProperty, db)
 
 
-@router.get("/", response_model=list[schemaTrackableProperty])
-def read_all_properites(trackable_id: int, db: Session = Depends(get_db)):
+@router.get("", response_model=list[schemaTrackableProperty])
+def read_all_trackable_properites(trackable_id: int, db: Session = Depends(get_db)):
     properties = _read_all_properties(trackable_id, db)
     return transformItems(schemaTrackableProperty, properties)
 
@@ -36,48 +42,22 @@ def read_all_properites(trackable_id: int, db: Session = Depends(get_db)):
 @router.patch(
     "/{trackable_property_id}", response_model=schemaTrackablePropertyResolved
 )
-def update_property(
+def update_trackable_property(
     udpateProperty: schemaTrackablePropertyUpdate,
     trackable_id: int,
     trackable_property_id: int,
     db: Session = Depends(get_db),
 ):
-    trackableProperty = _patch(trackable_property_id, udpateProperty.property_value, db)
+    trackableProperty = _patch(
+        trackable_id, trackable_property_id, udpateProperty.property_value, db
+    )
     return schemaTrackablePropertyResolved.from_orm(trackableProperty)
 
 
-"""
 @router.delete("/{trackable_property_id}", status_code=204)
-def dettach_tag(
-    trackable_id: str,
-    tag_id: int,
+def delete_trackable_property(
+    trackable_id: int,
+    trackable_property_id: int,
     db: Session = Depends(get_db),
 ):
-    # check if trackable exists
-    trackable = _get_trackable_by_internal_id(
-        trackable_id, db
-    )  # TODO gibt es nicht inzwischen eine bessere funktion dafür
-
-    # TODO check if tag exists
-    tag = _exists_tag(tag_id, db)
-
-    relation = (
-        db.query(modelTrackableTag)
-        .filter(
-            and_(
-                modelTrackableTag.trackable_id == trackable_id,
-                modelTrackableTag.tag_id == tag_id,
-            )
-        )
-        .first()
-    )
-
-    if not relation:
-        raise HTTPException(
-            status_code=404,
-            detail="Tag '{tag_id}' is not attached to '{trackable_id}'.",
-        )
-
-    db.delete(relation)
-    db.commit()
-"""
+    _delete_trackable_property(trackable_id, trackable_property_id, db)

@@ -1,16 +1,8 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import select, and_, bindparam, outerjoin
-from backend.models import modelTrackableProperty, modelProperty
-from fastapi import HTTPException, status
-from sqlalchemy.exc import IntegrityError
-from backend.schemas import (
-    schemaTrackableProperty,
-    schemaTrackablePropertyNew,
-)
-from backend.crud.trackable import _get_trackable_by_internal_id
-from backend.crud.trackable import _get_trackable_by_internal_id as exists_trackable
+from fastapi import HTTPException
+from backend.models import modelImage
 
-
+'''
 def _read_all_properties(trackable_id: int, db: Session):
     exists_trackable(trackable_id, db)
 
@@ -98,17 +90,17 @@ def _attach_new_property(
     db.commit()
     db.refresh(trackableProperty)
     return trackableProperty
+'''
 
 
-def _delete_trackable_property(
-    trackable_id: int, trackable_property_id: int, db: Session
-):
-    trackable_property = db.get(modelTrackableProperty, trackable_property_id)
-    if not trackable_property:
+def _delete_trackable_image(trackable_id: int, trackable_image_id: int, db: Session):
+    trackable_image = db.get(modelImage, trackable_image_id)
+    if not trackable_image:
         raise HTTPException(
             status_code=404,
-            detail=f"Trackable property with id {trackable_property_id} does not exist.",
+            detail=f"Trackable property with id {trackable_image_id} does not exist.",
         )
-    # TODO prüfen ob die property zu trackable gehört
-    db.delete(trackable_property)
+    # TODO prüfen ob das image zu trackable gehört
+    # TODO delete file from filesystem
+    db.delete(trackable_image)
     db.commit()

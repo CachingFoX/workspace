@@ -1,6 +1,6 @@
 <script setup>
 import { useRouter, useRoute } from 'vue-router';
-import { computed, onMounted } from 'vue';
+import { computed, onBeforeMount, onMounted } from 'vue';
 import Button from 'primevue/button';
 import Tag from 'primevue/tag';
 import Card from 'primevue/card';
@@ -38,10 +38,17 @@ function goToOwner(owner) {
 }
 
 const item = computed(() => props.trackable);
+
+const okay = computed(() => props.trackable?true:false);
 </script>
 
 <template>
-  <Card style="width: 256px; overflow: hidden" class="mx-2 my-2" :id="`trackable-item-${item.id}`">
+  <Card v-if="!okay" style="width: 256px; overflow: hidden" class="mx-2 my-2">
+    <template #header>
+      Trackable not found
+    </template>
+  </Card>
+  <Card v-else style="width: 256px; overflow: hidden" class="mx-2 my-2" :id="`trackable-item-${item?.id}`" >
     <template #header>
       <div class="px-3 pt-3">
         <div style="position: relative; aspect-ratio: 1 / 1;" class="p-3">

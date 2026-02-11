@@ -9,11 +9,12 @@ import { useTrackableStore } from "@/di/trackables.js"
 import { useConfirm } from "primevue/useconfirm";
 // components
 import BaseLayout from '@/components/layout/BaseLayout.vue';
-import TrackableTitle from '@/components/trackabledetails/title.vue'
-import TrackableBase from '@/components/trackabledetails/base.vue'
-import TrackableProperties from '@/components/trackabledetails/properties.vue'
-import TrackableTags from '@/components/trackabledetails/tags.vue'
-import TrackableImages from '@/components/trackabledetails/images.vue'
+import TrackableTitle from '@/components/trackable/title.vue'
+import TrackableBase from '@/components/trackable/base.vue'
+import TrackableProperties from '@/components/trackable/properties.vue'
+import TrackableTags from '@/components/trackable/tags.vue'
+import TrackableImages from '@/components/trackable/images.vue'
+import TrackableLinkedTrackables from '@/components/trackable/linkedTrackables.vue'
 
 const confirm = useConfirm();
 const router = useRouter();
@@ -61,22 +62,28 @@ async function onDelete() {
     </template>
     <template v-slot:mainstage>
       <TrackableBase/>
-      <TrackableProperties/>
-      <TrackableTags/>
       <TrackableImages/>
+      <TrackableTags/>
+      <TrackableProperties/>
+      <TrackableLinkedTrackables property="linkedTrackables"/>
     </template>
     <template v-slot:footer>
-      <div class="flex justify-content-end pt-2 pb-2">
+      <div class="flex align-items-center pt-2 pb-2">
         <div class="flex-grow-0 flex-shrink-0">
           <Button @click="goToListItem(storeTrackable.id)" label="Zurück" icon="pi pi-angle-double-left"/>
         </div>
         <div class="flex-grow-1 flex-shrink-1" style="text-align: center;">
-          <Button @click="onDelete" icon="pi pi-trash" label="Löschen"/>
+          <Button @click="onDelete" severity="danger" icon="pi pi-trash" label="Löschen"/>
         </div>
+        <div class="flex-grow-0 flex-shrink-0" style="text-align: right;">
+          <span v-show="storeTrackable.progress" class="pi pi-spin pi-spinner" style="font-size: 1.5rem"/>
+        </div>
+        <!--
         <div class="flex-grow-0 flex-shrink-0">
           <Button @click="" icon="pi pi-refresh" label="Aktualisieren" class="mr-2"/>
           <Button @click="" icon="pi pi-save" label="Speichern" class="mr-2"/>
         </div>
+        -->
       </div>
     </template>
   </BaseLayout>

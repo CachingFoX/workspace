@@ -37,3 +37,4 @@ public/images
 __pycache__
 
 backend/uploads/*
+data/develop/*

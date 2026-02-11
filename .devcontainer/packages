@@ -1,0 +1,7 @@
+python3-pandas
+python3-httpx
+python3-fastapi
+python3-sqlalchemy
+uvicorn
+python3-jose
+python3-passlib

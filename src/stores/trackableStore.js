@@ -7,7 +7,7 @@ export const STATE_UNKNOWN = "UNKNOWN";
 export const STATE_READY = "READY";
 export const STATE_FAIL = "FAIL";
 
-export const createTrackableStore = (trackableService, trackablePropertiesService) => {
+export const createTrackableStore = (trackableService, trackablePropertiesService, trackableImagesService) => {
   return defineStore('trackable', () => {
     // --- State ---
     const _state = ref(STATE_NO_INIT);
@@ -126,11 +126,45 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
       }
     }
 
+    const getPropertyByName = (property_name) => {
+      return computed(() => _properties.value.find(p => p.property_name === property_name));
+    };
+
+    const uploadImages = async () => {
+      try {
+        _progress.value = true;
+        _data.value.images = await trackableImagesService.getTrackableImages(id.value);
+      } catch (error) {
+        console.error("updateProperty error", error);
+      } finally {
+        _progress.value = false;
+      }
+    }
+
+    const deleteImage = async (trackable_image_id) => {
+      try {
+        _progress.value = true;
+        await trackableImagesService.deleteTrackableImage(id.value, trackable_image_id);
+
+        // reload properties
+        _data.value.images = await trackableImagesService.getTrackableImages(id.value);
+      } catch (error) {
+        console.error("deleteImage error", error);
+      } finally {
+        _progress.value = false;
+      }
+    }
+
+    const primaryImage = async (trackable_id) => {
+      console.log(trackable_id);
+    }
+
     // --- Getter ---
     const data = computed(() => _data.value);
     const state = computed(() => _state.value);
     const progress = computed(() => _progress.value);
     const properties = computed(() => _properties.value);
+
 
     const trackingNumber = computed(() => {
       let result = "";
@@ -193,6 +227,13 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
       newProperty,
       updateProperty,
       deleteProperty,
+
+      getPropertyByName,
+
+      uploadImages,
+      deleteImage,
+      primaryImage,
+      //refreshImages,
     };
   });
 };

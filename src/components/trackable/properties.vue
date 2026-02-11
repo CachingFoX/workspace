@@ -1,7 +1,7 @@
 <script setup>
 import { computed,ref, watch, onBeforeMount, onMounted } from 'vue'
 // prime vue
-import Panel from 'primevue/panel';
+import PersistentPanel from '@/components/trackable/panel.vue'
 import { useRouter, useRoute } from 'vue-router';
 import { useToast } from "primevue/usetoast";
 import { useTrackableStore } from "@/di/trackables.js"
@@ -14,18 +14,21 @@ const router = useRouter();
 const route = useRoute();
 const toast = useToast();
 const storeTrackable = useTrackableStore();
+
+function getProperty(property_name) {
+  return storeTrackable.properties.find(prop => prop.property_name === property_name);
+}
+const filteredProperties = computed(() => {
+  const excludedNames = ['linkedTrackables'];
+  return storeTrackable.properties.filter(prop => !excludedNames.includes(prop.property_name));
+});
+const icons = ref([]);
 </script>
 
 <template>
-  <Panel class="m-2" toggleable>
-    <template #header>
-      <div class="flex align-items-center gap-2">
-        <span class="font-bold text-xl" style="color: var(--p-surface-500)">Eigenschaften</span>
-      </div>
-    </template>
-
+  <PersistentPanel storage-key="trackable.details.properties" title="Eigenschaften" :icons2="icons">
     <div class="grid-container">
-      <template v-for="property in storeTrackable.properties" :key="property.id">
+      <template v-for="property in filteredProperties" :key="property.id">
         <div class="grid-item left" >{{ property.property_name }}</div>
         <div class="grid-item right">
           <PropertyEdit
@@ -34,7 +37,7 @@ const storeTrackable = useTrackableStore();
         </div>
       </template>
     </div>
-  </Panel>
+  </PersistentPanel>
 </template>
 
 <style scoped>

@@ -2,13 +2,16 @@ import os
 import uuid
 from fastapi import APIRouter, UploadFile, File, Depends
 from backend.models import modelImage
-from backend.schemas import schemaTrackableTagRelation, schemaImageEmbbed
+from backend.schemas import schemaImageEmbbed
 from sqlalchemy.orm import Session
 from backend.database import get_db
 from backend.settings import ApiSettings
 from backend.dependencies import get_settings
 from backend.crud.trackable import (
     _get_trackable_by_internal_id,
+)
+from backend.crud.image import (
+    _delete_trackable_image,
 )
 
 
@@ -20,7 +23,7 @@ router = APIRouter(
 
 @router.get(
     "/",
-    response_model=list[schemaTrackableTagRelation],
+    response_model=list[schemaImageEmbbed],
 )
 def read_images(trackable_id: str, db: Session = Depends(get_db)):
     trackable = _get_trackable_by_internal_id(trackable_id, db)
@@ -63,3 +66,12 @@ async def upload_images(
         uploaded_files.append(image)
 
     return uploaded_files
+
+
+@router.delete("/{trackable_image_id}", status_code=204)
+def delete_trackable_property(
+    trackable_id: int,
+    trackable_image_id: int,
+    db: Session = Depends(get_db),
+):
+    _delete_trackable_image(trackable_id, trackable_image_id, db)

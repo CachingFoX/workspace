@@ -25,7 +25,7 @@ export function createTagService({
   /* --- public service methods --- */
 
   const create = async (tagName) => {
-    const response = await httpClient(`${baseUrl}/tags`, {
+    const response = await httpClient(`${baseUrl}/tags/`, {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify({
@@ -66,11 +66,6 @@ export function createTagService({
     if (tagId?.length) {
       urlTag += Tag + tagId + "/";
     }
-
-    const params = {
-      "count": "true"
-    };
-    urlTag += `?${new URLSearchParams(params)}`;
 
     const response = await httpClient(urlTag, {
       method: 'GET',

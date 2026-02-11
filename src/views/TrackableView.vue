@@ -43,6 +43,13 @@ watch(
   }
 )
 
+watch(
+  () => route.params.id,
+  (newState, oldState) => {
+    storeTrackable.loadTrackable(route.params.id.toUpperCase());
+  }
+)
+
 onMounted(async () => {
   await storeTags.load();
   storeTrackable.loadTrackable(route.params.id.toUpperCase());

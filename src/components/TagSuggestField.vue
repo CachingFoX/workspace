@@ -50,8 +50,10 @@ function onEnter(event) {
 
   if (match) {
     emit('add', match.id)
+    selectedItem.value = null;
   } else {
     emit('new', selectedItem.value);
+    selectedItem.value = null;
   }
 }
 
@@ -74,7 +76,7 @@ function onOptionSelect(event) {
   // TODO event.originalEvent keydown, click
   // by keydown wird auch onEnter aufgerufen
   emit('add', selectedItem.value.id);
-  // TODO delete input
+  selectedItem.value = null;
 }
 
 onMounted(async () => {

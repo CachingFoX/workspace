@@ -2,28 +2,34 @@
 import { ref } from 'vue'
 // import axios from 'axios'
 import FileUpload from 'primevue/fileupload';
+import { useTrackableStore, trackableImagesService } from "@/di/trackables.js"
 
-const props = defineProps({
-  name: {
-    type: String,
-    required: true
-  },
-})
+const storeTrackable = useTrackableStore();
+const selectedFiles = ref([]);
 
-// const selectedFiles = ref([])
-const uploadedImages = ref([])
-
-
-
-const uploadFiles = async (e) => {
+const uploadCompleted = async (e) => {
   console.log(e);
+  storeTrackable.uploadImages();
+
+
+  return ;
+
+
+
+  console.log(e.files);
+  e.files.forEach(file => console.log(file)); // formData.append('files', file)
+
+  return
+
   if (!selectedFiles.value.length) return
 
   const formData = new FormData()
-  selectedFiles.value.forEach(file => formData.append('files', file))
+  e.files.value.forEach(file => formData.append('files', file))
+
+  console.log(selectedFiles.value);
 
   try {
-    const response = await fetch(`http://localhost:8000/trackables/${props.name}/images`, {
+    const response = await fetch(`http://localhost:8000/trackables/${storeTrackable.id}/images`, {
       method: 'POST',
       body: formData
     })
@@ -34,10 +40,7 @@ const uploadFiles = async (e) => {
 
     const data = await response.json()
 
-    uploadedImages.value = data.map(img => ({
-      ...img,
-      url: `http://localhost:8000/images/${img.filename}`
-    }))
+
 
   } catch (err) {
     console.error('Upload failed:', err)
@@ -47,7 +50,8 @@ const uploadFiles = async (e) => {
 
 <template>
   <div class="image-uploader">
-    <FileUpload name="files" :url="`http://localhost:8000/trackables/${props.name}/images`" @upload="uploadFiles"
+    <FileUpload name="files" @upload="uploadCompleted"
+    :url="trackableImagesService.getURLuploadTrackableImages(storeTrackable.id)"
     :multiple="true" accept="image/*" :maxFileSize="5000000"
     >
         <template #empty>
@@ -57,17 +61,6 @@ const uploadFiles = async (e) => {
             </div>
         </template>
     </FileUpload>
-
-
-    <div v-if="uploadedImages.length">
-      <h3>Hochgeladene Bilder:</h3>
-      <div v-for="img in uploadedImages" :key="img.uuid" class="image-preview">
-        <img :src="img.url" :alt="img.filename" width="150" />
-        <p>{{ img.filename }}</p>
-      </div>
-    </div>
-
-
   </div>
 </template>
 

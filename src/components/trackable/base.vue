@@ -9,6 +9,8 @@ import { useTrackableStore } from "@/di/trackables.js"
 import { useConfirm } from "primevue/useconfirm";
 // components
 import TrackableGridItem from '@/components/TrackableGridItem.vue';
+import PersistentPanel from '@/components/trackable/panel.vue'
+
 
 const confirm = useConfirm();
 const router = useRouter();
@@ -40,14 +42,13 @@ function yyy(x) {
 </script>
 
 <template>
-  <Panel header="Basis Information" class="m-2">
+  <PersistentPanel storage-key="trackable.details.basics">
     <template #header>
       <div class="flex align-items-center gap-2">
         <Avatar :image="storeTrackable.icon" shape="circle" />
         <span class="font-bold text-xl">{{ storeTrackable.name }}</span>
       </div>
     </template>
-
     <div class="grid-container">
       <TrackableGridItem v-for="(item, index) in items" :key="index"
         :label="item.name" :attribute="item.model" :type="item.type">
@@ -58,12 +59,11 @@ function yyy(x) {
         </template>
       </TrackableGridItem>
     </div>
-  </Panel>
+  </PersistentPanel>
 </template>
 
 <style scoped>
-
-  .title {
+.title {
   margin:0;
   font-size: 26pt;
   font-weight: bold;

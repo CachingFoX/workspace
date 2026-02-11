@@ -9,6 +9,7 @@ from backend.routers import (
     trackables,
     trackables_images,
     trackables_tags,
+    trackables_properties,
     trackingnumber,
 )  # importiert den Router
 from fastapi.middleware.cors import CORSMiddleware
@@ -69,8 +70,10 @@ def create_api(settings: ApiSettings):
     _api.include_router(root.router)
     _api.include_router(trackingnumber.router)
     _api.include_router(trackables.router)
+    _api.include_router(trackables_properties.router)
     _api.include_router(trackables_tags.router)
     _api.include_router(trackables_images.router)
+
     _api.include_router(tags.router)
     _api.include_router(geocaching.router)
     _api.include_router(images.router)

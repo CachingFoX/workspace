@@ -1,17 +1,16 @@
 <script setup>
 import { computed,ref, watch, onBeforeMount, onMounted } from 'vue'
 // prime vue
-import Panel from 'primevue/panel';
 import { useRouter, useRoute } from 'vue-router';
 import { useToast } from "primevue/usetoast";
 import { useTrackableStore, useTagsStore } from "@/di/trackables.js"
 import { useConfirm } from "primevue/useconfirm";
 // components
-import EditMarker from '@/components/Edit.vue'
 import TagList from '@/components/TagList.vue'
 import TagSuggestField from '@/components/TagSuggestField.vue'
 import Button from 'primevue/button';
-import Inplace from 'primevue/inplace';
+import InputGroup from 'primevue/inputgroup';
+import PersistentPanel from '@/components/trackable/panel.vue'
 
 const confirm = useConfirm();
 const router = useRouter();
@@ -31,54 +30,36 @@ function onRemove(tagId) {
 }
 
 function onClick(tagId) {
-  console.log("onClick", tagId)
 }
 
-function onNew(tagId) {
-  console.log("onNew", tagId)
+ async function onNew(tagName) {
+  const tag = await storeTags.newTag(tagName)
+  console.log("onNew", tag)
+  storeTrackable.attachTag(tag.id);
 }
 
 function onAdd(tagId) {
   storeTrackable.attachTag(tagId);
 }
 
-function startEditing() {
-  editing.value = true
-}
 </script>
 
 <template>
-  <Panel class="m-2" toggleable>
-    <template #header>
-      <div class="flex align-items-center gap-2">
-        <span class="font-bold text-xl" style="color: var(--p-surface-500)">Schlagworte</span>
-      </div>
-    </template>
-    <Inplace v-model:active="editing">
-      <!-- Anzeige-Modus -->
-      <template #display>
-        <span @click="startEditing" class="text-display" style="white-space: pre-line; ">
-          <TagList :tags="storeTrackable.tags"
-          @click="onClick"/>
-        </span>
-        <span class="ml-1 pi pi-pencil"></span>
-      </template>
-
-      <!-- Bearbeitungsmodus -->
-      <template #content>
-        <TagList :tags="storeTrackable.tags" remove @remove="onRemove"/>
+  <PersistentPanel storage-key="trackable.details.tags" title="Schlagwörter" editable
+    @editShow="onEdit" v-model:editing="editing" :badge="storeTrackable.tags.length" >
+    <template #editor>
+      <div style="display: inline-flex">
+        <InputGroup class="mr-2">
         <TagSuggestField :tags="avaiableTags"
           @new="onNew"
           @add="onAdd"
-          @click.stop=""
-        />
+          @click.stop=""/>
         <Button label="Close" @click="editing = false;"/>
-      </template>
-    </Inplace>
-
-
-
-  </Panel>
+        </InputGroup>
+      </div>
+    </template>
+    <TagList :tags="storeTrackable.tags" @click="onClick" :remove="editing" @remove="onRemove"/>
+  </PersistentPanel>
 </template>
 
 <style scoped>

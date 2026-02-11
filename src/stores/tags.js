@@ -20,21 +20,6 @@ export const createTagsStore = (tagService) => {
     const _sortDirection = ref(false); // false=asc, true=desc
 
     // --- Actions ---
-    const loadxxx = async () => {
-      _state.value = STATE_NO_INIT;
-      _progress.value = true;
-      _tags.value = [];
-      try {
-        _state.value = STATE_LOADING;
-        _tags.value = await tagService.read();
-        _state.value = STATE_READY;
-      } catch (error) {
-        _state.value = STATE_FAIL;
-      } finally {
-        _progress.value = false;
-      }
-    };
-
     const load = async () => {
       _state.value = STATE_NO_INIT;
       _progress.value = true;
@@ -66,6 +51,23 @@ export const createTagsStore = (tagService) => {
       }
     };
 
+    const newTag = async (tagName) => {
+      try {
+        _progress.value = true;
+        _state.value = STATE_LOADING;
+        const tag = await tagService.create(tagName);
+        _tags.value = await tagService.read_with_use();
+        _state.value = STATE_READY;
+        return tag
+      } catch (error) {
+        console.error(error);
+        _state.value = STATE_FAIL
+      }
+      finally {
+        _progress.value = false;
+      }
+    };
+
     function setSorting(field, direction) {
       _sortBy.value = field;
       _sortDirection.value = direction;
@@ -86,12 +88,9 @@ export const createTagsStore = (tagService) => {
     const progress = computed(() => _progress.value);
     const state = computed(() => _state.value);
     const tags = computed(() => {
-      console.log("Sorting tags by", _sortBy.value, _sortDirection.value ? "DESC" : "ASC");
       let field = _sortBy.value;
       let direction = _sortDirection.value;
       let r = sortByAttribute(_tags.value, field, direction ? 'desc' : 'asc');
-
-      console.log(_tags.value[0]?.name);
       return r;
     });
 
@@ -118,7 +117,7 @@ export const createTagsStore = (tagService) => {
       setSorting,
       load,
       deleteTag,
-
+      newTag,
     };
   });
 };
