@@ -1,9 +1,13 @@
 <script setup>
 import { onMounted } from 'vue'
 import { useBaseStore } from '@/di/trackables.js'
-import BaseWidget from './BaseWidget.vue';
+import Panel from '@/components/common/panel.vue'
 
 const storeBase = useBaseStore();
+
+const props = defineProps({
+  storageKey: { type: String, required: false, default: 'infowidget' },
+});
 
 onMounted(() => {
   storeBase.init();
@@ -18,7 +22,7 @@ const baseProperties = {
 
 
 <template>
-  <BaseWidget title="Base Information" icon="pi-info-circle">
+  <Panel title="Base Information" title-icon="pi-info-circle" :storage-key="`${props.storageKey}`">
     <div class="grid">
       <!-- known keys -->
       <template v-for="(value, key) in storeBase.baseInfo" :key="key">
@@ -39,5 +43,5 @@ const baseProperties = {
         </template>
       </template>
     </div>
-  </BaseWidget>
+  </Panel>
 </template>

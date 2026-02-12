@@ -2,14 +2,19 @@
 import { computed, onMounted, ref } from 'vue'
 import 'primeflex/primeflex.css';
 import Button from 'primevue/button';
-import BaseWidget from './BaseWidget.vue';
 import TrackableTag from '@/components/TrackableTag.vue';
+import Panel from '@/components/common/panel.vue'
 
 import { useBaseStore } from '@/di/trackables.js'
 import { useTagsStore } from '@/di/trackables.js'
 
 const storeBase = useBaseStore();
 const storeTags = useTagsStore();
+
+const props = defineProps({
+  storageKey: { type: String, required: false, default: 'logininfowidget' },
+});
+
 
 onMounted(() => {
   storeBase.init();
@@ -25,11 +30,8 @@ const max = ref(5);
 const more = ref(false);
 </script>
 
-
-
 <template>
-  <BaseWidget title="Schlagwörter" icon="pi-tags">
-
+  <Panel title="Schlagwörter" icon-icon="pi-tags" :storage-key="`${props.storageKey}`">
     <template v-for="(item, index) in tags" :key="index">
       <TrackableTag :tag="item" v-show="(index < max || more)"
         count
@@ -47,5 +49,5 @@ const more = ref(false);
         @click="more = !more"
       ></Button>
     </div>
-  </BaseWidget>
+  </Panel>
 </template>

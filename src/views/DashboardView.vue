@@ -5,15 +5,15 @@ import BaseLayout from '@/components/layout/BaseLayout.vue';
 import Navbar from '@/components/Navbar.vue';
 import Divider from 'primevue/divider';
 import TagsWidget from '../components/dashboard/TagsWidget.vue'
-import InfoWidget from '../components/dashboard/InfoWidget.vue'
+import BaseInfoWidget from '../components/dashboard/BaseInfoWidget.vue'
 import LoginInfoWidget from '../components/dashboard/LoginInfoWidget.vue'
 import TrackablesWidget from '@/components/dashboard/TrackablesWidget.vue';
 
 const widgets = [
-  { component: InfoWidget },
-  { component: TagsWidget },
-  { component: LoginInfoWidget },
-  { component: TrackablesWidget },
+  { component: BaseInfoWidget, id: "infowidget" },
+  { component: TagsWidget, id: "tagswidget" },
+  { component: LoginInfoWidget, id: "logininfowidget" },
+  { component: TrackablesWidget, id: 'trackableswidget' },
 ];
 </script>
 
@@ -29,7 +29,7 @@ const widgets = [
 
         <div class="grid w-full">
           <div v-for="(widget, index) in widgets" :key="index" class="col-6">
-            <component :is="widget.component" />
+            <component :is="widget.component" :storage-key="`dashboard.${widget.id}`"/>
           </div>
         </div>
 

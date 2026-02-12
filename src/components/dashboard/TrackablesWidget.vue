@@ -2,13 +2,18 @@
 import { computed, onMounted, ref } from 'vue'
 import 'primeflex/primeflex.css';
 import Button from 'primevue/button';
-import BaseWidget from './BaseWidget.vue';
 import Carousel from 'primevue/carousel';
 import TrackableCard from '../TrackableCard.vue';
+import Panel from '@/components/common/panel.vue'
 
 import { useTrackableListStore } from '@/di/trackables.js'
 
 const storeTrackables = useTrackableListStore();
+
+const props = defineProps({
+  storageKey: { type: String, required: false, default: 'logininfowidget' },
+});
+
 
 onMounted(() => {
   storeTrackables.fetchTrackables();
@@ -46,11 +51,11 @@ const xresponsiveOptions = ref([
 
 
 <template>
-  <BaseWidget title="Trackables" icon="pi-tags">
+  <Panel title="Trackables" title-icon="pi-tags" :storage-key="`${props.storageKey}`">
     <Carousel :value="storeTrackables.items" :numVisible="2" :numScroll="2" :responsiveOptions="responsiveOptions">
       <template #item="slotProps">
         <TrackableCard :trackable="slotProps.data"/>
       </template>
     </Carousel>
-  </BaseWidget>
+  </Panel>
 </template>

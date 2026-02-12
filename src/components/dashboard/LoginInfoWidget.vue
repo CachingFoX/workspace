@@ -1,10 +1,14 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { useTokenStore } from '@/di/trackables.js'
-import BaseWidget from './BaseWidget.vue';
+import Panel from '@/components/common/panel.vue'
 
 const storeToken = useTokenStore();
 const tokenData = ref({});
+
+const props = defineProps({
+  storageKey: { type: String, required: false, default: 'logininfowidget' },
+});
 
 onMounted(async () => {
   tokenData.value = await storeToken.verify();
@@ -19,7 +23,7 @@ const baseProperties = {
 
 
 <template>
-  <BaseWidget title="Login Information" icon="pi-info-circle">
+  <Panel title="Login Information" title-icon="pi-info-circle" :storage-key="`${props.storageKey}`">
     <div class="grid">
       <!-- known keys -->
       <template v-for="(value, key) in tokenData" :key="key">
@@ -40,5 +44,5 @@ const baseProperties = {
         </template>
       </template>
     </div>
-  </BaseWidget>
+  </Panel>
 </template>
