@@ -1,6 +1,6 @@
 
 <script setup>
-import { ref, computed, watch, watchEffect} from "vue";
+import { ref, computed, watch, watchEffect, onBeforeMount} from "vue";
 import Button from "primevue/button";
 import ButtonGroup from 'primevue/buttongroup';
 import Inplace from "primevue/inplace";
@@ -17,7 +17,7 @@ import TrackableCard from '@/components/TrackableCard.vue';
 const storeTrackable = useTrackableStore();
 const confirm = useConfirm();
 const editing = ref(false);
-const linkedTrackables = ref(storeTrackable.getPropertyByName('linkedTrackables'))
+const linkedTrackables = ref(null)
 const trackables = ref([])
 const progress_count = ref(0)
 const model = ref('')
@@ -39,11 +39,11 @@ watchEffect(async () => {
 })
 
 const disableDelete = computed(() => {
-  return linkedTrackables.value.id === null;
+  return linkedTrackables.value?.id === null ?? true;
 });
 
 const disableSave = computed(() => {
-  return (model.value ?? "") == (linkedTrackables.value.property_value ?? "")
+  return (model.value ?? "") == (linkedTrackables.value?.property_value ?? "")
 });
 
 const progress = computed(()=>{
@@ -51,8 +51,7 @@ const progress = computed(()=>{
 })
 
 const onEdit = () => {
-  console.log(model.value, linkedTrackables.value.property_value);
-  model.value = linkedTrackables.value.property_value;
+  model.value = linkedTrackables.value?.property_value ?? "";
 }
 
 const onSave = () => {
@@ -99,6 +98,15 @@ async function onDelete() {
 }
 
 const icons = [];
+
+onBeforeMount(() => {
+  const linkedTrackableProperty = storeTrackable.getPropertyByName('linkedTrackables');
+  if (!linkedTrackableProperty) {
+    console.error("Property linkedTrackables is not available")
+  }
+  linkedTrackables.value = linkedTrackableProperty;
+  console.log(linkedTrackables.value);
+});
 </script>
 
 
