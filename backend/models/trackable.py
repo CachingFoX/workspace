@@ -16,8 +16,6 @@ class Trackable(Base):
     owner = Column(String, index=True)
     activated = Column(Boolean, default=False)
     icon_url = Column(String)
-    description = Column(String)
-    activation_code = Column(String)
     created = Column(
         DateTime,
         # nullable=False,

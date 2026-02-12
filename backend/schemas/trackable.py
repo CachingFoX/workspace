@@ -54,8 +54,6 @@ class TrackableRead(BaseModel):
     activated: bool
     series: str | None = None
     icon_url: str | None = None
-    description: str | None = None
-    activation_code: str | None = None
     created: datetime | None = None
     updated: datetime | None = None
 
@@ -74,8 +72,6 @@ class TrackableRead(BaseModel):
             activated=trackable.activated,
             series=trackable.series,
             icon_url=trackable.icon_url,
-            description=trackable.description,
-            activation_code=trackable.activation_code,
             created=trackable.created,
             updated=trackable.updated,
             tags=transformAttachedTags(trackable.tags, True),
@@ -85,14 +81,10 @@ class TrackableRead(BaseModel):
 
 
 class TrackableUpdate(BaseModel):
-    private_code: str | None = None
-    public_code: str | None = None
     title: str | None = None
     owner: str | None = None
     activated: bool | None = None
     series: str | None = None
     icon_url: str | None = None
-    description: str | None = None
-    activation_code: str | None = None
 
     model_config = {"from_attributes": True}

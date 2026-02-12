@@ -70,6 +70,8 @@ async def get_trackable_info(trackable_id: str, db: Session = Depends(get_db)):
         # Icon (ctl00_ContentBody_BugTypeImage)
         icon_elem = soup.find(id="ctl00_ContentBody_BugTypeImage")
         icon_url = icon_elem.get("src", "") if icon_elem else ""
+        if icon_url and icon_url.startswith("/"):
+            icon_url = "https://www.geocaching.com" + icon_url
 
         # series_elem = soup.find("dd", attrs={"title": True})
         # series_elem.get_text(strip=True) if series_elem else name

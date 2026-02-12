@@ -30,7 +30,8 @@ def create_trackableproperty(
     db: Session = Depends(get_db),
 ):
     exists_trackable(trackable_id, db)
-    return _attach_new_property(trackable_id, newProperty, db)
+    trackable_property = _attach_new_property(trackable_id, newProperty, db)
+    return schemaTrackableProperty.from_orm(trackable_property)
 
 
 @router.get("", response_model=list[schemaTrackableProperty])

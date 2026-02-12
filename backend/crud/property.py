@@ -4,7 +4,6 @@ from backend.models import modelTrackableProperty, modelProperty
 from fastapi import HTTPException, status
 from sqlalchemy.exc import IntegrityError
 from backend.schemas import (
-    schemaTrackableProperty,
     schemaTrackablePropertyNew,
 )
 from backend.crud.trackable import _get_trackable_by_internal_id
@@ -68,7 +67,7 @@ def _patch(
 
 def _attach_new_property(
     trackable_id: int, newProperty: schemaTrackablePropertyNew, db: Session
-) -> schemaTrackableProperty:
+) -> modelTrackableProperty:
     trackable = _get_trackable_by_internal_id(trackable_id, db)
 
     # prüfen ob Property existiert
