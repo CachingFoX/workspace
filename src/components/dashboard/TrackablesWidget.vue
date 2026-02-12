@@ -51,7 +51,7 @@ const xresponsiveOptions = ref([
 
 
 <template>
-  <Panel title="Trackables" title-icon="pi-tags" :storage-key="`${props.storageKey}`">
+  <Panel title="Trackables" title-icon="pi-bookmark" :storage-key="`${props.storageKey}`" :badge="storeTrackables.items.length">
     <Carousel :value="storeTrackables.items" :numVisible="2" :numScroll="2" :responsiveOptions="responsiveOptions">
       <template #item="slotProps">
         <TrackableCard :trackable="slotProps.data"/>

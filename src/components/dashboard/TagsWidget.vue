@@ -12,26 +12,24 @@ const storeBase = useBaseStore();
 const storeTags = useTagsStore();
 
 const props = defineProps({
-  storageKey: { type: String, required: false, default: 'logininfowidget' },
+  storageKey: { type: String, required: false, default: 'tagwidget' },
 });
 
-
-onMounted(() => {
-  storeBase.init();
-  storeTags.load();
-});
-
+const max = ref(20);
+const more = ref(false);
 
 const tags = computed(() => {
   return storeTags.tags_sorted_by_use_desc.filter(item => item.use > 0);
 });
 
-const max = ref(5);
-const more = ref(false);
+onMounted(() => {
+  storeBase.init();
+  storeTags.load();
+});
 </script>
 
 <template>
-  <Panel title="Schlagwörter" icon-icon="pi-tags" :storage-key="`${props.storageKey}`">
+  <Panel title="Schlagwörter" title-icon="pi-tags" :storage-key="`${props.storageKey}`">
     <template v-for="(item, index) in tags" :key="index">
       <TrackableTag :tag="item" v-show="(index < max || more)"
         count
