@@ -1,0 +1,110 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Disable webpage",
+            "type": "shell",
+            "command": "./scripts/disable_webpage.sh",
+            "group": "none",
+            "icon": {
+                "id": "stop"
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "label": "Enable webpage",
+            "type": "shell",
+            "command": "./scripts/enable_webpage.sh",
+            "group": "none",
+            "icon": {
+                "id": "play-circle"
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "label": "Upload webpage",
+            "type": "shell",
+            "command": "./scripts/upload_webpage.sh",
+            "group": "none",
+            "icon": {
+                "id": "cloud-upload"
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "Build webpage",
+            "type": "shell",
+            "command": "npm run build",
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "label": "Start API service (develop)",
+            "type": "shell",
+            "command": "source /workspace/.venv/bin/activate && python3 -m uvicorn backend.main:app --reload",
+            "group": "none",
+            "icon": {
+                "id": "cloud-upload"
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "Start API service (prod)",
+            "type": "shell",
+            "command": "source /workspace/.venv/bin/activate && python3 -m uvicorn backend.main_prod:app --reload",
+            "group": "none",
+            "icon": {
+                "id": "cloud-upload"
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "Start vue.js dev server",
+            "type": "shell",
+            "command": "npm run dev",
+            "group": "none",
+            "icon": {
+                "id": "cloud-upload"
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "Clone prod data for develop",
+            "type": "shell",
+            "command": "source /workspace/scripts/clone_prod_data.sh",
+            "group": "none",
+            "icon": {
+                "id": "file-submodule"
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+    ]
+}

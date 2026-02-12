@@ -20,8 +20,6 @@ coverage
 /cypress/screenshots/
 
 # Editor directories and files
-.vscode/*
-!.vscode/extensions.json
 .idea
 *.suo
 *.ntvs*
@@ -38,5 +36,6 @@ public/images
 
 __pycache__
 
-backend/uploads/*
 data/develop/*
+data/develop_*/*
+data/prod/*
