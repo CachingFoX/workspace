@@ -129,7 +129,8 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
     }
 
     const getPropertyByName = (property_name) => {
-      return computed(() => _properties.value.find(p => p.property_name === property_name));
+      const property = _properties.value.find(p => p.property_name === property_name)
+      return property;
     };
 
     const uploadImages = async () => {
