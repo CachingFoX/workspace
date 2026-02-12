@@ -4,6 +4,7 @@ import Panel from 'primevue/panel';
 import Button from "primevue/button";
 import Badge from 'primevue/badge'
 import Divider from 'primevue/divider';
+import { useLocalStorageRef } from '@/utils/localStorageRef'
 
 const props = defineProps({
   title: { type: String, required: true },
@@ -14,8 +15,12 @@ const props = defineProps({
   badge: { type: Number, required: false, default: 0},
 });
 
-const collapsed = ref(false);
-// const editing = ref(false);
+const storage_key = computed(()=>{
+  return `${props.storageKey}.panel.collapsed`.replace(/\s+/g, '').toLowerCase();
+})
+
+const collapsed = useLocalStorageRef(storage_key.value, false);
+
 const model = defineModel('editing');
 const localEditing = ref(false);
 const emit = defineEmits('editShow', 'editHide')
@@ -34,15 +39,6 @@ const editing = computed({
     emit(val ? 'editShow' : 'editHide')
   }
 })
-
-const storage_key = computed(()=>{
-  return `${props.storageKey}.panel.collapsed`.replace(/\s+/g, '').toLowerCase();
-})
-
-watch(
-    () => collapsed.value,
-    (newValue) => { localStorage.setItem(storage_key.value, newValue); }
-);
 
 watch(
     () => props.badge,
@@ -65,13 +61,6 @@ onBeforeMount(()=>{
       'icon': 'pi pi-pencil',
       'action': onEdit
     })
-  }
-
-  try {
-    collapsed.value = localStorage.getItem(storage_key.value) === 'true';
-  } catch(error) {
-    console.log("Panel: localStorage.getItem(",storage_key.value,") fails", error);
-    collapsed.value = false;
   }
 })
 </script>

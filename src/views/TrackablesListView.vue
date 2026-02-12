@@ -10,13 +10,13 @@ import BaseLayout from '@/components/layout/BaseLayout.vue';
 import Navbar from '@/components/Navbar.vue';
 import TrackableCard from '@/components/TrackableCard.vue';
 import TrackableListItem from '@/components/TrackableListItem.vue';
+import { useLocalStorageRef } from '@/utils/localStorageRef'
 
 const storeTrackables = useTrackableListStore();
 const router = useRouter();
 const route = useRoute()
 
-
-const layout = ref('grid');
+const layout = useLocalStorageRef('trackablelist.layout', 'list');
 const options = ref(['list', 'grid']);
 
 onMounted(()=>{
@@ -67,6 +67,7 @@ onMounted(()=>{
         </template>
       </div>
     </template>
+
     <template v-slot:mainstagey>
       <div class="p-1">
         <template v-for="(item, index) in storeTrackables.items">
