@@ -84,7 +84,7 @@ const save = () => {
     if (props.trackable_property.id) {
       storeTrackable.updateProperty(props.trackable_property.id, model.value);
     } else {
-      storeTrackable.newProperty(props.trackable_property.property_id, model.value);
+      storeTrackable.attachProperty(props.trackable_property.property_id, model.value);
     }
   }
 };

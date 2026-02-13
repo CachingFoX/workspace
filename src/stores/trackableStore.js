@@ -27,7 +27,7 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
         _progress.value = true;
         _state.value = STATE_LOADING;
         _data.value = await trackableService.getTrackableByNumber(tracking_number);
-        _properties.value = await trackablePropertiesService.getTrackableProperties(id.value);
+        _properties.value = await trackablePropertiesService.getTrackableProperties(trackable_id.value);
         _state.value = STATE_READY;
         _progress.value = false;
       } catch (error) {
@@ -86,13 +86,13 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
       }
     }
 
-    const newProperty = async (property_id, value) => {
+    const attachProperty = async (property_id, value) => {
       try {
         _progress.value = true;
-        await trackablePropertiesService.newTrackableProperty(id.value, property_id, value);
+        await trackablePropertiesService.newTrackableProperty(trackable_id.value, property_id, value);
 
         // reload properties
-        _properties.value = await trackablePropertiesService.getTrackableProperties(id.value);
+        _properties.value = await trackablePropertiesService.getTrackableProperties(trackable_id.value);
       } catch (error) {
         console.error("updateProperty error", error);
       } finally {
@@ -103,10 +103,10 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
     const updateProperty = async (trackable_property_id, value) => {
       try {
         _progress.value = true;
-        await trackablePropertiesService.updateTrackableProperty(id.value, trackable_property_id, value);
+        await trackablePropertiesService.updateTrackableProperty(trackable_id.value, trackable_property_id, value);
 
         // reload properties
-        _properties.value = await trackablePropertiesService.getTrackableProperties(id.value);
+        _properties.value = await trackablePropertiesService.getTrackableProperties(trackable_id.value);
       } catch (error) {
         console.error("updateProperty error", error);
       } finally {
@@ -114,13 +114,36 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
       }
     }
 
+    const setPropertyByName = async (property_name, value) => {
+      const property = getPropertyByName(property_name)
+      if (!property) {
+        throw Error(`setPropertyByName: Property ${property_name} is unknown.`)
+      }
+
+      if (property.id) {
+        // the property already exists for this trackable
+        updateProperty(property.id, value);
+      } else {
+        // the property not exists for this trackable
+        attachProperty(property.property_id, value);
+      }
+    }
+
+    const removePropertyByName = async (property_name, value) => {
+      const property = getPropertyByName(property_name)
+      if (!property) {
+        throw Error(`setPropertyByName: Property ${property_name} is unknown.`)
+      }
+      deleteProperty(property.id);
+    }
+
     const deleteProperty = async (trackable_property_id) => {
       try {
         _progress.value = true;
-        await trackablePropertiesService.deleteTrackableProperty(id.value, trackable_property_id);
+        await trackablePropertiesService.deleteTrackableProperty(trackable_id.value, trackable_property_id);
 
         // reload properties
-        _properties.value = await trackablePropertiesService.getTrackableProperties(id.value);
+        _properties.value = await trackablePropertiesService.getTrackableProperties(trackable_id.value);
       } catch (error) {
         console.error("updateProperty error", error);
       } finally {
@@ -136,7 +159,7 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
     const uploadImages = async () => {
       try {
         _progress.value = true;
-        _data.value.images = await trackableImagesService.getTrackableImages(id.value);
+        _data.value.images = await trackableImagesService.getTrackableImages(trackable_id.value);
       } catch (error) {
         console.error("updateProperty error", error);
       } finally {
@@ -147,10 +170,10 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
     const deleteImage = async (trackable_image_id) => {
       try {
         _progress.value = true;
-        await trackableImagesService.deleteTrackableImage(id.value, trackable_image_id);
+        await trackableImagesService.deleteTrackableImage(trackable_id.value, trackable_image_id);
 
         // reload properties
-        _data.value.images = await trackableImagesService.getTrackableImages(id.value);
+        _data.value.images = await trackableImagesService.getTrackableImages(trackable_id.value);
       } catch (error) {
         console.error("deleteImage error", error);
       } finally {
@@ -187,7 +210,11 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
       }
       return 'https://www.geocaching.com' + _data.value.icon_url;
     });
-    const id = computed(() => _data.value.id);
+    const id = computed(() => {
+      console.warn('⚠️ TrackableStore.id is deprecated - use TrackableStore.trackable_id')
+      return _data.value.id
+    });
+    const trackable_id = computed(() => _data.value.id);
     const images = computed(() => _data.value.images);
     const name = computed(() => _data.value.title);
     const owner = computed(() => _data.value.owner);
@@ -196,6 +223,29 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
     const series = computed(() => _data.value.series);
     const tags = computed(() => _data.value.tags);
     const updated = computed(() => _data.value.updated);
+    const linked_trackables = computed(() => {
+      const value = getPropertyByName('linkedTrackables');
+      if (!value) {
+        console.error("Property linkedTrackables is not available")
+      }
+      return value
+    });
+    const linked_trackables_tokenized = computed(() => {
+      const value = getPropertyByName('linkedTrackables');
+      if (!value) {
+        console.error("Property linkedTrackables is not available")
+      }
+
+      if (!value || !value.property_value) {
+        return []
+      }
+      let tokens = value.property_value.split(' ');
+      if (tokens.length == 0) {
+        return []
+      }
+
+      return tokens;
+    });
 
     // --- Expose ---
     return {
@@ -208,6 +258,7 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
       created,
       icon,
       id,
+      trackable_id,
       images,
       name,
       owner,
@@ -216,6 +267,8 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
       series,
       tags,
       updated,
+      linked_trackables,
+      linked_trackables_tokenized,
       properties,
 
       // methods
@@ -227,11 +280,13 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
       attachTag,
       dettachTag,
 
-      newProperty,
+      attachProperty,
       updateProperty,
       deleteProperty,
 
       getPropertyByName,
+      setPropertyByName,
+      removePropertyByName,
 
       uploadImages,
       deleteImage,

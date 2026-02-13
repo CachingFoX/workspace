@@ -19,19 +19,14 @@ const confirm = useConfirm();
 const editing = ref(false);
 const linkedTrackables = ref(null)
 const trackables = ref([])
-const progress_count = ref(0)
 const model = ref('')
+const property_name = 'linkedTrackables'
 
 watchEffect(async () => {
-  if (!linkedTrackables.value || !linkedTrackables.value.property_value) {
-    return []
-  }
-  let tokens = linkedTrackables.value.property_value.split(' ');
-  if (tokens.length == 0 ) {
-    return []
-  }
-
-  tokens.forEach(element => {
+  console.log("watchEffect", storeTrackable.linked_trackables)
+  linkedTrackables.value = storeTrackable.getPropertyByName(property_name);
+  trackables.value = [];
+  storeTrackable.linked_trackables_tokenized.forEach(element => {
     trackableService.getTrackableByNumber(element).then((trackable)=>{
       trackables.value.push(trackable);
     });
@@ -46,10 +41,6 @@ const disableSave = computed(() => {
   return (model.value ?? "") == (linkedTrackables.value?.property_value ?? "")
 });
 
-const progress = computed(()=>{
-  return progress_count.value > 0;
-})
-
 const onEdit = () => {
   model.value = linkedTrackables.value?.property_value ?? "";
 }
@@ -57,61 +48,47 @@ const onEdit = () => {
 const onSave = () => {
   editing.value = false;
   if (model.value != linkedTrackables.value.property_value) {
-    if (linkedTrackables.value.id) {
-      storeTrackable.updateProperty(linkedTrackables.value.id, model.value);
-    } else {
-      storeTrackable.newProperty(linkedTrackables.value.property_id, model.value);
-    }
+    storeTrackable.setPropertyByName(property_name, model.value);
   }
 };
 
 const onCancel = () => {
-  model.value = linkedTrackables.value.property_value;
   editing.value = false;
+  model.value = linkedTrackables.value.property_value;
 };
 
-async function onDelete() {
-  confirm.require({
-    message: 'Möchtest du die Eigenschaft löschen?',
-    header: 'Löschen',
-    icon: 'pi pi-exclamation-triangle',
-    rejectProps: {
-        label: 'Abbrechen',
-        severity: 'secondary',
-        outlined: true
-    },
-    acceptProps: {
-        label: 'Löschen',
-        severity: 'danger',
-    },
-    accept: async () => {
-      try {
-        await storeTrackable.deleteProperty(linkedTrackables.value.id);
-        // TODO update
-        editing.value = false;
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    reject: () => {}
-  })
+const confirm_delete = {
+  message: 'Möchtest du die Eigenschaft löschen?',
+  header: 'Löschen',
+  icon: 'pi pi-exclamation-triangle',
+  rejectProps: {
+      label: 'Abbrechen',
+      severity: 'secondary',
+      outlined: true
+  },
+  acceptProps: {
+      label: 'Löschen',
+      severity: 'danger',
+  },
+  accept: async () => {
+    try {
+      storeTrackable.removePropertyByName(property_name)
+      editing.value = false;
+    } catch (error) {
+      console.error(error);
+    }
+  },
+  reject: () => {}
 }
 
-const icons = [];
-
-onBeforeMount(() => {
-  const linkedTrackableProperty = storeTrackable.getPropertyByName('linkedTrackables');
-  if (!linkedTrackableProperty) {
-    console.error("Property linkedTrackables is not available")
-  }
-  linkedTrackables.value = linkedTrackableProperty;
-  console.log(linkedTrackables.value);
-});
+async function onDelete() {
+  confirm.require(confirm_delete)
+}
 </script>
 
 
 <template>
-  <PersistentPanel storage-key="trackable.details.linkedtrackables" title="Verlinkte Trackables" :icons="icons" editable
+  <PersistentPanel storage-key="trackable.details.linkedtrackables" title="Verlinkte Trackables" editable
   @editShow="onEdit"
   v-model:editing="editing"
   >
