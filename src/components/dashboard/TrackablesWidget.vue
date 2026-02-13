@@ -19,11 +19,6 @@ onMounted(() => {
   storeTrackables.fetchTrackables();
 });
 
-
-const tags = computed(() => {
-  return storeTags.tags_sorted_by_use_desc.filter(item => item.use > 0);
-});
-
 const xresponsiveOptions = ref([
     {
         breakpoint: '1400px',
@@ -54,7 +49,11 @@ const xresponsiveOptions = ref([
   <Panel title="Trackables" title-icon="pi-bookmark" :storage-key="`${props.storageKey}`" :badge="storeTrackables.items.length">
     <Carousel :value="storeTrackables.items" :numVisible="2" :numScroll="2" :responsiveOptions="responsiveOptions">
       <template #item="slotProps">
-        <TrackableCard :trackable="slotProps.data"/>
+        <TrackableCard :trackable="slotProps.data"
+          trackable-owner="south-west"
+          trackable-icon="north-west"
+          trackable-number="north-east"
+        />
       </template>
     </Carousel>
   </Panel>

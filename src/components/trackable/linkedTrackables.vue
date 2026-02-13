@@ -18,19 +18,23 @@ const storeTrackable = useTrackableStore();
 const confirm = useConfirm();
 const editing = ref(false);
 const linkedTrackables = ref(null)
-const trackables = ref([])
 const model = ref('')
 const property_name = 'linkedTrackables'
 
 watchEffect(async () => {
-  console.log("watchEffect", storeTrackable.linked_trackables)
   linkedTrackables.value = storeTrackable.getPropertyByName(property_name);
-  trackables.value = [];
-  storeTrackable.linked_trackables_tokenized.forEach(element => {
-    trackableService.getTrackableByNumber(element).then((trackable)=>{
-      trackables.value.push(trackable);
-    });
-  });
+})
+
+const trackables = computed(()=>{
+  if (!linkedTrackables.value || !linkedTrackables.value.property_value) {
+    return []
+  }
+  let tokens = linkedTrackables.value.property_value.split(' ');
+  if (tokens.length == 0) {
+    return []
+  }
+
+  return tokens;
 })
 
 const disableDelete = computed(() => {
@@ -106,16 +110,17 @@ async function onDelete() {
         />
       </InputGroup>
     </template>
+
     <Carousel :value="trackables" :numVisible="3" :numScroll="3" class="w-full">
       <template #item="slotProps">
         <TrackableCard :trackable="slotProps.data"
-          northwest="icon"
-          northeast="owner"
-          southwest="publiccode"
-          southeast="privatecode"
+          trackable-owner="south-west"
+          trackable-icon="north-west"
+          trackable-number="north-east"
         />
       </template>
     </Carousel>
+
   </PersistentPanel>
 </template>
 

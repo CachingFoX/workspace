@@ -53,7 +53,11 @@ onMounted(()=>{
         <template #grid="slotProps">
           <div class="p-1 flex flex-wrap justify-content-center">
             <template v-for="(item, index) in slotProps.items">
-              <TrackableCard :trackable="item"/>
+              <TrackableCard :trackable="item"
+                trackable-owner="south-west"
+                trackable-icon="north-west"
+                trackable-number="north-east"
+              />
             </template>
           </div>
         </template>

@@ -1,18 +1,57 @@
 <script setup>
 import { useRouter, useRoute } from 'vue-router';
-import { computed, onBeforeMount, onMounted } from 'vue';
+import { computed, onBeforeMount, onMounted, watchEffect, ref } from 'vue';
 import Button from 'primevue/button';
 import Tag from 'primevue/tag';
 import Card from 'primevue/card';
+import { trackableService } from '@/di/trackables'
+import ProgressSpinner from 'primevue/progressspinner';
 
 const router = useRouter();
-const route = useRoute()
+const route = useRoute();
+const trackable = ref(null);
+const progress = ref(false);
 
 const props = defineProps({
   trackable: {
-    type: Object,
-    required: true
+    type: [Object, String, Number],
+    required: true,
+    default: null
+  },
+  trackableOwner: {
+    type: String,
+    default: null
+  },
+  trackableIcon: {
+    type: String,
+    default: null
+  },
+  trackableNumber: {
+    type: String,
+    default: null
+  },
+});
+
+watchEffect(async ()=> {
+  progress.value = true;
+
+  if (props.trackable) {
+    if (typeof props.trackable == "object") {
+      trackable.value = props.trackable;
+    } else if (typeof props.trackable == "string") {
+      trackable.value = await trackableService.getTrackableByNumber(props.trackable);
+    } else if (typeof props.trackable == "Number") {
+      console.warn("TrackableCard: internal id as reference currently not supported");
+      // TODO
+    } else {
+      console.warn("TrackableCard: type of props is unknown:", typeof props.trackable)
+    }
+  } else {
+    trackable.value = null;
+    console.warn("TrackableCard: prop trackable is null");
   }
+
+  progress.value = false;
 });
 
 function makeIconUrl(icon_url) {
@@ -37,110 +76,130 @@ function goToOwner(owner) {
   // TODO router.push("/trackables/owner/"+owner)
 }
 
-const item = computed(() => props.trackable);
+const item = computed(() => trackable.value);
 
-const okay = computed(() => props.trackable?true:false);
+const okay = computed(() => trackable.value?true:false);
+
+const title = computed(() => {
+  return trackable.value ? trackable.value.title : "<unknown>";
+});
+
+const series = computed(() => {
+  return trackable.value ? trackable.value.series : "<unknown>";
+});
+
+const main_image = computed(()=>{
+  return trackable.value ? makeImageUrl(trackable.value.images[0]?.filename) : null
+})
+const icon = computed(()=>{
+  return trackable.value ? makeIconUrl(trackable.value.icon_url) : ""
+})
+
+const active = computed(()=>{
+  return trackable.value ? true : false
+})
+
 </script>
 
 <template>
-  <Card v-if="!okay" style="width: 256px; overflow: hidden" class="mx-2 my-2">
+  <Card class="mx-2 my-2 trackable-card" @click.stop="goToTrackable(item.public_code)">
     <template #header>
-      Trackable not found
-    </template>
-  </Card>
-  <Card v-else style="width: 256px; overflow: hidden" class="mx-2 my-2" :id="`trackable-item-${item?.id}`" >
-    <template #header>
-      <div class="px-3 pt-3">
-        <div style="position: relative; aspect-ratio: 1 / 1;" class="p-3">
+      <div class="mx-3 mt-3" style="position: relative; aspect-ratio: 1 / 1;">
+        <template v-if="trackable">
 
-          <div style="position: absolute; bottom: 0; right: 0; z-index: 1000;">
-            <Tag
-              :style="{ cursor: item.owner ? 'pointer' : 'default'}"
-              :class="{ 'user-tag': item.owner }"
-              :icon="item.owner ? 'pi pi-user' : 'pi pi-times'"
-              :severity="item.owner ? 'info' : 'secondary'"
-              :value="item.owner ? item.owner : 'not activated'"
-              class="m-1"
-              style="border: 1px solid var(--p-surface-300);"
-              @click.stop="item.owner ? goToOwner(item.owner) : void(0)"></Tag>
-          </div>
+          <Tag v-if="props.trackableOwner"
+            class="trackable-card-corner-overlay m-1"
+            :class="`trackable-card-${props.trackableOwner}`"
+            :value="trackable.owner ? trackable.owner : 'not activated'"
+            :icon="trackable.owner ? 'pi pi-user' : 'pi pi-times'"
+            :severity="trackable.owner ? 'info' : 'secondary'"
+            :style="{ cursor: item.owner ? 'pointer' : 'default'}"
+            @click.stop="item.owner ? goToOwner(item.owner) : void(0)"
+          />
 
-          <div style="position: absolute; top: 0; left: 0; z-index: 1000;" class="pt-1 pl-1" v-if="item.images.length ">
-              <img :src="makeIconUrl(item.icon_url)" class="card"/>
-          </div>
-
+          <Tag v-if="props.trackableNumber"
+            class="trackable-card-corner-overlay m-1"
+            :class="`trackable-card-${props.trackableNumber}`"
+            :value="trackable.public_code"
+            severity="info"
+            @click.stop="item.owner ? goToOwner(item.owner) : void(0)"
+          />
           <!--
-          <div style="position: absolute; bottom: 0; left: 0; z-index: 1000;">
-            <Tag
-              severity="primary"
-              :value="item.private_code"
-              class="m-1"
-              style="border: 1px solid var(--p-surface-300);"
-              @click.stop="item.owner ? goToOwner(item.owner) : void(0)"></Tag>
+          <Tag class="trackable-card-corner-overlay trackable-card-north-east m-1" :value="value_ne" :icon="icon_ne"/>
+          <Tag class="trackable-card-corner-overlay trackable-card-south-west m-1" :value="value_sw" :icon="icon_sw"/>
+          <Tag class="trackable-card-corner-overlay trackable-card-south-east m-1" :value="value_se" :icon="icon_se"/>
+          -->
+          <div v-if="props.trackableIcon && main_image" style="position: absolute;  z-index: 1000;" class="m-1"
+            :class="`trackable-card-${props.trackableIcon}`">
+              <img :src="icon" class="card"/>
           </div>
+        </template>
 
-          <div style="position: absolute; bottom: 0; right: 0; z-index: 1000;">
-            <Tag
-              severity="primary"
-              :value="item.public_code"
-              class="m-1"
-              style="border: 1px solid var(--p-surface-300);"
-              @click.stop="item.owner ? goToOwner(item.owner) : void(0)"></Tag>
-          </div>
-        -->
-          <div class="card-image-container border w-full flex justify-content-center align-items-center">
-            <img
-              :src="item.images.length ? makeImageUrl(item.images[0]?.filename) : makeIconUrl(item.icon_url)"
-              class="card"
-              :class="{ 'card-img': item.images.length, 'card-icon': !item.images.length }"
-            />
+        <div class="trackable-card-image w-full flex justify-content-center align-items-center">
+          <ProgressSpinner v-if="progress"/>
+          <img v-else-if="main_image" :src="main_image" class="card card-img"/>
+          <img v-else-if="icon" :src="icon" class="card card-icon"/>
+          <div v-else-if="false && !trackable" style="text-align: center">
+            <i class="pi pi-exclamation-triangle mb-3" style="font-size: 48pt; font-weight: bold; color: red;" />
+            <br/>
+            <span style="font-size: 16pt; font-weight: normal; color: red;">No Trackable</span></div>
+          <div v-else style="text-align: center">
+            <i class="pi pi-image mb-3" style="font-size: 48pt; font-weight: bold; color: lightgray;" />
+            <br/>
+            <span style="font-size: 16pt; font-weight: normal; color: lightgray;">No Image</span>
           </div>
         </div>
       </div>
     </template>
-    <template #title><div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;  max-width: 100%; width: 100%;">{{ item.title }}</div></template>
-    <template #subtitle><div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;  max-width: 100%; width: 100%;">{{ item.series }}</div>
-    </template>
-    <template #contentx>
-        <p class="m-0">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-        </p>
-    </template>
+    <template #title><div class="trackable-card-text">{{ title }}</div></template>
+    <template #subtitle><div class="trackable-card-text">{{ series }}</div></template>
+    <!--
     <template #footer>
-        <div class="flex gap-1 mt-1">
-
-            <Button label="Details" class="w-full" @click="goToTrackable(item.public_code)"/>
-            <Button icon="pi pi-tag" class="px-3" @click="goToTrackable(item.public_code)"/>
-            <!-- <Button v-if="item.owner" icon="pi pi-user" class="px-3" @click="goToTrackable(item.public_code)"/>-->
-        </div>
+      <div class="flex gap-1 mt-1">
+        <Button label="Details" class="w-full" @click="goToTrackable(item.public_code)" :disabled="!active"/>
+        <Button icon="pi pi-tag" class="px-3" @click="goToTrackable(item.public_code)" :disabled="!active"/>
+      </div>
     </template>
+    -->
   </Card>
 </template>
 
 <style scoped>
-.trackable-list-item-title {
-}
-.trackable-list-item-subtitle {
-}
-.p-divider {
-  margin: 0.25rem 0; /* oben und unten 2rem */
-}
-
-/* vertical divider */
-.p-divider-vertical {
-  margin: 0 0rem; /* links und rechts 1rem */
-}
-
-.trackable-list-item {
-}
-.trackable-list-item:hover {
-  background-color: lightblue;
-}
-.clickable {
+.trackable-card {
+  overflow: hidden;
+  width: 256px;
   cursor: pointer;
 }
-.user-tag:hover {
-  background-color: #ccc;
+.trackable-card:hover {
+  background-color: lightblue;
+}
+.trackable-card-text {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 100%;
+  width: 100%;
+}
+
+.trackable-card-corner-overlay {
+  position: absolute;
+  z-index: 1000;
+}
+.trackable-card-north-west {
+  top: 0;
+  left: 0;
+}
+.trackable-card-north-east {
+  top: 0;
+  right: 0;
+}
+.trackable-card-south-west {
+  bottom: 0;
+  left: 0;
+}
+.trackable-card-south-east {
+  bottom: 0;
+  right: 0;
 }
 
 /* cards */
@@ -154,23 +213,18 @@ const okay = computed(() => props.trackable?true:false);
   border-radius: 8px;
 }
 
-.card-image-container {
+.trackable-card-image {
   position: absolute;
   top: 0;
   left: 0;
   aspect-ratio: 1 / 1;
-}
-
-.card-image-container.border {
   border: 1px solid #eee;
   border-radius: 8px;
 }
 
-
 .card-img {
   width: 100%;
 }
-
 .card-icon {
   width: 33%;
   min-width: 32px;

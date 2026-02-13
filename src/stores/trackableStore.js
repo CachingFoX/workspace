@@ -223,29 +223,6 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
     const series = computed(() => _data.value.series);
     const tags = computed(() => _data.value.tags);
     const updated = computed(() => _data.value.updated);
-    const linked_trackables = computed(() => {
-      const value = getPropertyByName('linkedTrackables');
-      if (!value) {
-        console.error("Property linkedTrackables is not available")
-      }
-      return value
-    });
-    const linked_trackables_tokenized = computed(() => {
-      const value = getPropertyByName('linkedTrackables');
-      if (!value) {
-        console.error("Property linkedTrackables is not available")
-      }
-
-      if (!value || !value.property_value) {
-        return []
-      }
-      let tokens = value.property_value.split(' ');
-      if (tokens.length == 0) {
-        return []
-      }
-
-      return tokens;
-    });
 
     // --- Expose ---
     return {
@@ -267,8 +244,6 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
       series,
       tags,
       updated,
-      linked_trackables,
-      linked_trackables_tokenized,
       properties,
 
       // methods
