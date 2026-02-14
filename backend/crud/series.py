@@ -20,7 +20,9 @@ def _get_trackable_by_series(series: str, db: Session) -> modelTrackable:
 
 def _get_all_series(db: Session):
     stmt = select(
-        modelTrackable.series.label("name"), func.count().label("count")
+        modelTrackable.series.label("name"),
+        func.count().label("count"),
+        modelTrackable.icon_url.label("icon_url"),
     ).group_by(modelTrackable.series)
 
     result = db.execute(stmt).all()
