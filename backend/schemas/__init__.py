@@ -30,3 +30,8 @@ from backend.schemas.base import (
     AuthenticationToken as schemaAuthenticationToken,
     User as schemaUser,
 )
+
+from backend.schemas.orm_helper import list_of_items_from_orm
+
+from backend.schemas.owner import Owner as schemaOwner
+from backend.schemas.series import Series as schemaSeries

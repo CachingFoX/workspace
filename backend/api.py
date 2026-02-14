@@ -4,7 +4,9 @@ from backend.routers import (
     auth,
     geocaching,
     images,
+    owners,
     root,
+    series,
     tags,
     trackables,
     trackables_images,
@@ -77,5 +79,7 @@ def create_api(settings: ApiSettings):
     _api.include_router(tags.router)
     _api.include_router(geocaching.router)
     _api.include_router(images.router)
+    _api.include_router(owners.router)
+    _api.include_router(series.router)
 
     return _api

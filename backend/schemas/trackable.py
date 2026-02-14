@@ -62,6 +62,10 @@ class TrackableRead(BaseModel):
     properties: list[schemaAttachedProperty]
 
     @classmethod
+    def from_orm(cls, trackable):
+        return cls.from_orm_with_transform(trackable)
+
+    @classmethod
     def from_orm_with_transform(cls, trackable):
         return cls(
             id=trackable.id,

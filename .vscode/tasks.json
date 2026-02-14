@@ -55,7 +55,7 @@
             }
         },
         {
-            "label": "Start API service (develop)",
+            "label": "API service (develop)",
             "type": "shell",
             "command": "source /workspace/.venv/bin/activate && python3 -m uvicorn backend.main:app --reload",
             "group": "none",
@@ -68,7 +68,7 @@
             }
         },
         {
-            "label": "Start API service (prod)",
+            "label": "API service (prod)",
             "type": "shell",
             "command": "source /workspace/.venv/bin/activate && python3 -m uvicorn backend.main_prod:app --reload",
             "group": "none",
