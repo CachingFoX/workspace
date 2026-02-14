@@ -2,7 +2,7 @@
 import './main.css'
 import Toast from 'primevue/toast';
 import { onBeforeMount } from 'vue';
-import { tagService, trackableService, commonService, tokenService, trackablePropertiesService, trackableImagesService } from "./di/trackables.js"
+import { tagService, trackableService, commonService, tokenService, trackablePropertiesService, trackableImagesService, ownerService, seriesService } from "./di/trackables.js"
 import { useToast } from 'primevue';
 
 
@@ -28,6 +28,8 @@ onBeforeMount(() => {
   trackableService.registerErrorNotification(onError);
   trackablePropertiesService.registerErrorNotification(onError);
   trackableImagesService.registerErrorNotification(onError);
+  ownerService.registerErrorNotification(onError);
+  seriesService.registerErrorNotification(onError);
   // TODO GeocachingService
 });
 </script>
