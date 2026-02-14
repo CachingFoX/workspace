@@ -70,12 +70,14 @@ onBeforeMount(()=>{
   <Panel class="m-2" toggleable v-model:collapsed="collapsed">
     <template #header>
       <slot name="header">
-        <div class="font-bold text-xl" style="flex-grow: 0" @click="collapsed = !collapsed">
-          <span class="pi mr-1 text-xl font-bold" :class="props.titleIcon" v-if="props.titleIcon"/>
-          <span class="font-bold text-xl" style="color: var(--p-surface-500)">{{ props.title }}</span>
-        </div>
-        <div class="font-bold text-xl ml-1" style="flex-grow: 1" @click="collapsed = !collapsed">
-          <Badge v-if="props.badge" :value="props.badge" severity="success"></Badge>
+        <div class="flex align-items-center gap-2 flex-nowrap font-bold text-xl" style="flex-wrap: nowrap; align-items: center;" @click="collapsed = !collapsed">
+          <div style="flex-grow: 0" v-if="props.titleIcon">
+            <span class="text-lg pi" :class="props.titleIcon"/>
+          </div>
+          <div style="flex-grow: 0">
+            <span class="font-bold text-xl" style="color: var(--p-surface-500)">{{ props.title }}</span>
+          </div>
+          <Badge v-if="props.badge" :value="props.badge" severity="success"/>
         </div>
       </slot>
     </template>
