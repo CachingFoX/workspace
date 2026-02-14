@@ -54,16 +54,6 @@ watchEffect(async ()=> {
   progress.value = false;
 });
 
-function makeIconUrl(icon_url) {
-  if (icon_url === null) {
-    return null;
-  }
-  if (icon_url.startsWith("http")) {
-    return icon_url
-  }
-  return 'https://www.geocaching.com'+icon_url;
-}
-
 function makeImageUrl(image_filename) {
   return 'http://localhost:8000/images/'+image_filename
 }
@@ -89,10 +79,10 @@ const series = computed(() => {
 });
 
 const main_image = computed(()=>{
-  return trackable.value?.images.length > 0 ? trackable.value.images[0].filename : null
+  return trackable.value?.images.length > 0 ? makeImageUrl(trackable.value.images[0].filename) : null
 })
 const icon = computed(()=>{
-  return trackable.value ? makeIconUrl(trackable.value.icon_url) : ""
+  return trackable.value?.icon_url ? trackable.value.icon_url : ""
 })
 
 const active = computed(()=>{
