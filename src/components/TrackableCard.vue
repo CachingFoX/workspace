@@ -89,7 +89,7 @@ const series = computed(() => {
 });
 
 const main_image = computed(()=>{
-  return trackable.value ? makeImageUrl(trackable.value.images[0]?.filename) : null
+  return trackable.value?.images.length > 0 ? trackable.value.images[0].filename : null
 })
 const icon = computed(()=>{
   return trackable.value ? makeIconUrl(trackable.value.icon_url) : ""
@@ -139,7 +139,7 @@ const active = computed(()=>{
           <ProgressSpinner v-if="progress"/>
           <img v-else-if="main_image" :src="main_image" class="card card-img"/>
           <img v-else-if="icon" :src="icon" class="card card-icon"/>
-          <div v-else-if="false && !trackable" style="text-align: center">
+          <div v-else-if="!trackable" style="text-align: center">
             <i class="pi pi-exclamation-triangle mb-3" style="font-size: 48pt; font-weight: bold; color: red;" />
             <br/>
             <span style="font-size: 16pt; font-weight: normal; color: red;">No Trackable</span></div>
