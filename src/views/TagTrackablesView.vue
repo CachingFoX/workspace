@@ -20,19 +20,27 @@ const route = useRoute()
 
 const layout = useLocalStorageRef('trackablelist.layout', 'list');
 const options = ref(['list', 'grid']);
-const owner = ref(null)
+const tag_id = ref(null)
+const tag_name = ref(null)
 
 watchEffect(() => {
-  owner.value = route.params.series;
+  tag_id.value = route.params.tag;
+  tag_name.value = route.params.tag;
 });
 
 onMounted(()=>{
   storeTrackables.fetchTrackables();
-
 })
 
 const trackables = computed(()=>{
-  return storeTrackables.items.filter(item => item.series == owner.value );
+  return storeTrackables.items.filter(item => {
+    const tag = item.tags.find( t => t.id == tag_id.value )
+    if (tag) {
+      tag_name.value = tag.name
+      return true;
+    }
+    return false;
+  });
 })
 </script>
 
@@ -47,9 +55,7 @@ const trackables = computed(()=>{
           <div class="flex justify-content-between align-items-center">
             <Select>
             </Select>
-            <Chip :label="owner" icon="pi pi-star" v-if="owner"/>
-            <Chip label="not activated" icon="pi pi-times" v-if="!owner"/>
-
+            <Chip :label="tag_name" icon="pi pi-tag"/>
             <SelectButton v-model="layout" :options="options" :allowEmpty="false">
               <template #option="{ option }">
                 <i :class="[option === 'list' ? 'pi pi-bars' : 'pi pi-table']" />
