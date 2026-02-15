@@ -4,6 +4,7 @@ import Panel from 'primevue/panel';
 import Button from "primevue/button";
 import Badge from 'primevue/badge'
 import Divider from 'primevue/divider';
+import Menu from 'primevue/menu';
 import { useLocalStorageRef } from '@/utils/localStorageRef'
 
 const props = defineProps({
@@ -13,6 +14,7 @@ const props = defineProps({
   icons: { type: Object, required: false, default: ()=>[]},
   editable: { type: Boolean, required: false, default: false},
   badge: { type: Number, required: false, default: 0},
+  menu: { type: Object, required: false, default: null }
 });
 
 const storage_key = computed(()=>{
@@ -22,8 +24,15 @@ const storage_key = computed(()=>{
 const collapsed = useLocalStorageRef(storage_key.value, false);
 
 const model = defineModel('editing');
-const localEditing = ref(false);
 const emit = defineEmits('editShow', 'editHide')
+
+const localEditing = ref(false);
+const menu = ref(null);
+
+const toggle = (event) => {
+    menu.value.toggle(event);
+};
+
 
 const editing = computed({
   get() {
@@ -39,12 +48,6 @@ const editing = computed({
     emit(val ? 'editShow' : 'editHide')
   }
 })
-
-watch(
-    () => props.badge,
-    (newValue) => { props.badge = newValue; }
-);
-
 
 function onEdit() {
   if (collapsed.value) {
@@ -83,6 +86,8 @@ onBeforeMount(()=>{
     </template>
     <template #icons>
       <Button v-for="item in props.icons" :icon="item.icon" severity="secondary" rounded text @click="item.action" />
+      <Button icon="pi pi-bars" severity="secondary" rounded text @click="toggle" v-if="props.menu"/>
+      <Menu ref="menu" id="config_menu" :model="props.menu" popup />
     </template>
     <Divider class="m-0 p-0 mb-4"/>
     <slot name="default"/>
