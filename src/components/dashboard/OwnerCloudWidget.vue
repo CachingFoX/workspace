@@ -7,7 +7,9 @@ import TrackableTag from '@/components/TrackableTag.vue';
 import Panel from '@/components/common/panel.vue'
 import { ownerService } from "@/di/trackables.js"
 import CloudChip from '@/components/dashboard/CloudChip.vue'
+import { useRouter, useRoute } from 'vue-router';
 
+const router = useRouter();
 
 const props = defineProps({
   storageKey: { type: String, required: false, default: 'ownercloudwidget' },
@@ -28,6 +30,10 @@ onMounted(() => {
     progress.value = false;
   })
 });
+
+function onClick(e) {
+  router.push("/owner/"+e.owner)
+}
 </script>
 
 <template>
@@ -44,7 +50,7 @@ onMounted(() => {
         empty-text="not activated"
         empty-icon="pi-times"
         clickable
-        @click="console.log('click', item)"
+        @click="onClick"
       />
     </div>
 

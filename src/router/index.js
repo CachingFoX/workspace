@@ -13,8 +13,8 @@ import LogoutView from '../views/LogoutView.vue';
 import DashboardView from '../views/DashboardView.vue';
 import MainView from '../views/MainView.vue';
 import TagsAdministrationView from '@/views/TagsAdministrationView.vue';
-
-//
+import OwnerTrackablesView from '@/views/OwnerTrackablesView.vue';
+import SeriesTrackablesView from '@/views/SeriesTrackablesView.vue';
 
 const routes = [
   {
@@ -37,6 +37,16 @@ const routes = [
     path: '/dashboard',
     name: 'Dashboard',
     component: DashboardView,
+  },
+  {
+    path: '/owner/:owner?',
+    name: 'Owner Trackables',
+    component: OwnerTrackablesView,
+  },
+  {
+    path: '/series/:series',
+    name: 'Series Trackables',
+    component: SeriesTrackablesView,
   },
   {
     path: '/main',

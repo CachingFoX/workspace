@@ -17,6 +17,10 @@ import { useBaseStore, useTrackableListStore } from '@/di/trackables.js'
 const storeBase = useBaseStore();
 const storeTrackables = useTrackableListStore();
 
+const props = defineProps({
+  trackables : { type: Object, default: null, required: false }
+})
+
 onMounted(() => {
   storeBase.init();
 });
@@ -30,11 +34,17 @@ const baseProperties = {
   'database_url': { name: 'Database Location', icon: 'pi-database' },
   'upload_path': { name: 'Upload Folder', icon: 'pi-folder' }
 }
+
+const trackables = computed(()=>{
+  return props.trackables ? props.trackables.length : storeTrackables.items.length;
+})
 </script>
 
 <template>
   <div class="flex w-full justify-content-between">
-    <div>{{storeTrackables.items.length}} Trackables</div>
+    <div>
+      <span>{{trackables}} Trackables</span>
+    </div>
     <div></div>
     <div style="font-family: monospace;"><spin class="pi pi-database mr-1"/>{{storeBase.baseInfo['database_url']}}</div>
   </div>
