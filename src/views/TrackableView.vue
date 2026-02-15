@@ -5,7 +5,7 @@ import TrackableDetails from '../components/TrackableDetails.vue';
 import TrackableLoad from '../components/TrackableLoad.vue';
 import BaseLayout from '@/components/layout/BaseLayout.vue';
 import CenterLayout from '@/components/layout/CenterLayout.vue';
-import Navbar from '@/components/Navbar.vue';
+import Navbar from '@/components/common/Navbar.vue';
 import { STATE_UNKNOWN, STATE_LOADING, STATE_NO_INIT, STATE_READY } from '../stores/trackableStore.js'
 import { useRoute, useRouter } from 'vue-router';
 import { useTrackableStore } from "../di/trackables.js"

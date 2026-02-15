@@ -2,7 +2,7 @@
 import { onMounted, ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import BaseLayout from '@/components/layout/BaseLayout.vue';
-import Navbar from '@/components/Navbar.vue';
+import Navbar from '@/components/common/Navbar.vue';
 import { tagService, useTagsStore } from '@/di/trackables';
 import { useConfirm } from "primevue/useconfirm";
 import ConfirmDialog from 'primevue/confirmdialog';

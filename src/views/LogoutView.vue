@@ -4,7 +4,7 @@ import 'primeflex/primeflex.css';
 import { useRouter, useRoute } from 'vue-router';
 import BaseLayout from '@/components/layout/BaseLayout.vue';
 import HLayout from '@/components/layout/HLayout.vue';
-import Navbar from '@/components/Navbar.vue';
+import Navbar from '@/components/common/Navbar.vue';
 import LoginPanel from '@/components/LoginPanel.vue';
 import { useBaseStore } from '../stores/base.js'
 

@@ -2,7 +2,7 @@
 import { onMounted, ref, computed } from 'vue'
 import 'primeflex/primeflex.css';
 import BaseLayout from '@/components/layout/BaseLayout.vue';
-import Navbar from '@/components/Navbar.vue';
+import Navbar from '@/components/common/Navbar.vue';
 import Divider from 'primevue/divider';
 import BaseInfoWidget from '../components/dashboard/BaseInfoWidget.vue'
 import LoginInfoWidget from '../components/dashboard/LoginInfoWidget.vue'

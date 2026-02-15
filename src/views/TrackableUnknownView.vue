@@ -7,7 +7,7 @@ import InputGroup from 'primevue/inputgroup';
 import InputText from 'primevue/inputtext';
 // Components
 import BaseLayout from '@/components/layout/BaseLayout.vue';
-import Navbar from '@/components/Navbar.vue';
+import Navbar from '@/components/common/Navbar.vue';
 
 
 const router = useRouter();

@@ -10,9 +10,9 @@ import Button from 'primevue/button';
 import Menubar from 'primevue/menubar';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
-import NavbarIcon from './NavbarIcon.vue';
+import NavbarIcon from '@/components/common/NavbarIcon.vue';
 import Avatar from 'primevue/avatar';
-import { useBaseStore } from '../stores/base.js'
+import { useBaseStore } from '@/stores/base.js'
 
 const storeBase = useBaseStore();
 

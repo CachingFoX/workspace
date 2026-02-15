@@ -2,7 +2,7 @@
 import 'primeflex/primeflex.css';
 import BaseLayout from '@/components/layout/BaseLayout.vue';
 import { useRouter, useRoute } from 'vue-router';
-import Navbar from '@/components/Navbar.vue';
+import Navbar from '@/components/common/Navbar.vue';
 import { useTrackableListStore } from '@/di/trackables';
 import { onMounted } from 'vue';
 import Divider from 'primevue/divider';

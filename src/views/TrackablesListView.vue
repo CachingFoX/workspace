@@ -7,7 +7,7 @@ import DataView from 'primevue/dataview';
 import SelectButton from 'primevue/selectbutton';
 import Select from 'primevue/select';
 import BaseLayout from '@/components/layout/BaseLayout.vue';
-import Navbar from '@/components/Navbar.vue';
+import Navbar from '@/components/common/Navbar.vue';
 import TrackableCard from '@/components/TrackableCard.vue';
 import TrackableListItem from '@/components/TrackableListItem.vue';
 import { useLocalStorageRef } from '@/utils/localStorageRef'

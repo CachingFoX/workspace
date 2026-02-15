@@ -1,7 +1,7 @@
 <script setup>
 import 'primeflex/primeflex.css';
 import BaseLayout from '@/components/layout/BaseLayout.vue';
-import Navbar from '@/components/Navbar.vue';
+import Navbar from '@/components/common/Navbar.vue';
 </script>
 
 <template>

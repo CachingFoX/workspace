@@ -7,7 +7,7 @@ import InputText from 'primevue/inputtext';
 import Skeleton from 'primevue/skeleton';
 import Button from 'primevue/button';
 import BaseLayout from '@/components/layout/BaseLayout.vue'
-import Navbar from '../components/Navbar.vue'
+import Navbar from '../components/common/Navbar.vue'
 import TrackableNew from '../components/TrackableNew.vue'
 import InputGroup from 'primevue/inputgroup';
 import HLayout from '../components/layout/HLayout.vue'
