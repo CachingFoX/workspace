@@ -15,6 +15,7 @@ import MainView from '../views/MainView.vue';
 import TagsAdministrationView from '@/views/TagsAdministrationView.vue';
 import OwnerTrackablesView from '@/views/OwnerTrackablesView.vue';
 import SeriesTrackablesView from '@/views/SeriesTrackablesView.vue';
+import TagTrackablesView from '@/views/TagTrackablesView.vue';
 
 const routes = [
   {
@@ -57,6 +58,11 @@ const routes = [
     path: '/tags',
     name: 'Tags Administration',
     component: TagsAdministrationView,
+  },
+  {
+    path: '/tag/:tag',
+    name: 'Tag Trackable',
+    component: TagTrackablesView,
   },
   {
     path: '/trackables',

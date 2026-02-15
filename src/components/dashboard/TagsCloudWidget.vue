@@ -9,6 +9,9 @@ import TrackableTag from '@/components/TrackableTag.vue';
 import Panel from '@/components/common/panel.vue'
 import { ownerService } from "@/di/trackables.js"
 import CloudChip from '@/components/dashboard/CloudChip.vue'
+import { useRouter, useRoute } from 'vue-router';
+
+const router = useRouter();
 
 const props = defineProps({
   storageKey: { type: String, required: false, default: 'tagscloudwidget' },
@@ -31,13 +34,10 @@ onMounted(() => {
   })
 });
 
-
-/*
-const tags = computed(() => {
-  return storeTags.tags_sorted_by_use_desc.filter(item => item.use > 0);
-});
-*/
-
+function onClick(e) {
+  console.log(e)
+  router.push("/tag/"+e.id)
+}
 </script>
 
 <template>
@@ -57,7 +57,7 @@ const tags = computed(() => {
         empty-icon="pi-times"
         empty-image="https://www.geocaching.com/images/WptTypes/23.gif"
         clickable
-        @click="console.log('click', item)"
+        @click="onClick"
         />
     </div>
 
