@@ -39,8 +39,9 @@ const item = computed(() => props.trackable);
 </script>
 
 <template>
-  <div class="flex trackable-list-item" :id="`trackable-item-${item.id}`">
-    <div class="flex justify-content-center align-items-center border" style="width: 100px; height: 100px;">
+  <div class="flex trackable-list-item w-full" :id="`trackable-item-${item.id}`">
+    <!-- right: image -->
+    <div class="flex-shrink-0 flex justify-content-center align-items-center border" style="width: 100px; height: 100px;">
       <img
         :src="item.images.length ? makeImageUrl(item.images[0]?.filename) : makeIconUrl(item.icon_url)"
         class="card"
@@ -48,17 +49,17 @@ const item = computed(() => props.trackable);
       />
     </div>
     <!-- main -->
-    <div class="flex-grow-1 p-1">
+    <div class="flex-grow-1 flex-shrink-1 p-1">
       <div class="flex flex-column h-full">
         <!-- start: heading with icon-->
-        <div class="flex flex-row align-items-center gap-1 flex-shrink-0 flex-grow-0 clickable" @click="goToTrackable(item.public_code)">
-          <div style="width: 40px; height: 40px;">
+        <div class="flex flex-row align-items-center gap-1 flex-shrink-1 flex-grow-0 clickable" @click="goToTrackable(item.public_code)">
+          <div class="flex-shrink-0" style="width: 40px; height: 40px;">
             <img v-if="item.icon_url" :src="makeIconUrl(item.icon_url)" style="width: 100%; height: 100%;"/>
             <div v-else class="flex justify-content-center align-items-center w-full h-full" style="border-radius: 20px; background-color: #ccc;">
               <div >?</div>
             </div>
           </div>
-          <div class="flex flex-column">
+          <div class="flex flex-column flex-shrink-1">
             <div class="trackable-list-item-title font-bold text-lg">{{ item.title }}</div>
             <div class="trackable-list-item-subtitle text-sm text-500">{{ item.series }}</div>
           </div>
@@ -80,8 +81,8 @@ const item = computed(() => props.trackable);
 
       </div>
     </div>
-    <!-- left -->
-    <div>
+    <!-- left: action -->
+    <div class="flex-shrink-0">
       <a :href="'https://www.geocaching.com/track/details.aspx?tracker='+item.public_code"
       @click.stop
         target="_blank">{{ item.public_code }}</a>
@@ -91,9 +92,24 @@ const item = computed(() => props.trackable);
 
 <style scoped>
 .trackable-list-item-title {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 .trackable-list-item-subtitle {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
+
+/*
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 100%;
+  width: 100%;
+*/
+
 .p-divider {
   margin: 0.25rem 0; /* oben und unten 2rem */
 }
@@ -105,6 +121,7 @@ const item = computed(() => props.trackable);
 
 .trackable-list-item {
 }
+
 .trackable-list-item:hover {
   background-color: lightblue;
 }

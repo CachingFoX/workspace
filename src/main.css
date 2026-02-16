@@ -17,3 +17,15 @@ body,
   background: #fafafa;
   overflow: hidden;
 }
+
+.no-select {
+  user-select: none
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.monospace {
+  font-family: monospace;
+}

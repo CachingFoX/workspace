@@ -46,7 +46,9 @@ const trackables = computed(()=>{
       <span>{{trackables}} Trackables</span>
     </div>
     <div></div>
-    <div style="font-family: monospace;"><spin class="pi pi-database mr-1"/>{{storeBase.baseInfo['database_url']}}</div>
+    <div class="monospace no-select" v-tooltip.top="storeBase.baseInfo['database_url']">
+      <spin class="pi pi-database mr-1"/>{{storeBase.baseInfo['short_name']}}
+    </div>
   </div>
 </template>
 

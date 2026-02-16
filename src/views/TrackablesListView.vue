@@ -8,6 +8,7 @@ import SelectButton from 'primevue/selectbutton';
 import Select from 'primevue/select';
 import BaseLayout from '@/components/layout/BaseLayout.vue';
 import Navbar from '@/components/common/Navbar.vue';
+import Footer from '@/components/common/Footer.vue';
 import TrackableCard from '@/components/TrackableCard.vue';
 import TrackableListItem from '@/components/TrackableListItem.vue';
 import { useLocalStorageRef } from '@/utils/localStorageRef'
@@ -63,22 +64,8 @@ onMounted(()=>{
         </template>
       </DataView>
     </template>
-
-    <template v-slot:mainstagex>
-      <div class="p-1 flex flex-wrap justify-content-center">
-        <template v-for="(item, index) in storeTrackables.items">
-          <TrackableCard :trackable="item"/>
-        </template>
-      </div>
-    </template>
-
-    <template v-slot:mainstagey>
-      <div class="p-1">
-        <template v-for="(item, index) in storeTrackables.items">
-          <Divider v-if="index"/>
-          <TrackableListItem :trackable="item"/>
-        </template>
-      </div>
+    <template v-slot:footer>
+      <Footer/>
     </template>
   </BaseLayout>
 </template>

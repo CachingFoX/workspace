@@ -6,6 +6,7 @@ from typing import Type
 class ApiSettings(BaseSettings):
     debug: bool = False
     database_url: str
+    short_name: str
     upload_path: str
     poolclass: Type | None = None
 

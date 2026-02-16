@@ -63,10 +63,4 @@ function onClick(e) {
 .p-chip:hover {
   background-color: lightblue;
 }
-.no-select {
-  user-select: none
-}
-.clickable {
-  cursor: pointer;
-}
 </style>

@@ -11,6 +11,7 @@ async def read_root(
 ):
     return {
         "version": version,
+        "short_name": settings.short_name,
         "database_url": settings.database_url,
         "upload_path": settings.upload_path,
     }
