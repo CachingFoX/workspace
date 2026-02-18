@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useTrackableListStore } from '@/di/trackables';
 import Divider from 'primevue/divider';
@@ -20,8 +20,8 @@ const route = useRoute()
 const layout = useLocalStorageRef('trackablelist.layout', 'list');
 const options = ref(['list', 'grid']);
 
-onMounted(()=>{
-  storeTrackables.fetchTrackables();
+const trackables = computed(()=>{
+  return storeTrackables.trackables
 })
 </script>
 
@@ -31,7 +31,7 @@ onMounted(()=>{
       <Navbar/>
     </template>
     <template v-slot:mainstage>
-      <DataView :value="storeTrackables.items" :layout="layout">
+      <DataView :value="trackables" :layout="layout">
         <template #header>
           <div class="flex justify-content-between align-items-center">
             <Select>

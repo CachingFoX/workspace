@@ -26,13 +26,8 @@ watchEffect(() => {
   series.value = route.params.series;
 });
 
-onMounted(()=>{
-  storeTrackables.fetchTrackables();
-
-})
-
 const trackables = computed(()=>{
-  return storeTrackables.items.filter(item => item.series == series.value );
+  return storeTrackables.trackables.filter(t => t.series == series.value );
 })
 </script>
 

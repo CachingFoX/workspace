@@ -28,12 +28,8 @@ watchEffect(() => {
   tag_name.value = route.params.tag;
 });
 
-onMounted(()=>{
-  storeTrackables.fetchTrackables();
-})
-
 const trackables = computed(()=>{
-  return storeTrackables.items.filter(item => {
+  return storeTrackables.trackables.filter(item => {
     const tag = item.tags.find( t => t.id == tag_id.value )
     if (tag) {
       tag_name.value = tag.name

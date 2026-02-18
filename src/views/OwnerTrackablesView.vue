@@ -26,13 +26,8 @@ watchEffect(() => {
   owner.value = route.params.owner;
 });
 
-onMounted(()=>{
-  storeTrackables.fetchTrackables();
-
-})
-
 const trackables = computed(()=>{
-  return storeTrackables.items.filter(item => item.owner == owner.value );
+  return storeTrackables.trackables.filter(item => item.owner == owner.value );
 })
 </script>
 

@@ -17,10 +17,6 @@ const configuration = useSafeModel(modelConfiguration, localConfiguration);
 const collapsed = defineGetterSetter(configuration, "collapsed", false)
 /* --------------------------------- */
 
-onMounted(() => {
-  storeTrackables.fetchTrackables();
-});
-
 const xresponsiveOptions = ref([
     {
         breakpoint: '1400px',
@@ -48,9 +44,9 @@ const xresponsiveOptions = ref([
 
 
 <template>
-  <Panel title="Trackables" title-icon="pi-bookmark" :badge="storeTrackables.items.length"
+  <Panel title="Trackables" title-icon="pi-bookmark" :badge="storeTrackables.trackables.length"
   v-model:collapsed="collapsed">
-    <Carousel :value="storeTrackables.items" :numVisible="2" :numScroll="2" :responsiveOptions="responsiveOptions">
+    <Carousel :value="storeTrackables.trackables" :numVisible="2" :numScroll="2" :responsiveOptions="responsiveOptions">
       <template #item="slotProps">
         <TrackableCard :trackable="slotProps.data"
           trackable-owner="south-west"
