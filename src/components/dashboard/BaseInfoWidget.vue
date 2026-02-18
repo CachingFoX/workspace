@@ -1,20 +1,26 @@
 <script setup>
-import { onMounted } from 'vue'
+import { onBeforeMount, onMounted, ref, computed } from 'vue'
 import { useBaseStore } from '@/di/trackables.js'
 import Panel from '@/components/common/panel.vue'
+import { useModel, useSafeModel, defineGetterSetter } from '@/components/dashboard/interface.js'
+import { config } from '@vue/test-utils';
 
 const storeBase = useBaseStore();
 
-const props = defineProps({
-  storageKey: { type: String, required: false, default: 'infowidget' },
-});
+/* --- Dashboard widget interface --- */
+const localConfiguration = ref({});
+const modelConfiguration = defineModel('configuration');
+const configuration = useSafeModel(modelConfiguration, localConfiguration, 'configuration');
+const collapsed = defineGetterSetter(configuration, "collapsed", false)
+/* --------------------------------- */
 
 onMounted(() => {
   storeBase.init();
 });
 
 const baseProperties = {
-  'version': { name: 'REST API Version', icon: 'pi-tag' },
+  'short_name': { name: 'Name', icon: 'pi-tag'},
+  'version': { name: 'REST API Version', icon: 'pi-asterisk' },
   'database_url': { name: 'Database Location', icon: 'pi-database' },
   'upload_path': { name: 'Upload Folder', icon: 'pi-folder' }
 }
@@ -22,7 +28,7 @@ const baseProperties = {
 
 
 <template>
-  <Panel title="Base Information" title-icon="pi-info-circle" :storage-key="`${props.storageKey}`">
+  <Panel title="Base Information" title-icon="pi-info-circle" v-model:collapsed="collapsed">
     <div class="grid">
       <!-- known keys -->
       <template v-for="(value, key) in storeBase.baseInfo" :key="key">

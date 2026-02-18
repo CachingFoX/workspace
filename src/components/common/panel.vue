@@ -10,23 +10,18 @@ import { useLocalStorageRef } from '@/utils/localStorageRef'
 const props = defineProps({
   title: { type: String, required: true },
   titleIcon: { type: String, default: false, required: false, },
-  storageKey: { type: String, required: false, default: 'panel' },
   icons: { type: Object, required: false, default: ()=>[]},
   editable: { type: Boolean, required: false, default: false},
   badge: { type: Number, required: false, default: 0},
   menu: { type: Object, required: false, default: null }
 });
 
-const storage_key = computed(()=>{
-  return `${props.storageKey}.panel.collapsed`.replace(/\s+/g, '').toLowerCase();
-})
-
-const collapsed = useLocalStorageRef(storage_key.value, false);
-
-const model = defineModel('editing');
-const emit = defineEmits('editShow', 'editHide')
-
+const modelEditing = defineModel('editing');
+const modelCollapsed = defineModel('collapsed');
 const localEditing = ref(false);
+const localCollapsed = ref(false);
+
+const emit = defineEmits('editShow', 'editHide')
 const menu = ref(null);
 
 const toggle = (event) => {
@@ -36,16 +31,25 @@ const toggle = (event) => {
 
 const editing = computed({
   get() {
-    return model.value ?? localEditing.value
+    return modelEditing.value ?? localEditing.value
   },
   set(val) {
-    if (model.value !== undefined) {
-      // model.value = val      // controlled
+    localEditing.value = val
+    if (modelEditing.value !== undefined) {
       emit('update:editing', val)
-    } else {
-      localEditing.value = val // uncontrolled
     }
-    emit(val ? 'editShow' : 'editHide')
+    emit(val ? 'editShow' : 'editHide') // TODO remove?
+  }
+})
+const collapsed = computed({
+  get() {
+    return modelCollapsed.value ?? localCollapsed.value
+  },
+  set(val) {
+    localCollapsed.value = val
+    if (modelCollapsed.value !== undefined) {
+      emit('update:collapsed', val)
+    }
   }
 })
 
@@ -66,11 +70,16 @@ onBeforeMount(()=>{
     })
   }
 })
+
+function onToggle(e) {
+  //emit("toggle", e);
+}
+
 </script>
 
 
 <template>
-  <Panel class="m-2" toggleable v-model:collapsed="collapsed">
+  <Panel class="m-2" toggleable v-model:collapsed="collapsed" >
     <template #header>
       <slot name="header">
         <div class="flex align-items-center gap-2 flex-nowrap font-bold text-xl" style="flex-wrap: nowrap; align-items: center;" @click="collapsed = !collapsed">

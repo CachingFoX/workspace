@@ -1,20 +1,22 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue'
-import 'primeflex/primeflex.css';
+import { computed, ref } from 'vue'
 import Button from 'primevue/button';
 import ProgressSpinner from 'primevue/progressspinner';
-import TrackableTag from '@/components/TrackableTag.vue';
 import Panel from '@/components/common/panel.vue'
-import { seriesService } from "@/di/trackables.js"
 import CloudChip from '@/components/dashboard/CloudChip.vue'
-import { useRouter, useRoute } from 'vue-router';
+import { useModel, defineGetterSetter } from '@/components/dashboard/interface.js'
 
-const router = useRouter();
-const emit = defineEmits(['select']);
-
-const max = ref(10);
-const more = ref(false);
-const sort = ref('count_down');
+/* --- Dashboard widget interface --- */
+const localConfiguration = ref({});
+const modelConfiguration = defineModel('configuration');
+const configuration = useModel(modelConfiguration, localConfiguration);
+const collapsed = defineGetterSetter(configuration, "collapsed", false)
+const max = defineGetterSetter(configuration, "max", 10)
+const more = defineGetterSetter(configuration, "more", false)
+const sort = defineGetterSetter(configuration, "sort", 'count_down')
+/* Note: do not use configuration.collapse directly
+  nur über computed getter/setter auf configuration members zugreifen, ansonsten gibt es probleme beim speichern */
+/* --------------------------------- */
 
 const sort_functions = {
   'text_up': (items) => {
@@ -76,7 +78,6 @@ function onClick(e) {
 }
 
 const props = defineProps({
-  storageKey: { type: String, required: false, default: 'seriescloudwidget' },
   title: { type: String, required: true, default: '<No Title>' },
   titleIcon: { type: String, required: false, default: '' },
   items: { type: Object, required: true, default: null },
@@ -112,9 +113,10 @@ const badge = computed(()=>{
   <Panel
     :title="props.title"
     :title-icon="props.titleIcon"
-    :storage-key="`${props.storageKey}`"
     :badge="badge"
-    :menu="menuItems">
+    :menu="menuItems"
+    v-model:collapsed="collapsed"
+    >
 
     <div v-if="!props.ready" class="flex w-full justify-content-center">
       <ProgressSpinner/>

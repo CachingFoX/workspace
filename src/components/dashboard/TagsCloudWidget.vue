@@ -6,10 +6,6 @@ import CloudWidget from '@/components/dashboard/CloudWidget.vue'
 
 const router = useRouter();
 
-const props = defineProps({
-  storageKey: { type: String, required: false, default: 'tagscloudwidget' },
-});
-
 const ready = ref(false);
 const results = ref([]);
 
@@ -29,7 +25,6 @@ function onClick(e) {
   <CloudWidget
     title="Schlagwörter"
     title-icon="pi-tags"
-    :storage-key="`${props.storageKey}`"
     badge
     :items="results"
     :ready="ready"

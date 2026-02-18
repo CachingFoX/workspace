@@ -5,15 +5,17 @@ import Button from 'primevue/button';
 import Carousel from 'primevue/carousel';
 import TrackableCard from '../TrackableCard.vue';
 import Panel from '@/components/common/panel.vue'
-
+import { useModel, defineGetterSetter } from '@/components/dashboard/interface.js'
 import { useTrackableListStore } from '@/di/trackables.js'
 
 const storeTrackables = useTrackableListStore();
 
-const props = defineProps({
-  storageKey: { type: String, required: false, default: 'logininfowidget' },
-});
-
+/* --- Dashboard widget interface --- */
+const localConfiguration = ref({});
+const modelConfiguration = defineModel('configuration');
+const configuration = useModel(modelConfiguration, localConfiguration);
+const collapsed = defineGetterSetter(configuration, "collapsed", false)
+/* --------------------------------- */
 
 onMounted(() => {
   storeTrackables.fetchTrackables();
@@ -46,7 +48,8 @@ const xresponsiveOptions = ref([
 
 
 <template>
-  <Panel title="Trackables" title-icon="pi-bookmark" :storage-key="`${props.storageKey}`" :badge="storeTrackables.items.length">
+  <Panel title="Trackables" title-icon="pi-bookmark" :badge="storeTrackables.items.length"
+  v-model:collapsed="collapsed">
     <Carousel :value="storeTrackables.items" :numVisible="2" :numScroll="2" :responsiveOptions="responsiveOptions">
       <template #item="slotProps">
         <TrackableCard :trackable="slotProps.data"
