@@ -1,10 +1,12 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch, onBeforeMount } from 'vue'
 import Button from 'primevue/button';
 import ProgressSpinner from 'primevue/progressspinner';
 import Panel from '@/components/common/panel.vue'
 import CloudChip from '@/components/dashboard/CloudChip.vue'
 import { useSafeModel, defineGetterSetter } from '@/components/dashboard/interface.js'
+
+const emit = defineEmits('select')
 
 /* --- Dashboard widget interface --- */
 const localConfiguration = ref({});
@@ -49,18 +51,38 @@ const sort_functions = {
           },
 }
 
+function setSort(selectedItem) {
+  sort.value = selectedItem.value;
+}
+
+function updateMenu(newValue) {
+  basic_menu_items.value.forEach(item => {
+    if (item.group == 'sorting') {
+      item.checked = item.value ? (item.value === newValue) : false;
+    }
+  })
+}
+
+watch(sort, (newValue) => {
+  updateMenu(newValue)
+})
+
 const basic_menu_items = ref([
   { label: 'Name A-Z', icon: 'pi pi-sort-alpha-down',
-    command: () => { sort.value = 'text_up' },
+    value: 'text_up', group: 'sorting',
+    command: (e) => { setSort(e.item) },
   },
   { label: 'Name Z-A', icon: 'pi pi-sort-alpha-down-alt',
-    command: () => { sort.value = 'text_down' },
+    value: 'text_down', group: 'sorting',
+    command: (e) => { setSort(e.item) },
   },
   { label: 'Häufig',  icon: 'pi pi-sort-numeric-down-alt',
-    command: () => { sort.value = 'count_down' },
+    value: 'count_down', group: 'sorting',
+    command: (e) => { setSort(e.item) },
   },
   { label: 'Selten', icon: 'pi pi-sort-numeric-down',
-    command: () => { sort.value = 'count_up' },
+    value: 'count_up', group: 'sorting',
+    command: (e) => { setSort(e.item) },
   },
 ]);
 
@@ -106,6 +128,10 @@ const menuItems = computed(()=>{
 
 const badge = computed(()=>{
   return props.badge == null ? null : props.items.length
+})
+
+onBeforeMount(()=>{
+  updateMenu(sort.value);
 })
 </script>
 

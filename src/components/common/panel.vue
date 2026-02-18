@@ -105,7 +105,17 @@ function onToggle(e) {
     <template #icons>
       <Button v-for="item in props.icons" :icon="item.icon" severity="secondary" rounded text @click="item.action" />
       <Button icon="pi pi-bars" severity="secondary" rounded text @click="toggle" v-if="props.menu"/>
-      <Menu ref="menu" id="config_menu" :model="props.menu" popup />
+      <Menu ref="menu" id="config_menu" :model="props.menu" popup>
+        <template #item="{ item, props }">
+            <a v-ripple class="flex items-center gap-2 w-full" v-bind="props.action">
+              <span class="w-1 flex justify-center">
+                <i v-if="item.checked" class="pi pi-check"></i>
+              </span>
+              <!-- <span :class="item.icon" /> -->
+              <span>{{ item.label }}</span>
+            </a>
+        </template>
+      </Menu>
     </template>
     <Divider class="m-0 p-0 mb-4"/>
     <slot name="default"/>
