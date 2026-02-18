@@ -5,7 +5,7 @@ import Button from 'primevue/button';
 import Carousel from 'primevue/carousel';
 import TrackableCard from '../TrackableCard.vue';
 import Panel from '@/components/common/panel.vue'
-import { useModel, defineGetterSetter } from '@/components/dashboard/interface.js'
+import { useSafeModel, defineGetterSetter } from '@/components/dashboard/interface.js'
 import { useTrackableListStore } from '@/di/trackables.js'
 
 const storeTrackables = useTrackableListStore();
@@ -13,7 +13,7 @@ const storeTrackables = useTrackableListStore();
 /* --- Dashboard widget interface --- */
 const localConfiguration = ref({});
 const modelConfiguration = defineModel('configuration');
-const configuration = useModel(modelConfiguration, localConfiguration);
+const configuration = useSafeModel(modelConfiguration, localConfiguration);
 const collapsed = defineGetterSetter(configuration, "collapsed", false)
 /* --------------------------------- */
 

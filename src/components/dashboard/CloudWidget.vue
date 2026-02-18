@@ -4,12 +4,12 @@ import Button from 'primevue/button';
 import ProgressSpinner from 'primevue/progressspinner';
 import Panel from '@/components/common/panel.vue'
 import CloudChip from '@/components/dashboard/CloudChip.vue'
-import { useModel, defineGetterSetter } from '@/components/dashboard/interface.js'
+import { useSafeModel, defineGetterSetter } from '@/components/dashboard/interface.js'
 
 /* --- Dashboard widget interface --- */
 const localConfiguration = ref({});
 const modelConfiguration = defineModel('configuration');
-const configuration = useModel(modelConfiguration, localConfiguration);
+const configuration = useSafeModel(modelConfiguration, localConfiguration);
 const collapsed = defineGetterSetter(configuration, "collapsed", false)
 const max = defineGetterSetter(configuration, "max", 10)
 const more = defineGetterSetter(configuration, "more", false)

@@ -2,7 +2,7 @@
 import { onBeforeMount, onMounted, ref, computed } from 'vue'
 import { useBaseStore } from '@/di/trackables.js'
 import Panel from '@/components/common/panel.vue'
-import { useModel, useSafeModel, defineGetterSetter } from '@/components/dashboard/interface.js'
+import { useSafeModel, defineGetterSetter } from '@/components/dashboard/interface.js'
 import { config } from '@vue/test-utils';
 
 const storeBase = useBaseStore();

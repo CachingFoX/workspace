@@ -6,6 +6,7 @@ import Badge from 'primevue/badge'
 import Divider from 'primevue/divider';
 import Menu from 'primevue/menu';
 import { useLocalStorageRef } from '@/utils/localStorageRef'
+import { useSafeModel, defineGetterSetter } from '@/components/dashboard/interface.js'
 
 const props = defineProps({
   title: { type: String, required: true },
@@ -16,12 +17,13 @@ const props = defineProps({
   menu: { type: Object, required: false, default: null }
 });
 
+const emit = defineEmits();
+
 const modelEditing = defineModel('editing');
 const modelCollapsed = defineModel('collapsed');
 const localEditing = ref(false);
 const localCollapsed = ref(false);
 
-const emit = defineEmits('editShow', 'editHide')
 const menu = ref(null);
 
 const toggle = (event) => {
@@ -38,9 +40,9 @@ const editing = computed({
     if (modelEditing.value !== undefined) {
       emit('update:editing', val)
     }
-    emit(val ? 'editShow' : 'editHide') // TODO remove?
   }
 })
+
 const collapsed = computed({
   get() {
     return modelCollapsed.value ?? localCollapsed.value

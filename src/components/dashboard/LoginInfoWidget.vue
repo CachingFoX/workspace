@@ -2,7 +2,7 @@
 import { onMounted, ref, computed } from 'vue'
 import { useTokenStore } from '@/di/trackables.js'
 import Panel from '@/components/common/panel.vue'
-import { useModel, defineGetterSetter } from '@/components/dashboard/interface.js'
+import { useSafeModel, defineGetterSetter } from '@/components/dashboard/interface.js'
 
 const storeToken = useTokenStore();
 const tokenData = ref({});
@@ -10,7 +10,7 @@ const tokenData = ref({});
 /* --- Dashboard widget interface --- */
 const localConfiguration = ref({});
 const modelConfiguration = defineModel('configuration');
-const configuration = useModel(modelConfiguration, localConfiguration);
+const configuration = useSafeModel(modelConfiguration, localConfiguration);
 const collapsed = defineGetterSetter(configuration, "collapsed", false)
 /* Note: do not use configuration.collapse directly
   nur über computed getter/setter auf configuration members zugreifen, ansonsten gibt es probleme beim speichern */
