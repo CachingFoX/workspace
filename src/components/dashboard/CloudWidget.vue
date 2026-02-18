@@ -104,11 +104,11 @@ const props = defineProps({
   titleIcon: { type: String, required: false, default: '' },
   items: { type: Object, required: true, default: null },
   ready: { type: Boolean, required: false, default: false },
-  menu: { type: Object, required: true, default: null },
+  menu: { type: Object, required: false, default: null },
 
   textLabel: { type: String, default: 'name', required: false },
   badgeLabel: { type: String, default: 'count', required: true },
-  imageLabel: { type: String, default: 'icon', required: true },
+  imageLabel: { type: String, default: 'icon', required: false },
   icon: { type: String, default: null, required: false },
   clickable: { type: Boolean, default: false, required: false },
   emptyText: { type: String, default: "<no text>", required: false },

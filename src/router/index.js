@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import List from '../views/list.vue';
+import '@/main.css'
+import 'primeflex/primeflex.css';
+import 'primeicons/primeicons.css'
 import { useBaseStore } from '../stores/base.js'
 // import About from '../views/About.vue';
 import NewTrackable from '../NewTrackable.vue'; // ../views/...
