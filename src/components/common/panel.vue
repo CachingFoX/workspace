@@ -6,7 +6,9 @@ import Badge from 'primevue/badge'
 import Divider from 'primevue/divider';
 import Menu from 'primevue/menu';
 import { useLocalStorageRef } from '@/utils/localStorageRef'
-import { useSafeModel, defineGetterSetter } from '@/components/dashboard/interface.js'
+import { useSafeModel, defineGetterSetter, defineModelGetterSetter } from '@/components/dashboard/interface.js'
+
+
 
 const props = defineProps({
   title: { type: String, required: true },
@@ -21,8 +23,10 @@ const emit = defineEmits();
 
 const modelEditing = defineModel('editing');
 const modelCollapsed = defineModel('collapsed');
-const localEditing = ref(false);
-const localCollapsed = ref(false);
+const collapsed = defineModelGetterSetter(modelCollapsed, 'collapsed', false, emit)
+const editing = defineModelGetterSetter(modelEditing, 'editing', false, emit)
+// const localEditing = ref(false);
+// const localCollapsed = ref(false);
 
 const menu = ref(null);
 
@@ -30,7 +34,7 @@ const toggle = (event) => {
     menu.value.toggle(event);
 };
 
-
+/*
 const editing = computed({
   get() {
     return modelEditing.value ?? localEditing.value
@@ -45,15 +49,18 @@ const editing = computed({
 
 const collapsed = computed({
   get() {
+    console.log("Panle.get")
     return modelCollapsed.value ?? localCollapsed.value
   },
   set(val) {
+    console.log("Panle.set")
     localCollapsed.value = val
     if (modelCollapsed.value !== undefined) {
       emit('update:collapsed', val)
     }
   }
 })
+*/
 
 function onEdit() {
   if (collapsed.value) {

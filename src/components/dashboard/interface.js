@@ -1,4 +1,5 @@
-import { computed } from 'vue'
+import { computed, ref, defineEmits } from 'vue'
+// const emit = defineEmits()
 
 export function defineGetterSetter(safeModel, member, defaultValue) {
   return computed({
@@ -13,13 +14,40 @@ export function useSafeModel(model, local, modelName) {
       console.log("useSafeModel.get()")
       return model.value ?? local.value
     },
-    set(val) {
+    set(newValue) {
       // note - wird nicht aufgerufen
-      console.log("set", val)
-      local.value = val
+      console.log("useSafeModel.set", newValue)
+      local.value = newValue
       if (model.value !== undefined) {
-        emit(`update:${modelName}`, val)
+        emit(`update:${modelName}`, newValue)
       }
+    }
+  })
+}
+
+export function defineModelGetterSetter(model, modelName, defaultValue, emit) {
+  const local = ref(defaultValue);
+  return computed({
+    get() {
+      return model.value ?? local.value
+    },
+    set(newValue) {
+      console.log("set", newValue)
+      local.value = newValue;
+      if (model.value !== undefined) {
+        emit(`update:${modelName}`, newValue)
+      }
+    }
+  })
+}
+
+export function defineSafeGetterSetterXX(model, local, member, defaultValue) {
+  return computed({
+    get() {
+      return model.value ?? localCollapsed.value
+    },
+    set(newValue) {
+      safeModel.value[member] = newValue;
     }
   })
 }

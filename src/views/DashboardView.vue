@@ -52,14 +52,6 @@ const evenWidgets = computed(() =>
 const oddWidgets = computed(() =>
   widgets.value.filter((_, index) => index % 2 !== 0)
 )
-
-function onUpdateWidgetConfig(widget, newValue) {
-  console.log("widget", widget)
-  console.log("newValue", newValue)
-  widget.configuration = newValue;
-  console.log("widget", widget)
-  console.log("Dashboard", dashboardConfiguration.value)
-}
 </script>
 
 <template>
