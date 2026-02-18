@@ -15,6 +15,7 @@ import TrackableProperties from '@/components/trackable/properties.vue'
 import TrackableTags from '@/components/trackable/tags.vue'
 import TrackableImages from '@/components/trackable/images.vue'
 import TrackableLinkedTrackables from '@/components/trackable/linkedTrackables.vue'
+import TrackableSameSeries from '@/components/trackable/TrackablesSameSeries.vue'
 
 const confirm = useConfirm();
 const router = useRouter();
@@ -66,6 +67,7 @@ async function onDelete() {
       <TrackableTags/>
       <TrackableProperties/>
       <TrackableLinkedTrackables property="linkedTrackables"/>
+      <TrackableSameSeries :series="storeTrackable.series" :self="storeTrackable.private_code"/>
     </template>
     <template v-slot:footer>
       <div class="flex align-items-center pt-2 pb-2">
