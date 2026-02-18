@@ -36,7 +36,7 @@ const baseProperties = {
 }
 
 const trackables = computed(()=>{
-  return props.trackables ? props.trackables.length : storeTrackables.items.length;
+  return props.trackables ? props.trackables.length : storeTrackables.trackables.length;
 })
 </script>
 
