@@ -2,9 +2,6 @@
 import { computed,ref, watch, onBeforeMount, onMounted } from 'vue'
 import PropertySimple from '@/components/trackable/details/property_simple.vue'
 import { geocachingService } from "@/di/trackables.js"
-import { useRouter } from 'vue-router';
-
-const router = useRouter();
 
 const props = defineProps({
   value: { type: Object, default: null, required: true },
