@@ -8,7 +8,9 @@ import TrackableUnknown from '@/components/trackable/unknown.vue';
 import BaseLayout from '@/components/layout/BaseLayout.vue';
 import CenterLayout from '@/components/layout/CenterLayout.vue';
 import Navbar from '@/components/common/Navbar.vue';
-import { STATE_UNKNOWN, STATE_LOADING, STATE_NO_INIT, STATE_READY } from '../stores/trackableStore.js'
+import { STATE_UNKNOWN,
+  STATE_LOADING_DB, STATE_LOADING_HQ,
+  STATE_NO_INIT, STATE_READY } from '../stores/trackableStore.js'
 import { useRoute, useRouter } from 'vue-router';
 import { useTrackableStore } from "../di/trackables.js"
 import { useTagsStore } from "@/di/trackables.js"
@@ -81,9 +83,13 @@ onMounted(async () => {
     <template v-slot:header>
       <Navbar/>
     </template>
+
+Fetch data for trackable {{storeTrackable.trackingNumber}}
+
     <template v-slot:mainstage>
-      <TrackableLoad          v-if="storeTrackable.state == STATE_NO_INIT"/>
-      <TrackableLoad     v-else-if="storeTrackable.state == STATE_LOADING"/>
+      <TrackableLoad          v-if="storeTrackable.state == STATE_NO_INIT" text="Lade Trackable"/>
+      <TrackableLoad     v-else-if="storeTrackable.state == STATE_LOADING_DB" :text="`Lade ${trackingNumber}`"/>
+      <TrackableLoad     v-else-if="storeTrackable.state == STATE_LOADING_HQ" :text="`Lade ${trackingNumber} von www.geocaching.com`"/>
       <TrackableUnknown  v-else-if="storeTrackable.state == STATE_UNKNOWN" :tracking-number="trackingNumber"/>
       <TrackableDetails  v-else-if="storeTrackable.state == STATE_READY" />
       <CenterLayout     v-else>

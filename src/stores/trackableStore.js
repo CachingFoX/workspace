@@ -2,8 +2,11 @@ import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 
 export const STATE_NO_INIT = "NO_INIT";
-export const STATE_LOADING = "LOADING";
+export const STATE_LOADING_DB = "LOADING_DB";
+export const STATE_LOADING_HQ = "LOADING_HQ";
 export const STATE_UNKNOWN = "UNKNOWN";
+export const STATE_UNKNOWN_DB = "UNKNOWN_DB";
+export const STATE_UNKNOWN_HQ = "UNKNOWN_HQ";
 export const STATE_READY = "READY";
 export const STATE_FAIL = "FAIL";
 
@@ -32,10 +35,7 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
 
       try {
         _progress.value = true;
-        _state.value = STATE_LOADING;
-        console.log(tracking_number)
-        // TODO _state.value = STATE_LOADING; new state to signal access to HQ?
-
+        _state.value = STATE_LOADING_HQ;
         const result = await geocachingService.getTrackableData(tracking_number);
         // TODO undefined => new state READLY UNKNOWN / NOT IN THE SYSTEM
         _data.value = result;
@@ -73,7 +73,7 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
 
       try {
         _progress.value = true;
-        _state.value = STATE_LOADING;
+        _state.value = STATE_LOADING_DB;
         _data.value = await trackableService.getTrackableByNumber(tracking_number);
         if (_data.value !== undefined) {
           _properties.value = await trackablePropertiesService.getTrackableProperties(trackable_id.value);
@@ -246,7 +246,9 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
     const data = computed(() => _data.value);
     const state = computed(() => _state.value);
     const progress = computed(() => _progress.value);
-    const complete = computed(() => _complete.value);
+    const complete = computed(() => _complete.value); // TODO obsolete
+    const from_database = computed(() => _complete.value);
+
     const properties = computed(() => _properties.value);
 
     const trackingNumber = computed(() => {
@@ -286,7 +288,8 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
       data,
       state,
       progress,
-      complete,
+      complete, // TODO obsolete
+      from_database,
 
       // const fields
       activated,
@@ -332,109 +335,3 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
     };
   });
 };
-
-
-/*
-
-const createNewTag = (tag_name) => {
-  TagService.newTagForTrackableId(private_code, tag_name).then((result) => {
-    // TODO update trackable tags
-    tagStore.loadAllTags();
-  });
-};
-
-const removeTag = (tag_id) => {
-  console.log("removeTag", private_code, tag_id)
-  TagService.removeTagForTrackableId(private_code, tag_id).then((result)=>{
-    // update list of tags
-    loadTrackableTags(private_code);
-  });
-}
-
-const addTag = (tag_id) => {
-  console.log("addTag", private_code, tag_id)
-  TagService.setTagForTrackableId(private_code, tag_id).then((result) => {
-    // update list of tags
-    loadTrackableTags(private_code);
-  });
-}
-
-const loadTrackableTags = (trackable_id) => {
-  TagService.getTagsByTrackableId(trackable_id).then((result) => {
-    trackable_tags.value = result;
-  });
-}
-
-const sendUpdate = async () => {
-  let r = diffDeep(data.value, copyData);
-  console.log(copyData);
-  console.log(r)
-
-  try {
-    const response = await fetch(`http://localhost:8000/trackables/${private_code}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json"  // Wir senden JSON
-      },
-      body: JSON.stringify(r)  // JS-Objekt in JSON umwandeln
-    });
-    const result = await response.json();
-
-    data.value = result;
-    copyData = { ...result };
-  } catch (err) {
-    console.error(err);
-    error.value = err
-  } finally {
-    isLoading.value = false
-  }
-};
-*/
-
-/*
-
-export const useTrackableViewStore = defineStore('trackable-viewx', () => {
-  const _route = useRoute()
-
-  const trackable_data = ref({});
-  const _state = ref(STATE_NO_INIT);
-
-  function fetch(tracking_code) {
-    _state.value = STATE_LOADING;
-    trackable_data.value = {};
-
-    try {
-      TrackableService.getTrackableByTrackingNumber(tracking_code).then((result) => {
-        if (result.okay) {
-          trackable_data.value = result.trackable;
-          // TODO tagStore.loadAllTags();
-          // TODO loadTrackableTags(private_code);
-          _state.value = STATE_READY;
-        } else {
-          _state.value = STATE_UNKNOWN;
-        }
-      });
-    } catch (err) {
-      console.error(err);
-      _state.value = STATE_FAIL;
-    } finally {
-    }
-  }
-
-
-  function init() {
-  }
-
-  const trackable_reference_code = computed(() => '??????');
-  const state = computed(() => _state.value);
-
-  return {
-    fetch,
-    init,
-    state,
-    trackable_data,
-    trackable_reference_code,
-  }
-});
-
-*/
