@@ -61,10 +61,10 @@ function onClick(item) {
 
 <template>
   <div class="flex">
-    <div class="flex-grow-0" >
-      <div class="flex justify-content-center align-items-center main" :class="buttons.length ? 'select' : ''" style="height: 33px">
-        <i v-if="props.icon" class="pi pl-2" :class="props.icon"/>
-        <span class="pl-2 pr-2 no-select">{{props.value}}</span>
+    <div class="flex justify-content-center align-items-center main" :class="buttons.length ? 'select' : ''" style="height: 32px">
+      <div class="flex-shrink-0"><i v-if="props.icon" class="pi pl-2" :class="props.icon"/></div>
+      <div class="flex-shrink-1 pl-2 pr-2 no-select no-wrap">{{props.value}}</div>
+      <div class="flex-shrink-0">
         <Button v-for="item in buttons"
           :icon="`pi ${item.icon}`"
           :label="item.label"
@@ -74,7 +74,6 @@ function onClick(item) {
         />
       </div>
     </div>
-    <div class="flex-grow-1"></div>
   </div>
 </template>
 

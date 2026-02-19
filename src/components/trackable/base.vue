@@ -15,9 +15,10 @@ import PropertyCode from '@/components/trackable/details/property_code.vue'
 const storeTrackable = useTrackableStore();
 
 const items = ref([
+  { 'name': 'Name',           'component': PropertyString,   value: storeTrackable.name },
+  { 'name': 'Serie',          'component': PropertySeries, value: storeTrackable.series },
   { 'name': 'Trackable Code', 'component': PropertyCode,   value: storeTrackable.private_code },
   { 'name': 'Public Code',    'component': PropertyCode,   value: storeTrackable.public_code },
-  { 'name': 'Serie',          'component': PropertySeries, value: storeTrackable.series },
   { 'name': 'Owner',          'component': PropertyOwner,  value: { 'activated': storeTrackable.activated, 'owner': storeTrackable.owner } },
   { 'name': 'Created',        'component': PropertyDateTime, value: storeTrackable.created },
   { 'name': 'Updated',        'component': PropertyDateTime, value: storeTrackable.updated },
@@ -25,23 +26,27 @@ const items = ref([
 </script>
 
 <template>
-  <PersistentPanel storage-key="trackable.details.basics">
-    <template #header>
-      <div class="flex align-items-center gap-2">
-        <Avatar :image="storeTrackable.icon" shape="circle" />
-        <span class="font-bold text-xl">{{ storeTrackable.name }}</span>
-      </div>
-    </template>
+  <div class="panel mx-2 p-2 px-3">
     <div class="grid-container">
       <template v-for="(item, index) in items" :key="index" >
-        <div v-if="item.value">{{item.name}}</div>
-        <div v-if="item.value"><component :is="item.component" :value="item.value"></component></div>
+        <div v-if="item.name" class="no-wrap">{{item.name}}</div>
+        <div v-else></div>
+        <div v-if="item.name"><component :is="item.component" :value="item.value"></component></div>
+        <div v-else></div>
       </template>
     </div>
-  </PersistentPanel>
+  </div>
 </template>
 
 <style scoped>
+.panel {
+  display: block;
+  border: 1px solid var(--p-panel-border-color);
+  border-radius: var(--p-panel-border-radius);
+  background: var(--p-panel-background);
+  color: var(--p-panel-color);
+}
+
 .title {
   margin:0;
   font-size: 26pt;
@@ -51,7 +56,7 @@ const items = ref([
 /* Container für das Grid */
 .grid-container {
   display: grid; /* Grid aktivieren */
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto 1fr; /* auto 2fr auto 1fr; */
   grid-gap: 2px; /* Abstand zwischen den Elementen */
   column-gap: 10px;
   padding: 0;
