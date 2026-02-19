@@ -44,7 +44,7 @@ function onRemove(e) {
       <template v-for="property in filteredProperties" :key="property.id">
         <div class="grid-item left" >{{ property.property_name }}</div>
         <div class="grid-item right">
-          <PropertyString v-if="property.property_type == 'string'"
+          <PropertyString v-if="false && property.property_type == 'string'"
             :value="property.property_value"
             :data="property"
             :editable="onEdit"
