@@ -8,7 +8,6 @@ import { useToast } from "primevue/usetoast";
 import { useTrackableStore } from "@/di/trackables.js"
 import { useConfirm } from "primevue/useconfirm";
 // components
-import TrackableGridItem from '@/components/TrackableGridItem.vue';
 import PersistentPanel from '@/components/trackable/panel.vue'
 import PropertySeries from '@/components/trackable/details/property_series.vue'
 import PropertyString from '@/components/trackable/details/property_string.vue'
