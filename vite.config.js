@@ -20,7 +20,7 @@ export default defineConfig({
     __APP_VERSION__: JSON.stringify(pkg.version),
   },
   server: {
-    host: '0.0.0.0', // <-- erlaubt externe Verbindungen
+    host: true, // '0.0.0.0', // <-- erlaubt externe Verbindungen
     port: 5173,
     strictPort: true,
   },

@@ -57,7 +57,7 @@
         {
             "label": "API service (develop)",
             "type": "shell",
-            "command": "source /workspace/.venv/bin/activate && python3 -m uvicorn backend.main:app --reload",
+            "command": "source /workspace/.venv/bin/activate && python3 -m uvicorn backend.main:app --reload --host 0.0.0.0",
             "group": "none",
             "icon": {
                 "id": "cloud-upload"
@@ -70,7 +70,7 @@
         {
             "label": "API service (prod)",
             "type": "shell",
-            "command": "source /workspace/.venv/bin/activate && python3 -m uvicorn backend.main_prod:app --reload",
+            "command": "source /workspace/.venv/bin/activate && python3 -m uvicorn backend.main_prod:app --reload --host 0.0.0.0",
             "group": "none",
             "icon": {
                 "id": "cloud-upload"
