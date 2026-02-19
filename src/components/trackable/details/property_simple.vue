@@ -3,31 +3,52 @@ import { computed,ref, watch, onBeforeMount, onMounted } from 'vue'
 import Button from 'primevue/button'
 import { geocachingService } from "@/di/trackables.js"
 import { useRouter } from 'vue-router';
+import { useToast } from 'primevue';
 
 const router = useRouter();
 
 const props = defineProps({
   value: { type: String, default: null, required: true },
+  data: { type: Object, default: null, required: false },
   icon: { type: String, default: null, required: true },
   clipboard: { type: Boolean, default: false, required: false },
   buttons: { type: Object, default: [], required: false },
 })
 
 const buttons = ref([]);
+const toast = useToast();
 
 onBeforeMount(()=>{
   buttons.value = buttons.value.concat(props.buttons)
 
   if (props.clipboard) {
     buttons.value.push({ icon: 'pi-copy', command: ()=>{
-      console.log("Clipboard", props.clipboard)
+
+      navigator.clipboard.writeText(props.value)
+        .then(() => {
+          toast.add({
+            severity: 'info',
+            summary: `In die Zwischenablage kopiert`,
+            detail: props.value,
+            life: 1000,
+          });
+        })
+        .catch(err => {
+          toast.add({
+            severity: 'danger',
+            summary: `Fehler beim Zugriff auf die Zwischenablage`,
+            // detail: "props.value",
+            life: 2000,
+          });
+          console.error("Fehler beim Kopieren:", err);
+        });
     }})
   }
 })
 
 function onClick(item) {
   if (item.command) {
-    item.command();
+    item.command(props.data);
   }
   if (item.route) {
     router.push(item.route);
@@ -35,7 +56,6 @@ function onClick(item) {
   if (item.link) {
     window.open(item.link, "_blank" );
   }
-
 }
 </script>
 
@@ -48,6 +68,7 @@ function onClick(item) {
         <Button v-for="item in buttons"
           :icon="`pi ${item.icon}`"
           :label="item.label"
+          :severity="item.severity ?? ''"
           size="small"
           @click="onClick(item)"
         />
