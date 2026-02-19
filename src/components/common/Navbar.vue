@@ -149,7 +149,7 @@ const items = ref([
           <IconField  >
               <InputIcon class="pi pi-search" />
               <InputText v-model="searchModel"
-                placeholder="Search"
+                placeholder="Tracking Code"
                 ref="searchInput"
                 class="search-input"
                 :class="{ 'focused': isFocused }"
@@ -165,8 +165,8 @@ const items = ref([
               </div>
           </IconField>
 
-          <Button label="New Trackable" icon="pi pi-plus" @click="onNewTrackable"/>
-          <Button label="Logout" as="router-link" to="/logout"/>
+          <!--<Button label="New Trackable" icon="pi pi-plus" @click="onNewTrackable"/>-->
+          <!--<Button label="Logout" as="router-link" to="/logout"/>-->
           <Avatar :label="storeBase.username1stLetter" class="ml-2 mr-2" style="background-color: #ece9fc; color: #2a1261" shape="circle" />
         </div>
       </template>
@@ -213,7 +213,7 @@ const items = ref([
 }
 
 .search-input {
-  width: 200px;
+  width: 250px;
 }
 .p-inputtext.focused {
   width: 300px;
