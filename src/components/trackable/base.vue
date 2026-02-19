@@ -3,10 +3,7 @@ import { computed,ref, watch, onBeforeMount, onMounted } from 'vue'
 // prime vue
 import Panel from 'primevue/panel';
 import Avatar from 'primevue/avatar';
-import { useRouter, useRoute } from 'vue-router';
-import { useToast } from "primevue/usetoast";
 import { useTrackableStore } from "@/di/trackables.js"
-import { useConfirm } from "primevue/useconfirm";
 // components
 import PersistentPanel from '@/components/trackable/panel.vue'
 import PropertySeries from '@/components/trackable/details/property_series.vue'
@@ -15,19 +12,7 @@ import PropertyDateTime from '@/components/trackable/details/property_datetime.v
 import PropertyOwner from '@/components/trackable/details/property_owner.vue'
 import PropertyCode from '@/components/trackable/details/property_code.vue'
 
-
-const confirm = useConfirm();
-const router = useRouter();
-const route = useRoute();
-const toast = useToast();
 const storeTrackable = useTrackableStore();
-
-const xOwner = computed(() => {
-  return
-});
-const xCreatedDate = computed(()=> {
-  console.log(storeTrackable.created);
-});
 
 const items = ref([
   { 'name': 'Trackable Code', 'component': PropertyCode,   value: storeTrackable.private_code },
@@ -37,15 +22,6 @@ const items = ref([
   { 'name': 'Created',        'component': PropertyDateTime, value: storeTrackable.created },
   { 'name': 'Updated',        'component': PropertyDateTime, value: storeTrackable.updated },
 ]);
-
-
-function yyy(x) {
-  if (typeof x == 'string') {
-    return storeTrackable[x]
-  } else {
-    return x.value;
-  }
-}
 </script>
 
 <template>
@@ -61,7 +37,6 @@ function yyy(x) {
         <div v-if="item.value">{{item.name}}</div>
         <div v-if="item.value"><component :is="item.component" :value="item.value"></component></div>
       </template>
-
     </div>
   </PersistentPanel>
 </template>
