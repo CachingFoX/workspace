@@ -10,6 +10,10 @@ import { useConfirm } from "primevue/useconfirm";
 // components
 import TrackableGridItem from '@/components/TrackableGridItem.vue';
 import PersistentPanel from '@/components/trackable/panel.vue'
+import PropertySeries from '@/components/trackable/details/property_series.vue'
+import PropertyString from '@/components/trackable/details/property_string.vue'
+import PropertyOwner from '@/components/trackable/details/property_owner.vue'
+import PropertyCode from '@/components/trackable/details/property_code.vue'
 
 
 const confirm = useConfirm();
@@ -19,17 +23,20 @@ const toast = useToast();
 const storeTrackable = useTrackableStore();
 
 const xOwner = computed(() => {
-  return storeTrackable.activated ? storeTrackable.owner : "not activated"
+  return
+});
+const xCreatedDate = computed(()=> {
+  console.log(storeTrackable.created);
 });
 
-const items = [
-  { 'name': 'Trackable Code', 'model': 'private_code', 'type': 'read-only' },
-  { 'name': 'Public Code', 'model': 'public_code', 'type': 'read-only' },
-  { 'name': 'Serie', 'model': 'series', 'type': 'read-only' },
-  { 'name': 'Owner', 'model': xOwner, 'type': 'read-only' },
-  { 'name': 'Created', 'model': 'created', 'type': 'read-only' },
-  { 'name': 'Updated', 'model': 'updated', 'type': 'read-only'},
-]
+const items = ref([
+  { 'name': 'Trackable Code', 'component': PropertyCode,   value: storeTrackable.private_code },
+  { 'name': 'Public Code',    'component': PropertyCode,   value: storeTrackable.public_code },
+  { 'name': 'Serie',          'component': PropertySeries, value: storeTrackable.series },
+  { 'name': 'Owner',          'component': PropertyOwner,  value: { 'activated': storeTrackable.activated, 'owner': storeTrackable.owner } },
+  { 'name': 'Created',        'component': PropertyString, value: storeTrackable.created },
+  { 'name': 'Updated',        'component': PropertyString, value: storeTrackable.updated },
+]);
 
 
 function yyy(x) {
@@ -50,14 +57,11 @@ function yyy(x) {
       </div>
     </template>
     <div class="grid-container">
-      <TrackableGridItem v-for="(item, index) in items" :key="index"
-        :label="item.name" :attribute="item.model" :type="item.type">
-        <template #read-only>
-          <div class="px-2">
-            <span class="px-1" style="border: 1px solid transparent;">{{ yyy(item.model) }}</span>
-          </div>
-        </template>
-      </TrackableGridItem>
+      <template v-for="(item, index) in items" :key="index" >
+        <div v-if="item.value">{{item.name}}</div>
+        <div v-if="item.value"><component :is="item.component" :value="item.value"></component></div>
+      </template>
+
     </div>
   </PersistentPanel>
 </template>
@@ -73,7 +77,8 @@ function yyy(x) {
 .grid-container {
   display: grid; /* Grid aktivieren */
   grid-template-columns: auto 1fr;
-  grid-gap: 10px; /* Abstand zwischen den Elementen */
+  grid-gap: 2px; /* Abstand zwischen den Elementen */
+  column-gap: 10px;
   padding: 0;
 }
 
