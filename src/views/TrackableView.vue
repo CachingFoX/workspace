@@ -70,7 +70,7 @@ onBeforeMount(()=>{
 })
 
 onMounted(async () => {
-  // TODO await storeTags.load();
+  await storeTags.load();
   // TODO place it better
   storeTrackable.loadTrackable(trackingNumber.value);
 })

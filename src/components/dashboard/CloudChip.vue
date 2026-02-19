@@ -6,12 +6,13 @@ import Chip from 'primevue/chip';
 
 const props = defineProps({
   item: { type: Object, default: {}, required: true },
-  textLabel: { type: String, default: 'name', required: false },
-  badgeLabel: { type: String, default: 'count', required: true },
-  imageLabel: { type: String, default: 'icon', required: true },
-  icon: { type: String, default: null, required: false },
   clickable: { type: Boolean, default: false, required: false },
-  emptyText: { type: String, default: "<no text>", required: false },
+
+  textLabel: { type: String, default: null, required: false },
+  badgeLabel: { type: String, default: null, required: true },
+  imageLabel: { type: String, default: null, required: true },
+  icon: { type: String, default: null, required: false },
+  emptyText: { type: String, default: null, required: false },
   emptyIcon: { type: String, default: null, required: false }
 });
 
@@ -51,7 +52,6 @@ function onClick(e) {
       </div>
     </template>
   </Chip>
-
 </template>
 
 <style scoped>

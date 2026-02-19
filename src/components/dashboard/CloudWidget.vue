@@ -22,6 +22,9 @@ const sort = defineGetterSetter(configuration, "sort", 'count_down')
 
 const sort_functions = {
   'text_up': (items) => {
+            if (!props.textLabel?.length) {
+              return true;
+            }
             items.sort( (a,b) => {
               let _a = a[props.textLabel]
               let _b = b[props.textLabel]
@@ -29,10 +32,15 @@ const sort_functions = {
             } )
           },
   'text_down': (items) => {
+            if (!props.textLabel?.length) {
+              return true;
+            }
             items.sort( (a,b) => {
-              let _a = a[props.textLabel]
-              let _b = b[props.textLabel]
-              return _b.localeCompare(_a)
+              if (props.textLabel?.length) {
+                let _a = a[props.textLabel]
+                let _b = b[props.textLabel]
+                return _b.localeCompare(_a)
+              }
             } )
           },
   'count_up': (items) => {
@@ -105,13 +113,13 @@ const props = defineProps({
   items: { type: Object, required: true, default: null },
   ready: { type: Boolean, required: false, default: false },
   menu: { type: Object, required: false, default: null },
-
-  textLabel: { type: String, default: 'name', required: false },
-  badgeLabel: { type: String, default: 'count', required: true },
-  imageLabel: { type: String, default: 'icon', required: false },
-  icon: { type: String, default: null, required: false },
   clickable: { type: Boolean, default: false, required: false },
-  emptyText: { type: String, default: "<no text>", required: false },
+
+  textLabel: { type: String, default: null, required: false },
+  badgeLabel: { type: String, default: null, required: true },
+  imageLabel: { type: String, default: null, required: false },
+  icon: { type: String, default: null, required: false },
+  emptyText: { type: String, default: null, required: false },
   emptyIcon: { type: String, default: null, required: false },
   badge: { type: Boolean, default: null, required: false }
 });
@@ -148,7 +156,7 @@ onBeforeMount(()=>{
       <ProgressSpinner/>
     </div>
 
-    <div v-else class="flex flex-wrap gap-1">
+    <div v-else class="flex flex-wrap gap-2 px-2 pb-2">
       <CloudChip v-for="(item, index) in sorted_items" :key="index"
         v-show="(index < max || more)"
         class="mr-1"
