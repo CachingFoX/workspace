@@ -11,6 +11,7 @@ import { useConfirm } from "primevue/useconfirm";
 import PersistentPanel from '@/components/trackable/panel.vue'
 import PropertySeries from '@/components/trackable/details/property_series.vue'
 import PropertyString from '@/components/trackable/details/property_string.vue'
+import PropertyDateTime from '@/components/trackable/details/property_datetime.vue'
 import PropertyOwner from '@/components/trackable/details/property_owner.vue'
 import PropertyCode from '@/components/trackable/details/property_code.vue'
 
@@ -33,8 +34,8 @@ const items = ref([
   { 'name': 'Public Code',    'component': PropertyCode,   value: storeTrackable.public_code },
   { 'name': 'Serie',          'component': PropertySeries, value: storeTrackable.series },
   { 'name': 'Owner',          'component': PropertyOwner,  value: { 'activated': storeTrackable.activated, 'owner': storeTrackable.owner } },
-  { 'name': 'Created',        'component': PropertyString, value: storeTrackable.created },
-  { 'name': 'Updated',        'component': PropertyString, value: storeTrackable.updated },
+  { 'name': 'Created',        'component': PropertyDateTime, value: storeTrackable.created },
+  { 'name': 'Updated',        'component': PropertyDateTime, value: storeTrackable.updated },
 ]);
 
 
