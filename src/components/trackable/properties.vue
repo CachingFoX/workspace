@@ -8,6 +8,12 @@ import { useTrackableStore } from "@/di/trackables.js"
 import { useConfirm } from "primevue/useconfirm";
 // components
 import PropertyEdit from '@/components/PropertyEdit.vue';
+import PropertySeries from '@/components/trackable/details/property_series.vue'
+import PropertyString from '@/components/trackable/details/property_string.vue'
+import PropertyOwner from '@/components/trackable/details/property_owner.vue'
+import PropertyCode from '@/components/trackable/details/property_code.vue'
+
+
 
 const confirm = useConfirm();
 const router = useRouter();
@@ -23,6 +29,13 @@ const filteredProperties = computed(() => {
   return storeTrackable.properties.filter(prop => !excludedNames.includes(prop.property_name));
 });
 const icons = ref([]);
+
+function onEdit(e) {
+  console.log("onEdit", e);
+}
+function onRemove(e) {
+  console.log("onRemove", e);
+}
 </script>
 
 <template>
@@ -31,9 +44,17 @@ const icons = ref([]);
       <template v-for="property in filteredProperties" :key="property.id">
         <div class="grid-item left" >{{ property.property_name }}</div>
         <div class="grid-item right">
-          <PropertyEdit
+          <PropertyString v-if="property.property_type == 'string'"
+            :value="property.property_value"
+            :data="property"
+            :editable="onEdit"
+            :removable="onRemove"
+            placeholder="Click to edit"
+            />
+          <PropertyEdit v-else
             :trackable_property="property"
           />
+         <!-- {{ property }} -->
         </div>
       </template>
     </div>
