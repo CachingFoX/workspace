@@ -51,8 +51,8 @@ function logout() {
   router.push("/login")
 }
 
-function goToTrackable(e) {
-  console.log(e.target.value)
+function onGotoTrackable(e) {
+  searchModel.value = "";
   router.push("/trackable/"+e.target.value)
 }
 
@@ -155,7 +155,7 @@ const items = ref([
                 :class="{ 'focused': isFocused }"
                 @focus="isFocused = true"
                 @blur="isFocused = false"
-                @keydown.enter="goToTrackable"
+                @keydown.enter="onGotoTrackable"
               />
               <!-- <InputIcon class="pi pi-spin pi-spinner" v-show="storeFilteredData.run"/> -->
               <div class="shortcut-badge-container">
