@@ -1,17 +1,19 @@
 <script setup>
-import { ref } from 'vue'
 import ProgressSpinner from 'primevue/progressspinner';
-import HLayout from './layout/HLayout.vue';
-import { useTrackableStore } from '@/di/trackables';
+import CenterLayout from '@/components/layout/CenterLayout.vue';
 
-const storeTrackable = useTrackableStore();
+const props = defineProps({
+  text: { type: String, default: "", required: true}
+})
 </script>
 
 <template>
-  <HLayout top="1" bottom="2" centered>
-    <ProgressSpinner />
-    <div class="text-2xl mt-5">Fetch data for trackable {{storeTrackable.trackingNumber}}</div>
-  </HLayout>
+  <CenterLayout>
+    <div class="flex flex-column">
+      <div class="text-2xl">{{ props.text }}</div>
+      <ProgressSpinner class="mt-2"/>
+    </div>
+  </CenterLayout>
 </template>
 
 <style scoped>
