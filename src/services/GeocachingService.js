@@ -2,7 +2,14 @@ export function createGeocachingService({
   baseUrl,
   httpClient,
   tokenProvider,
+  fnError,
 }) {
+  const _name = "GeocachingService";
+
+  const registerErrorNotification = (fn) => {
+    fnError = fn;
+  }
+
   const getHeaders = () => {
     const token = tokenProvider?.();
 
@@ -42,6 +49,7 @@ export function createGeocachingService({
   }
 
   return {
+    registerErrorNotification,
     getTrackableData,
     getLinkGeocachingTrackable,
     getLinkGeocachingTrackableActivation,

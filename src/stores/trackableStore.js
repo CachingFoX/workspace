@@ -7,7 +7,7 @@ export const STATE_UNKNOWN = "UNKNOWN";
 export const STATE_READY = "READY";
 export const STATE_FAIL = "FAIL";
 
-export const createTrackableStore = (trackableService, trackablePropertiesService, trackableImagesService) => {
+export const createTrackableStore = (trackableService, trackablePropertiesService, trackableImagesService, geocachingService) => {
   return defineStore('trackable', () => {
     // --- State ---
     const _state = ref(STATE_NO_INIT);
@@ -15,27 +15,84 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
     const _init_code = ref('');
     const _data = ref({});
     const _properties = ref([]);
+    const _complete = ref(false)
 
     // --- Actions ---
-    const loadTrackable = async (tracking_number) => {
+    const $reset = () => {
       _state.value = STATE_NO_INIT;
-      _init_code.value = tracking_number;
+      _progress.value = false;
+      _init_code.value = '';
       _data.value = {};
       _properties.value = [];
+      _complete.value = false;
+    }
+
+    const readTrackableHQ = async (tracking_number) => {
+      $reset();
+
+      try {
+        _progress.value = true;
+        _state.value = STATE_LOADING;
+        console.log(tracking_number)
+        // TODO _state.value = STATE_LOADING; new state to signal access to HQ?
+
+        const result = await geocachingService.getTrackableData(tracking_number);
+        // TODO undefined => new state READLY UNKNOWN / NOT IN THE SYSTEM
+        _data.value = result;
+        console.log(result);
+        // data.value = result;
+        // TODO state
+        _state.value = STATE_READY;
+      } catch (error) {
+        console.log(error);
+      } finally {
+        _progress.value = false;
+      }
+    }
+
+    const createTrackable = async () => {
+      try {
+        _progress.value = true;
+        const result = await trackableService.createTrackable(data.value);
+        console.log("TrackableStore.createTrackable", result)
+        _data.value = result; // TODO if result is undefined
+        _complete.value = true;
+        _state.value = STATE_READY;
+      } catch (error) {
+        console.error("loadTrackable error", error);
+        _state.value = STATE_FAIL;
+        _progress.value = false;
+      } finally {
+        _progress.value = false;
+      }
+    }
+
+    const readTrackable = async (tracking_number) => {
+      $reset()
+      _init_code.value = tracking_number;
 
       try {
         _progress.value = true;
         _state.value = STATE_LOADING;
         _data.value = await trackableService.getTrackableByNumber(tracking_number);
-        _properties.value = await trackablePropertiesService.getTrackableProperties(trackable_id.value);
-        _state.value = STATE_READY;
-        _progress.value = false;
+        if (_data.value !== undefined) {
+          _properties.value = await trackablePropertiesService.getTrackableProperties(trackable_id.value);
+          _complete.value = true;
+          _state.value = STATE_READY;
+        } else {
+          _state.value = STATE_UNKNOWN;
+        }
+
       } catch (error) {
         console.error("loadTrackable error", error);
         _state.value = STATE_FAIL;
         _progress.value = false;
+      } finally {
+        _progress.value = false;
       }
     };
+
+    const loadTrackable = readTrackable;
 
     const updateTrackableFields = async (fields) => {
       Object.assign(_data.value, fields); // TODO in the future _data.properties ????
@@ -189,8 +246,8 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
     const data = computed(() => _data.value);
     const state = computed(() => _state.value);
     const progress = computed(() => _progress.value);
+    const complete = computed(() => _complete.value);
     const properties = computed(() => _properties.value);
-
 
     const trackingNumber = computed(() => {
       let result = "";
@@ -215,13 +272,13 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
       return _data.value.id
     });
     const trackable_id = computed(() => _data.value.id);
-    const images = computed(() => _data.value.images);
+    const images = computed(() => _data.value.images ?? []);
     const name = computed(() => _data.value.title);
     const owner = computed(() => _data.value.owner);
     const private_code = computed(() => _data.value.private_code);
     const public_code = computed(() => _data.value.public_code);
     const series = computed(() => _data.value.series);
-    const tags = computed(() => _data.value.tags);
+    const tags = computed(() => _data.value.tags ?? []);
     const updated = computed(() => _data.value.updated);
 
     // --- Expose ---
@@ -229,6 +286,7 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
       data,
       state,
       progress,
+      complete,
 
       // const fields
       activated,
@@ -247,7 +305,11 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
       properties,
 
       // methods
-      loadTrackable,
+      $reset,
+      readTrackableHQ,
+      createTrackable,
+      readTrackable,
+      loadTrackable, // obsolete use readTrackable
       updateTrackableFields,
       deleteTrackable,
 

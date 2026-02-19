@@ -1,8 +1,10 @@
 <script setup>
-import { watch, onMounted } from 'vue'
+import { watch, onMounted, computed, onBeforeMount } from 'vue'
 // Components
 import TrackableDetails from '../components/TrackableDetails.vue';
 import TrackableLoad from '../components/TrackableLoad.vue';
+import TrackableUnknown from '@/components/trackable/unknown.vue';
+
 import BaseLayout from '@/components/layout/BaseLayout.vue';
 import CenterLayout from '@/components/layout/CenterLayout.vue';
 import Navbar from '@/components/common/Navbar.vue';
@@ -16,17 +18,23 @@ const storeTags = useTagsStore();
 const router = useRouter();
 const route = useRoute();
 
+
+/*
 watch(
   () => storeTrackable.state,
   (newState, oldState) => {
     console.log("storeTrackable.state changed:", oldState, "-->", newState)
     if (newState === STATE_UNKNOWN) {
-      router.push("/trackable/unknown/"+storeTrackable.trackingNumber);
+
+    if (newState === STATE_UNKNOWN) {
+      // router.push("/trackable/unknown/"+storeTrackable.trackingNumber);
     } else {
     }
   }
 )
+*/
 
+/*
 watch(
   () => storeTrackable.progress,
   (newState, oldState) => {
@@ -34,7 +42,9 @@ watch(
     // TODO show progress spinner with blocked background in UI
   }
 )
+*/
 
+/*
 watch(
   () => storeTags.progress,
   (newState, oldState) => {
@@ -42,6 +52,7 @@ watch(
     // TODO show progress spinner with blocked background in UI
   }
 )
+*/
 
 watch(
   () => route.params.id,
@@ -50,9 +61,18 @@ watch(
   }
 )
 
+const trackingNumber = computed(()=>{
+  return route.params.id.toUpperCase()
+})
+
+onBeforeMount(()=>{
+  storeTrackable.$reset()
+})
+
 onMounted(async () => {
-  await storeTags.load();
-  storeTrackable.loadTrackable(route.params.id.toUpperCase());
+  // TODO await storeTags.load();
+  // TODO place it better
+  storeTrackable.loadTrackable(trackingNumber.value);
 })
 </script>
 
@@ -62,9 +82,10 @@ onMounted(async () => {
       <Navbar/>
     </template>
     <template v-slot:mainstage>
-      <TrackableLoad         v-if="storeTrackable.state == STATE_NO_INIT"/>
-      <TrackableLoad    v-else-if="storeTrackable.state == STATE_LOADING"/>
-      <TrackableDetails v-else-if="storeTrackable.state == STATE_READY" />
+      <TrackableLoad          v-if="storeTrackable.state == STATE_NO_INIT"/>
+      <TrackableLoad     v-else-if="storeTrackable.state == STATE_LOADING"/>
+      <TrackableUnknown  v-else-if="storeTrackable.state == STATE_UNKNOWN" :tracking-number="trackingNumber"/>
+      <TrackableDetails  v-else-if="storeTrackable.state == STATE_READY" />
       <CenterLayout     v-else>
         Unhandled state '{{storeTrackable.state}}'
       </CenterLayout>

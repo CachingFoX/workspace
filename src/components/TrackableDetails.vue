@@ -54,6 +54,10 @@ async function onDelete() {
     reject: () => {}
   })
 }
+
+function onAddTrackable() {
+  storeTrackable.createTrackable()
+}
 </script>
 
 <template>
@@ -64,12 +68,17 @@ async function onDelete() {
     </template>
     <template v-slot:mainstage>
       <TrackableBase/>
-      <TrackableImages/>
-      <TrackableTags/>
-      <TrackableProperties/>
-      <TrackableLinkedTrackables property="linkedTrackables"/>
-      <TrackableSameSeries :series="storeTrackable.series" :self="storeTrackable.private_code"/>
-      <TrackableSameTag :series="storeTrackable.series" :self="storeTrackable.private_code" :tags="storeTrackable.tags"/>
+      <div v-if="!storeTrackable.complete" class="px-2">
+        <Button @click="onAddTrackable">Neuen Trackable hinzufügen</Button>
+      </div>
+      <div v-if="storeTrackable.complete">
+        <TrackableImages/>
+        <TrackableTags/>
+        <TrackableProperties/>
+        <TrackableLinkedTrackables property="linkedTrackables"/>
+        <TrackableSameSeries :series="storeTrackable.series" :self="storeTrackable.private_code"/>
+        <TrackableSameTag :series="storeTrackable.series" :self="storeTrackable.private_code" :tags="storeTrackable.tags"/>
+      </div>
     </template>
     <template v-slot:footer>
       <div class="flex align-items-center pt-2 pb-2">
