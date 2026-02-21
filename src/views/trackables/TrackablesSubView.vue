@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, watchEffect, computed } from 'vue';
+import { onMounted, reactive, ref, watchEffect, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useTrackableListStore } from '@/di/trackables';
 import BaseLayout from '@/components/layout/BaseLayout.vue';
@@ -10,21 +10,26 @@ import DataViewTrackables from '@/components/trackables/DataViewTrackables.vue'
 const storeTrackables = useTrackableListStore();
 const route = useRoute()
 
-const series = ref(null)
-const center = ref({})
-
-const trackables = computed(()=>{
-  return storeTrackables.trackables.filter(t => t.series == series.value );
+const props = defineProps({
+  trackables: { type: Object, default: null, required: true},
+  filter: { type: Object, default: null, required: true}
 })
 
-watchEffect(() => {
-  series.value = route.params.series;
-  center.value = {
-    'label': series.value,
-    'icon': 'pi pi-question',
-    'avatar': trackables?.value[0]?.icon_url
+const trackables = computed(()=>{
+  return props.trackables;
+})
+const filter = computed(()=>{
+  return props.filter;
+})
+
+const litems = reactive([
+  {
+    icon: computed(()=>{return null}),
+    text: computed(()=>{return trackables.value.length + " Trackables" }),
+    show: true,
   }
-});
+])
+const ritems = reactive(['database']);
 </script>
 
 <template>
@@ -35,12 +40,11 @@ watchEffect(() => {
     <template v-slot:mainstage>
       <DataViewTrackables
         :trackables="trackables"
-        :center="center"
+        :filter="filter"
       />
     </template>
-
     <template v-slot:footer>
-      <Footer :trackables="trackables"/>
+      <Footer :left="litems" :right="ritems"/>
     </template>
   </BaseLayout>
 </template>

@@ -15,9 +15,9 @@ import LogoutView from '../views/LogoutView.vue';
 import DashboardView from '../views/DashboardView.vue';
 import MainView from '../views/MainView.vue';
 import TagsAdministrationView from '@/views/TagsAdministrationView.vue';
-import OwnerTrackablesView from '@/views/OwnerTrackablesView.vue';
-import SeriesTrackablesView from '@/views/SeriesTrackablesView.vue';
-import TagTrackablesView from '@/views/TagTrackablesView.vue';
+import OwnerTrackablesView from '@/views/trackables/OwnerTrackablesView.vue';
+import SeriesTrackablesView from '@/views/trackables/SeriesTrackablesView.vue';
+import TagTrackablesView from '@/views/trackables/TagTrackablesView.vue';
 
 const routes = [
   {

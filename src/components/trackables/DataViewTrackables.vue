@@ -18,11 +18,9 @@ const route = useRoute()
 const layout = useLocalStorageRef('trackablelist.layout', 'list');
 const options = ref(['list', 'grid']);
 
-const owner = ref("Hans-Peter");
-
 const props = defineProps({
   trackables: { type: Object, default: [], required: true},
-  center: { type: Object, default: null, required: false}
+  filter: { type: Object, default: null, required: false}
 })
 
 const trackables = computed(()=>{
@@ -37,11 +35,14 @@ const trackables = computed(()=>{
         <Select>
         </Select>
 
-        <Chip
-          :label="props.center.label"
-          :icon="props.center.icon"
-          :image="props.center.avatar"
-        v-if="props.center"/>
+        <div v-if="props.filter">
+          <i class="pi pi-filter"/><span class="ml-2 mr-2">Filter:</span>
+          <Chip
+            :label="props.filter.label"
+            :icon="props.filter.icon"
+            :image="props.filter.avatar"
+          />
+        </div>
 
         <SelectButton v-model="layout" :options="options" :allowEmpty="false">
           <template #option="{ option }">
