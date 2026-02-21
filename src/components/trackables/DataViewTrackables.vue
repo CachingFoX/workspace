@@ -35,12 +35,15 @@ const trackables = computed(()=>{
         <Select>
         </Select>
 
-        <div v-if="props.filter">
-          <i class="pi pi-filter"/><span class="ml-2 mr-2">Filter:</span>
+        <div v-if="props.filter" class="flex align-items-center">
+          <div>
+            <i class="pi pi-filter"/><span class="ml-2 mr-2">Filter:</span>
+          </div>
           <Chip
             :label="props.filter.label"
             :icon="props.filter.icon"
             :image="props.filter.avatar"
+            class="no-select"
           />
         </div>
 
