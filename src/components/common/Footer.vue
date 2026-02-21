@@ -1,53 +1,42 @@
 <script setup>
-import { ref, watch, computed, onMounted, nextTick } from 'vue'
-import { onBeforeUnmount } from 'vue'
-import { useRouter } from 'vue-router';
-
-import 'primeflex/primeflex.css';
-import Badge from 'primevue/badge';
-import InputText from 'primevue/inputtext';
-import Button from 'primevue/button';
-import Menubar from 'primevue/menubar';
-import IconField from 'primevue/iconfield';
-import InputIcon from 'primevue/inputicon';
-import NavbarIcon from '@/components/common/NavbarIcon.vue';
-import Avatar from 'primevue/avatar';
-import { useBaseStore, useTrackableListStore } from '@/di/trackables.js'
-
-const storeBase = useBaseStore();
-const storeTrackables = useTrackableListStore();
+import FooterItem from '@/components/common/FooterItem.vue'
+import FooterItemDatabase from '@/components/common/FooterItemDatabase.vue'
 
 const props = defineProps({
-  trackables : { type: Object, default: null, required: false }
+  left: { type: Object, default: [], required: false },
+  right: { type: Object, default: [], required: false }
 })
 
-onMounted(() => {
-  storeBase.init();
-});
-
-
-onBeforeUnmount(() => {
-})
-
-const baseProperties = {
-  'version': { name: 'REST API Version', icon: 'pi-tag' },
-  'database_url': { name: 'Database Location', icon: 'pi-database' },
-  'upload_path': { name: 'Upload Folder', icon: 'pi-folder' }
+const itemtypes = {
+  'database': FooterItemDatabase
 }
 
-const trackables = computed(()=>{
-  return props.trackables ? props.trackables.length : storeTrackables.trackables.length;
-})
+function _component(item) {
+  console.info("type", typeof item)
+  if (typeof item === 'object') {
+    return FooterItem;
+  }
+  if (typeof item === 'string' ) {
+    if (item in itemtypes) {
+      return itemtypes[item]
+    }
+    console.warn("unknown type", item)
+    return null
+  }
+  console.warn("unknown type", typeof item)
+  return null
+}
 </script>
 
 <template>
-  <div class="flex w-full justify-content-between">
+  <div class="flex w-full justify-content-between align-items-center">
+    <!-- left -->
     <div>
-      <span>{{trackables}} Trackables</span>
+      <component v-for="item in props.left" :is="_component(item)" :item="item" />
     </div>
-    <div></div>
-    <div class="monospace no-select" v-tooltip.top="storeBase.baseInfo['database_url']">
-      <span class="pi pi-database mr-1"/>{{storeBase.baseInfo['short_name']}}
+    <!-- right -->
+    <div>
+      <component v-for="item in props.right" :is="_component(item)" :item="item" />
     </div>
   </div>
 </template>
