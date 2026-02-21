@@ -68,7 +68,7 @@ function onAddTrackable() {
       <TrackableTitle/>
     </template>
     <template v-slot:mainstage>
-      <div class="px-2 py-2">
+      <div class="px-2 pt-2" v-if="storeTrackable.complete" >
         <div class="flex align-items-center">
           <div class="flex-grow-1">
             <ButtonGroup>
@@ -83,11 +83,13 @@ function onAddTrackable() {
           </div>
         </div>
        </div>
-      <TrackableBase/>
-      <div v-if="!storeTrackable.complete" class="px-2">
-        <Button @click="onAddTrackable">Neuen Trackable hinzufügen</Button>
+       <div class="pt-2">
+        <TrackableBase/>
       </div>
-      <div v-if="storeTrackable.complete">
+      <div v-if="!storeTrackable.complete" class="pt-2 px-2">
+        <Button icon="pi pi-plus" label="Neuen Trackable hinzufügen" @click="onAddTrackable"/>
+      </div>
+      <div v-if="storeTrackable.complete" class="pt-2">
         <TrackableImages/>
         <TrackableTags/>
         <TrackableProperties/>
