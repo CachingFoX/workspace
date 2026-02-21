@@ -16,6 +16,9 @@ const router = useRouter();
 const route = useRoute()
 
 const layout = useLocalStorageRef('trackablelist.layout', 'list');
+const sort = useLocalStorageRef('trackablelist.sort', 'title_up');
+const filter = useLocalStorageRef('trackablelist.filter', 'filter');
+
 const options = ref(['list', 'grid']);
 
 const props = defineProps({
@@ -24,16 +27,80 @@ const props = defineProps({
 })
 
 const trackables = computed(()=>{
+  if (sort.value in sort_functions) {
+    sort_functions[sort.value](props.trackables);
+  }
+  if (filter.value in filter_functions) {
+    return props.trackables.filter(filter_functions[filter.value])
+  }
   return props.trackables
 })
+
+const alphabetic_ascend = function(attribute) { return (items) => {
+    items.sort( (a,b) => { return a[attribute].localeCompare(b[attribute]) })
+}}
+const alphabetic_descend = function(attribute) { return (items) => {
+    items.sort( (a,b) => { return b[attribute].localeCompare(a[attribute]) })
+}}
+const numeric_ascend = function(attribute) { return (items) => {
+    items.sort( (a,b) => { return a[attribute] > b[attribute] })
+}}
+const numeric_descend = function(attribute) { return (items) => {
+    items.sort( (a,b) => { return a[attribute] < b[attribute] })
+}}
+
+const sort_functions = {
+  'title_up': alphabetic_ascend('title'),
+  'title_down': alphabetic_descend('title'),
+  'age_old_young': numeric_ascend('tb_id'),
+  'age_young_old': numeric_descend('tb_id'),
+}
+const sortOptions = [
+  { label: 'Name A-Z', value: 'title_up' },
+  { label: 'Name Z-A', value: 'title_down' },
+  { label: 'Älteste',  value: 'age_old_young' },
+  { label: 'Neuste',  value: 'age_young_old' },
+];
+
+const filter_functions = {
+  'no_pictures': (a) => { return a.images.length ? false : true },
+  'activated': (a) => { return a.activated },
+  'not_activated': (a) => { return !a.activated }
+}
+const filterOptions = [
+  { label: 'alle', value: 'no_filter' },
+  { label: 'keine Bilder', value: 'no_pictures' },
+  { label: 'aktiviert', value: 'activated' },
+  { label: 'unaktiviert', value: 'not_activated' },
+  // { label: 'Älteste',  value: 'age_old_young' },
+  // { label: 'Neuste',  value: 'age_young_old' },
+];
+
 </script>
 
 <template>
   <DataView :value="trackables" :layout="layout">
     <template #header>
       <div class="flex justify-content-between align-items-center">
-        <Select>
-        </Select>
+        <div>
+          <i class="pi pi-sort mr-2"/>
+          <Select v-model="sort"
+            :options="sortOptions"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Sortierung"
+            />
+        </div>
+
+        <div>
+          <i class="pi pi-filter mr-2"/>
+          <Select v-model="filter"
+            :options="filterOptions"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Filter"
+            />
+        </div>
 
         <div v-if="props.filter" class="flex align-items-center">
           <div>
