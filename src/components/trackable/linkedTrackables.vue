@@ -93,7 +93,7 @@ async function onDelete() {
 
 <template>
   <PersistentPanel storage-key="trackable.details.linkedtrackables" title="Verlinkte Trackables" editable
-  @editShow="onEdit"
+  @editShow="onEdit" :badge="trackables.length"
   v-model:editing="editing"
   >
     <template #editor>
