@@ -54,12 +54,16 @@ const sort_functions = {
   'title_down': alphabetic_descend('title'),
   'age_old_young': numeric_ascend('tb_id'),
   'age_young_old': numeric_descend('tb_id'),
+  'created_old_young': alphabetic_ascend('created'),
+  'created_young_old': alphabetic_descend('created'),
 }
 const sortOptions = [
   { label: 'Name A-Z', value: 'title_up' },
   { label: 'Name Z-A', value: 'title_down' },
   { label: 'Älteste',  value: 'age_old_young' },
   { label: 'Neuste',  value: 'age_young_old' },
+  { label: 'Älteste (erfasst)',  value: 'created_old_young' },
+  { label: 'Neuste (erfasst)',  value: 'created_young_old' },
 ];
 
 const filter_functions = {
