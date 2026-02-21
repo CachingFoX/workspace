@@ -5,7 +5,7 @@ import 'primeicons/primeicons.css'
 import { useBaseStore } from '../stores/base.js'
 // import About from '../views/About.vue';
 import NewTrackable from '../NewTrackable.vue'; // ../views/...
-import TrackablesListView from '../views/TrackablesListView.vue';
+import TrackablesListView from '@/views/trackables/TrackablesListView.vue';
 import TrackableView from '../views/TrackableView.vue';
 import TrackableNewView from '../views/TrackableNewView.vue';
 import TrackableUnknownView from '../views/TrackableUnknownView.vue'
