@@ -71,8 +71,10 @@ function onAddTrackable() {
       <div class="px-2 pt-2" v-if="storeTrackable.complete" >
         <div class="flex align-items-center">
           <div class="flex-grow-1">
-            <ButtonGroup>
+            <ButtonGroup class="mr-3">
               <Button @click="goToListItem(storeTrackable.id)" label="Zurück" icon="pi pi-angle-double-left"/>
+            </ButtonGroup>
+            <ButtonGroup>
               <Button @click="" label="Refresh Stammdaten" icon="pi pi-refresh"/>
             </ButtonGroup>
           </div>
