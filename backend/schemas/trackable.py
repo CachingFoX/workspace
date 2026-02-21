@@ -9,6 +9,52 @@ from backend.schemas.trackable_property import transformAttachedProperties
 
 from datetime import datetime
 
+BASE31_ALPHABET = "0123456789ABCDEFGHJKMNPQRTVWXYZ"
+BASE31_LOOKUP = {ch: i for i, ch in enumerate(BASE31_ALPHABET)}
+
+BASE31_THRESHOLD = 476656
+BASE31_OFFSET = 65536
+
+
+def _decode_base31(core: str) -> int:
+    try:
+        value = 0
+        for ch in core:
+            value = value * 31 + BASE31_LOOKUP[ch]
+        return value
+    except KeyError as e:
+        raise ValueError(f"Ungültiges Zeichen '{e.args[0]}'") from None
+
+
+def code_to_id(core: str) -> int:
+    core = core.strip().upper()
+
+    value = _decode_base31(core)
+
+    # Alte Hex-Codes
+    if value < BASE31_THRESHOLD:
+        try:
+            return int(core, 16)
+        except ValueError:
+            raise ValueError(f"Ungültiger Hex-Code '{core}'") from None
+
+    return value - BASE31_THRESHOLD + BASE31_OFFSET
+
+
+def _prefixed_code_to_id(code: str, prefix: str) -> int:
+    code = code.strip().upper()
+    if not code.startswith(prefix):
+        raise ValueError(f"Kein gültiger {prefix}-Code '{code}'")
+    return code_to_id(code.removeprefix(prefix))
+
+
+def tb_code_to_id(tb_code: str) -> int:
+    return _prefixed_code_to_id(tb_code, "TB")
+
+
+def gc_code_to_id(gc_code: str) -> int:
+    return _prefixed_code_to_id(gc_code, "GC")
+
 
 # --------------------
 # Pydantic Schemas
@@ -49,6 +95,7 @@ class TrackableRead(BaseModel):
     id: int
     private_code: str
     public_code: str
+    tb_id: int
     title: str
     owner: str | None = None
     activated: bool
@@ -71,6 +118,7 @@ class TrackableRead(BaseModel):
             id=trackable.id,
             private_code=trackable.private_code,
             public_code=trackable.public_code,
+            tb_id=tb_code_to_id(trackable.public_code),
             title=trackable.title,
             owner=trackable.owner,
             activated=trackable.activated,
