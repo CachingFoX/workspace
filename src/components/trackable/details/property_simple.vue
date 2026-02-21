@@ -10,7 +10,7 @@ const router = useRouter();
 const props = defineProps({
   value: { type: String, default: null, required: true },
   data: { type: Object, default: null, required: false },
-  icon: { type: String, default: null, required: true },
+  icon: { type: String, default: null, required: false },
   clipboard: { type: Boolean, default: false, required: false },
   buttons: { type: Object, default: [], required: false },
 })
