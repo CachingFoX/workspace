@@ -19,7 +19,8 @@ const items = ref([
   { 'name': 'Serie',          'component': PropertySeries, value: storeTrackable.series },
   { 'name': 'Trackable Code', 'component': PropertyCode,   value: storeTrackable.private_code },
   { 'name': 'Public Code',    'component': PropertyCode,   value: storeTrackable.public_code },
-  { 'name': 'Owner',          'component': PropertyOwner,  value: { 'activated': storeTrackable.activated, 'owner': storeTrackable.owner } },
+  { 'name': 'Id',             'component': PropertyString,   value: storeTrackable.hq_trackable_id },
+  { 'name': 'Owner',          'component': PropertyOwner,    value: { 'activated': storeTrackable.activated, 'owner': storeTrackable.owner } },
   { 'name': 'Created',        'component': PropertyDateTime, value: storeTrackable.created },
   { 'name': 'Updated',        'component': PropertyDateTime, value: storeTrackable.updated },
 ]);

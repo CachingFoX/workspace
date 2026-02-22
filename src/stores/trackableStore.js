@@ -274,6 +274,7 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
       return _data.value.id
     });
     const trackable_id = computed(() => _data.value.id);
+    const hq_trackable_id = computed(() => _data.value.tb_id);
     const images = computed(() => _data.value.images ?? []);
     const name = computed(() => _data.value.title);
     const owner = computed(() => _data.value.owner);
@@ -297,6 +298,7 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
       icon,
       id,
       trackable_id,
+      hq_trackable_id,
       images,
       name,
       owner,
