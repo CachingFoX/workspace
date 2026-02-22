@@ -1,11 +1,8 @@
 <script setup>
-import { computed,ref, watch, onBeforeMount, onMounted } from 'vue'
+import { ref } from 'vue'
 // prime vue
-import Panel from 'primevue/panel';
-import Avatar from 'primevue/avatar';
 import { useTrackableStore } from "@/di/trackables.js"
 // components
-import PersistentPanel from '@/components/trackable/panel.vue'
 import PropertySeries from '@/components/trackable/details/property_series.vue'
 import PropertyString from '@/components/trackable/details/property_string.vue'
 import PropertyDateTime from '@/components/trackable/details/property_datetime.vue'
@@ -16,9 +13,9 @@ const storeTrackable = useTrackableStore();
 
 const items = ref([
   { 'name': 'Name',           'component': PropertyString,   value: storeTrackable.name },
-  { 'name': 'Serie',          'component': PropertySeries, value: storeTrackable.series },
-  { 'name': 'Trackable Code', 'component': PropertyCode,   value: storeTrackable.private_code },
-  { 'name': 'Public Code',    'component': PropertyCode,   value: storeTrackable.public_code },
+  { 'name': 'Serie',          'component': PropertySeries,   value: storeTrackable.series },
+  { 'name': 'Trackable Code', 'component': PropertyCode,     value: storeTrackable.private_code },
+  { 'name': 'Public Code',    'component': PropertyCode,     value: storeTrackable.public_code },
   { 'name': 'Id',             'component': PropertyString,   value: storeTrackable.hq_trackable_id },
   { 'name': 'Owner',          'component': PropertyOwner,    value: { 'activated': storeTrackable.activated, 'owner': storeTrackable.owner } },
   { 'name': 'Created',        'component': PropertyDateTime, value: storeTrackable.created },

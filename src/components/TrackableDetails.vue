@@ -11,7 +11,7 @@ import { useConfirm } from "primevue/useconfirm";
 // components
 import BaseLayout from '@/components/layout/BaseLayout.vue';
 import TrackableTitle from '@/components/trackable/title.vue'
-import TrackableBase from '@/components/trackable/base.vue'
+import TrackableMasterData from '@/components/trackable/MasterData.vue'
 import TrackableProperties from '@/components/trackable/properties.vue'
 import TrackableTags from '@/components/trackable/tags.vue'
 import TrackableImages from '@/components/trackable/images.vue'
@@ -84,9 +84,9 @@ function onAddTrackable() {
             </ButtonGroup>
           </div>
         </div>
-       </div>
-       <div class="pt-2">
-        <TrackableBase/>
+      </div>
+      <div class="pt-2">
+        <TrackableMasterData/>
       </div>
       <div v-if="!storeTrackable.complete" class="pt-2 px-2">
         <Button icon="pi pi-plus" label="Neuen Trackable hinzufügen" @click="onAddTrackable"/>
