@@ -10,41 +10,6 @@ const selectedFiles = ref([]);
 const uploadCompleted = async (e) => {
   console.log(e);
   storeTrackable.uploadImages();
-
-
-  return ;
-
-
-
-  console.log(e.files);
-  e.files.forEach(file => console.log(file)); // formData.append('files', file)
-
-  return
-
-  if (!selectedFiles.value.length) return
-
-  const formData = new FormData()
-  e.files.value.forEach(file => formData.append('files', file))
-
-  console.log(selectedFiles.value);
-
-  try {
-    const response = await fetch(`http://localhost:8000/trackables/${storeTrackable.id}/images`, {
-      method: 'POST',
-      body: formData
-    })
-
-    if (!response.ok) {
-      throw new Error(`Upload failed with status ${response.status}`)
-    }
-
-    const data = await response.json()
-
-
-
-  } catch (err) {
-    console.error('Upload failed:', err)
-  }
 }
 </script>
 
@@ -54,12 +19,12 @@ const uploadCompleted = async (e) => {
     :url="trackableImagesService.getURLuploadTrackableImages(storeTrackable.id)"
     :multiple="true" accept="image/*" :maxFileSize="5000000"
     >
-        <template #empty>
-            <div class="flex flex-column align-items-center justify-content-center">
-              <i class="pi pi-upload border-2 rounded-full p-5 text-6xl text-muted-color" />
-              <p class="mt-4 mb-0 text-xl text-muted-color">Drag and drop files to here to upload.</p>
-            </div>
-        </template>
+      <template #empty>
+          <div class="flex flex-column align-items-center justify-content-center">
+            <i class="pi pi-upload border-2 rounded-full p-5 text-6xl text-muted-color" />
+            <p class="mt-4 mb-0 text-xl text-muted-color">Drag and drop files to here to upload.</p>
+          </div>
+      </template>
     </FileUpload>
   </div>
 </template>
