@@ -11,7 +11,7 @@ import PropertyCode from '@/components/trackable/details/property_code.vue'
 
 const storeTrackable = useTrackableStore();
 
-const items = ref([
+const items = [
   { 'name': 'Name',           'component': PropertyString,   value: storeTrackable.name },
   { 'name': 'Serie',          'component': PropertySeries,   value: storeTrackable.series },
   { 'name': 'Trackable Code', 'component': PropertyCode,     value: storeTrackable.private_code },
@@ -20,7 +20,7 @@ const items = ref([
   { 'name': 'Owner',          'component': PropertyOwner,    value: { 'activated': storeTrackable.activated, 'owner': storeTrackable.owner } },
   { 'name': 'Created',        'component': PropertyDateTime, value: storeTrackable.created },
   { 'name': 'Updated',        'component': PropertyDateTime, value: storeTrackable.updated },
-]);
+];
 </script>
 
 <template>
@@ -29,7 +29,9 @@ const items = ref([
       <template v-for="(item, index) in items" :key="index" >
         <div v-if="item.name" class="no-wrap">{{item.name}}</div>
         <div v-else></div>
-        <div v-if="item.name"><component :is="item.component" :value="item.value"></component></div>
+        <div v-if="item.name">
+          <component :is="item.component" :value="item.value"></component>
+        </div>
         <div v-else></div>
       </template>
     </div>
