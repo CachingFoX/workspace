@@ -6,7 +6,7 @@ import { useBaseStore, useTrackableListStore } from '@/di/trackables.js'
 const storeBase = useBaseStore();
 
 const props = defineProps({
-  item: { type: Object, default: null, required: true}
+  item: { type: [Object, String], default: null, required: true}
 })
 
 const item = reactive({
