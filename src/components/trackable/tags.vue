@@ -46,7 +46,7 @@ function onAdd(tagId) {
 
 <template>
   <PersistentPanel storage-key="trackable.details.tags" title="Schlagwörter" editable
-    @editShow="onEdit" v-model:editing="editing" :badge="storeTrackable.tags.length" >
+     v-model:editing="editing" :badge="storeTrackable.tags.length" >
     <template #editor>
       <div style="display: inline-flex">
         <InputGroup class="mr-2">
