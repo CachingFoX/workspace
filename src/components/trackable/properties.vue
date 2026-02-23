@@ -28,28 +28,35 @@ const filteredProperties = computed(() => {
   const excludedNames = ['linkedTrackables'];
   return storeTrackable.properties.filter(prop => !excludedNames.includes(prop.property_name));
 });
-const icons = ref([]);
 
-function onEdit(e) {
-  console.log("onEdit", e);
+function onUpdate(property, newValue) {
+  console.log("onUpdate", property, newValue)
+
+  if (property.id) {
+    storeTrackable.updateProperty(property.id, newValue);
+  } else {
+    storeTrackable.attachProperty(property.property_id, newValue);
+  }
 }
-function onRemove(e) {
-  console.log("onRemove", e);
+
+function onRemove(property) {
+  storeTrackable.deleteProperty(property.id);
 }
 </script>
 
 <template>
-  <PersistentPanel storage-key="trackable.details.properties" title="Eigenschaften" :icons2="icons">
+  <PersistentPanel storage-key="trackable.details.properties" title="Eigenschaften" >
     <div class="grid-container">
       <template v-for="property in filteredProperties" :key="property.id">
         <div class="grid-item left" >{{ property.property_name }}</div>
         <div class="grid-item right">
-          <PropertyString v-if="false && property.property_type == 'string'"
+          <PropertyString v-if="property.property_type == 'string'"
             :value="property.property_value"
-            :data="property"
-            :editable="onEdit"
-            :removable="onRemove"
+            :property="property"
+            editable removable
             placeholder="Click to edit"
+            @update="onUpdate"
+            @remove="onRemove"
             />
           <PropertyEdit v-else
             :trackable_property="property"
@@ -72,8 +79,9 @@ function onRemove(e) {
 /* Container für das Grid */
 .grid-container {
   display: grid; /* Grid aktivieren */
-  grid-template-columns: auto 1fr;
-  grid-gap: 10px; /* Abstand zwischen den Elementen */
+  grid-template-columns: auto 1fr; /* auto 2fr auto 1fr; */
+  grid-gap: 2px; /* Abstand zwischen den Elementen */
+  column-gap: 10px;
   padding: 0;
 }
 
