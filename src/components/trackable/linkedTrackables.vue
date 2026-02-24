@@ -13,6 +13,8 @@ import { trackableService } from '@/di/trackables'
 import Carousel from 'primevue/carousel';
 import PersistentPanel from '@/components/trackable/panel.vue'
 import TrackableCard from '@/components/TrackableCard.vue';
+import SuggestTrackables from '@/components/trackable/suggesttrackables.vue';
+import Tags from "./tags.vue";
 
 const storeTrackable = useTrackableStore();
 const confirm = useConfirm();
@@ -110,6 +112,8 @@ async function onDelete() {
         />
       </InputGroup>
     </template>
+
+    <SuggestTrackables/>
 
     <Carousel :value="trackables" :numVisible="3" :numScroll="3" class="w-full">
       <template #item="slotProps">
