@@ -13,7 +13,6 @@ import BaseLayout from '@/components/layout/BaseLayout.vue';
 import TrackableTitle from '@/components/trackable/title.vue'
 import TrackableMasterData from '@/components/trackable/MasterData.vue'
 import TrackableProperties from '@/components/trackable/properties.vue'
-import TrackableTags from '@/components/trackable/tags.vue'
 import TrackableImages from '@/components/trackable/images.vue'
 import TrackableLinkedTrackables from '@/components/trackable/linkedTrackables.vue'
 import TrackableSameSeries from '@/components/trackable/TrackablesSameSeries.vue'
@@ -93,7 +92,6 @@ function onAddTrackable() {
       </div>
       <div v-if="storeTrackable.complete" class="pt-2">
         <TrackableImages/>
-        <TrackableTags/>
         <TrackableProperties/>
         <TrackableLinkedTrackables property="linkedTrackables"/>
         <TrackableSameSeries :series="storeTrackable.series" :self="storeTrackable.private_code"/>

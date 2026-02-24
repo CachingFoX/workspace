@@ -1,7 +1,7 @@
 <script setup>
 import { computed,ref, watch, onBeforeMount, onMounted } from 'vue'
 // prime vue
-import PersistentPanel from '@/components/trackable/panel.vue'
+import Panel from 'primevue/panel'
 import { useRouter, useRoute } from 'vue-router';
 import { useToast } from "primevue/usetoast";
 import { useTrackableStore } from "@/di/trackables.js"
@@ -9,7 +9,8 @@ import { useConfirm } from "primevue/useconfirm";
 // components
 import PropertyString from '@/components/trackable/details/property_string.vue'
 import PropertyText from '@/components/trackable/details/property_text.vue'
-
+import Tags from '@/components/trackable/tags.vue'
+import { useLocalStorageRef } from '@/utils/localStorageRef';
 
 
 const confirm = useConfirm();
@@ -17,6 +18,7 @@ const router = useRouter();
 const route = useRoute();
 const toast = useToast();
 const storeTrackable = useTrackableStore();
+const collapsed = useLocalStorageRef('details.layout.properties.collapsed', false)
 
 function getProperty(property_name) {
   return storeTrackable.properties.find(prop => prop.property_name === property_name);
@@ -47,8 +49,11 @@ const comp = {
 </script>
 
 <template>
-  <PersistentPanel storage-key="trackable.details.properties" title="Eigenschaften" >
+  <Panel class="mx-2" v-model:collapsed="collapsed" header="Eigenschaften" toggleable>
     <div class="grid-container">
+      <div class="grid-item left" >Schlagwörter</div>
+      <div class="grid-item right"><Tags/></div>
+
       <template v-for="property in filteredProperties" :key="property.id">
         <div class="grid-item left" >{{ property.property_name }}</div>
         <div class="grid-item right">
@@ -66,7 +71,7 @@ const comp = {
         </div>
       </template>
     </div>
-  </PersistentPanel>
+  </Panel>
 </template>
 
 <style scoped>
