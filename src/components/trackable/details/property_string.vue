@@ -15,6 +15,9 @@ const props = defineProps({
   property: { type: Object, default: null, required: false },
   editable: { type: Boolean, default: false, required: false },
   removable: { type: Boolean, default: false, required: false },
+  format: { type: String, default: 'none', required: false,
+    validator: (val) => ['uppercase', 'lowercase', 'none'].includes(val),
+  }
 })
 
 const emit = defineEmits(['update','remove'])
@@ -23,11 +26,9 @@ const editing = ref(false)
 const model = ref('')
 
 async function onEdit() {
-  model.value = props.value;
+  model.value = formattedValue.value;
   editing.value = true;
-  console.log("refInput.value", refInput.value)
-  console.log("refInput.value.$el", refInput.value.$el)
-  await nextTick()
+  await nextTick() // wait before set the focus
   refInput.value.$el.focus()
 }
 
@@ -36,10 +37,29 @@ function onRemove() {
   emit('remove', props.property)
 }
 
-function onSave() {
-  // props.value = model.value;
+function formatString(text, format) {
+  switch (format) {
+    case 'uppercase':
+      return text?.toUpperCase()
+    case 'lowercase':
+      return text?.toLowerCase()
+    case 'none':
+      return text
+    default:
+      console.warn('PropertyString: unknown format:', format )
+      return text
+  }
+}
+const formattedModelValue = computed(() => {
+  return formatString(model.value, props.format)
+})
+const formattedValue = computed(() => {
+  return formatString(props.value, props.format)
+})
+
+function onUpdate() {
   editing.value = false;
-  emit('update', props.property, model.value)
+  emit('update', props.property, formattedModelValue.value)
 }
 
 const refInput = ref(null)
@@ -47,7 +67,7 @@ const refInput = ref(null)
 
 <template>
   <PropertySimple v-show="!editing"
-    :value="props.value"
+    :value="formattedValue"
     :placeholder="props.placeholder"
     clipboard
     :editable="props.editable"
@@ -61,11 +81,11 @@ const refInput = ref(null)
         <InputGroup class="p-d-flex p-ai-center ">
           <InputText v-model="model" :placeholder="props.placeholder" size="small" ref="refInput"
           @keydown.esc="editing = false"
-          @keydown.enter="onSave"/>
+          @keydown.enter="onUpdate"/>
           <Button
             icon="pi pi-check"
             size="small"
-            @click="onSave"
+            @click="onUpdate"
           />
           <Button
             icon="pi pi-times"

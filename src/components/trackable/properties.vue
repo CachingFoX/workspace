@@ -43,8 +43,10 @@ function onRemove(property) {
 }
 
 const comp = {
-  'string': PropertyString,
-  'text': PropertyText
+  'string': { component: PropertyString },
+  'string.uppercase': { component: PropertyString, bindings: { 'format': 'uppercase' } },
+  'string.lowercase': { component: PropertyString, bindings: { 'format': 'lowercase' } },
+  'text': { component: PropertyText },
 }
 </script>
 
@@ -57,11 +59,12 @@ const comp = {
       <template v-for="property in filteredProperties" :key="property.id">
         <div class="grid-item left" >{{ property.property_name }}</div>
         <div class="grid-item right">
-          <component v-if="comp[property.property_type]" :is="comp[property.property_type]"
+          <component v-if="comp[property.property_type]" :is="comp[property.property_type].component"
             :value="property.property_value"
             :property="property"
             editable removable
             placeholder="Click to edit"
+            v-bind="comp[property.property_type].bindings"
             @update="onUpdate"
             @remove="onRemove"
             />
