@@ -3,23 +3,77 @@ import { ref } from 'vue'
 // prime vue
 import { useTrackableStore } from "@/di/trackables.js"
 // components
-import PropertySeries from '@/components/trackable/details/property_series.vue'
 import PropertyString from '@/components/trackable/details/property_string.vue'
-import PropertyDateTime from '@/components/trackable/details/property_datetime.vue'
-import PropertyOwner from '@/components/trackable/details/property_owner.vue'
-import PropertyCode from '@/components/trackable/details/property_code.vue'
+import { geocachingService } from "@/di/trackables.js"
+import {makeRouteButton, makeLinkButton, formatDateTime} from '@/components/trackable/details/property_helper'
 
 const storeTrackable = useTrackableStore();
 
 const items = [
-  { 'name': 'Name',           'component': PropertyString,   value: storeTrackable.name },
-  { 'name': 'Serie',          'component': PropertySeries,   value: storeTrackable.series },
-  { 'name': 'Trackable Code', 'component': PropertyCode,     value: storeTrackable.private_code },
-  { 'name': 'Public Code',    'component': PropertyCode,     value: storeTrackable.public_code },
-  { 'name': 'Id',             'component': PropertyString,   value: storeTrackable.hq_trackable_id },
-  { 'name': 'Owner',          'component': PropertyOwner,    value: { 'activated': storeTrackable.activated, 'owner': storeTrackable.owner } },
-  { 'name': 'Created',        'component': PropertyDateTime, value: storeTrackable.created },
-  { 'name': 'Updated',        'component': PropertyDateTime, value: storeTrackable.updated },
+  { name: 'Name',
+    component: PropertyString,
+    bindings: {
+      value: storeTrackable.name
+    }
+  },
+  { name: 'Serie',
+    component: PropertyString, bindings: {
+      value: storeTrackable.series,
+      buttons: [
+        makeRouteButton("/series/"+storeTrackable.series,'pi-tags','Alle Trackables'),
+      ]
+    }
+  },
+  { name: 'Trackable Code',
+    component: PropertyString,
+    bindings: {
+      value: storeTrackable.private_code,
+      buttons: [
+        makeLinkButton(geocachingService.getLinkGeocachingTrackable(storeTrackable.private_code),'pi-globe','Trackable auf www.geocaching.com öffnen'),
+      ]
+    }
+  },
+  { name: 'Public Code',
+    component: PropertyString,
+    bindings: {
+      value: storeTrackable.public_code,
+      buttons: [
+        makeLinkButton(geocachingService.getLinkGeocachingTrackable(storeTrackable.public_code),'pi-globe','Trackable auf www.geocaching.com öffnen'),
+      ]
+    }
+  },
+  { name: 'Id',
+    component: PropertyString,
+    bindings: {
+      value: storeTrackable.hq_trackable_id,
+      buttons: [
+        makeLinkButton(geocachingService.getLinkGeocachingTrackableById(storeTrackable.hq_trackable_id),'pi-globe','Trackable auf www.geocaching.com öffnen'),
+      ]
+    }
+  },
+  { name: 'Owner',
+    component: PropertyString,
+    bindings: {
+      icon: storeTrackable.activated ? 'pi pi-user' : 'pi pi-times',
+      value: storeTrackable.activated ? storeTrackable.owner : 'not activated',
+      buttons: [
+        makeRouteButton(storeTrackable.activated ? "/owner/"+storeTrackable.owner : null,'pi-tags','Alle Trackables'),
+        makeLinkButton(storeTrackable.activated ? geocachingService.getLinkGeocachingUserProfile(storeTrackable.owner) : null,'pi-globe','Profil auf www.geocaching.com öffnen'),
+      ]
+    }
+  },
+  { name: 'Created',
+    component: PropertyString,
+    bindings: {
+      value: formatDateTime(storeTrackable.created),
+    }
+  },
+  { name: 'Updated',
+    component: PropertyString,
+    bindings: {
+      value: formatDateTime(storeTrackable.updated),
+    }
+  },
 ];
 </script>
 
@@ -30,7 +84,10 @@ const items = [
         <div v-if="item.name" class="no-wrap">{{item.name}}</div>
         <div v-else></div>
         <div v-if="item.name">
-          <component :is="item.component" :value="item.value"></component>
+          <component
+            :is="item.component"
+            v-bind="item.bindings">
+          </component>
         </div>
         <div v-else></div>
       </template>

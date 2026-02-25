@@ -12,12 +12,14 @@ import { useToast } from 'primevue';
 const props = defineProps({
   value: { type: [String, Number, null], default: null, required: true },
   placeholder: { type: String, default: null, required: false },
+  icon: { type: String, default: null, required: false },
   property: { type: Object, default: null, required: false },
   editable: { type: Boolean, default: false, required: false },
   removable: { type: Boolean, default: false, required: false },
   format: { type: String, default: 'none', required: false,
     validator: (val) => ['uppercase', 'lowercase', 'none'].includes(val),
-  }
+  },
+  buttons: { type: Object, default: [], required: false },
 })
 
 const emit = defineEmits(['update','remove'])
@@ -62,6 +64,12 @@ function onUpdate() {
   emit('update', props.property, formattedModelValue.value)
 }
 
+let buttons = [];
+
+onBeforeMount(()=>{
+  buttons = buttons.concat(props.buttons)
+})
+
 const refInput = ref(null)
 </script>
 
@@ -72,6 +80,8 @@ const refInput = ref(null)
     clipboard
     :editable="props.editable"
     :removable="props.removable"
+    :buttons="buttons"
+    :icon="props.icon"
     @edit="onEdit"
     @remove="onRemove"
   />

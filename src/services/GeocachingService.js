@@ -41,6 +41,9 @@ export function createGeocachingService({
   function getLinkGeocachingTrackableActivation(tracking_number, activation_code) {
     return `https://www.geocaching.com/track/Activate.aspx?trknum=${tracking_number}&activationCode=${activation_code}`;
   }
+  function getLinkGeocachingTrackableById(tracking_number) {
+    return `https://www.geocaching.com/track/details.aspx?id=${tracking_number}`
+  }
   function getLinkGeocachingUserProfile(username) {
     return `https://www.geocaching.com/p/default.aspx?u=${username}`;
   }
@@ -53,6 +56,7 @@ export function createGeocachingService({
     getTrackableData,
     getLinkGeocachingTrackable,
     getLinkGeocachingTrackableActivation,
+    getLinkGeocachingTrackableById,
     getLinkGeocachingUserProfile,
     openNewTab,
   };
