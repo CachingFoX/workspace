@@ -9,6 +9,7 @@ import { useConfirm } from "primevue/useconfirm";
 // components
 import PropertyString from '@/components/trackable/details/property_string.vue'
 import PropertyText from '@/components/trackable/details/property_text.vue'
+import PropertyTrackables from '@/components/trackable/details/property_trackables.vue'
 import Tags from '@/components/trackable/tags.vue'
 import { useLocalStorageRef } from '@/utils/localStorageRef';
 
@@ -24,7 +25,7 @@ function getProperty(property_name) {
   return storeTrackable.properties.find(prop => prop.property_name === property_name);
 }
 const filteredProperties = computed(() => {
-  const excludedNames = ['linkedTrackables'];
+  const excludedNames = [];
   return storeTrackable.properties.filter(prop => !excludedNames.includes(prop.property_name));
 });
 
@@ -43,10 +44,11 @@ function onRemove(property) {
 }
 
 const comp = {
-  'string': { component: PropertyString },
-  'string.uppercase': { component: PropertyString, bindings: { 'format': 'uppercase' } },
-  'string.lowercase': { component: PropertyString, bindings: { 'format': 'lowercase' } },
-  'text': { component: PropertyText },
+  'string':                 { component: PropertyString },
+  'string.uppercase':       { component: PropertyString, bindings: { 'format': 'uppercase' } },
+  'string.lowercase':       { component: PropertyString, bindings: { 'format': 'lowercase' } },
+  'string.trackingnumbers': { component: PropertyTrackables },
+  'text':                   { component: PropertyText },
 }
 </script>
 
