@@ -50,8 +50,7 @@ import CenterLayout from '@/components/layout/CenterLayout.vue';
 }
 .baselayout-mainstage, .baselayout-centerstage {
   width: 100%;
-  flex-grow: 1;
-  flex-shrink: 0;
+  flex: 1 1 0;
   overflow: hidden;
   background: #fff;
   box-sizing: border-box;

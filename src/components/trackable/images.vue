@@ -3,13 +3,15 @@ import { computed,ref, watch, onBeforeMount, onMounted } from 'vue'
 // prime vue
 import Galleria from 'primevue/galleria';
 import Button from 'primevue/button';
+import Panel from 'primevue/panel';
 import { useTrackableStore } from "@/di/trackables.js"
+import { useLocalStorageRef } from '@/utils/localStorageRef';
 
 // components
-import Upload from '@/components/trackable/upload.vue'
 import PersistentPanel from '@/components/trackable/panel.vue'
 
 const storeTrackable = useTrackableStore();
+const collapsed = useLocalStorageRef('details.layout.images.collapsed', false)
 
 const deleteImage = (image_id) => {
   storeTrackable.deleteImage(image_id);
@@ -21,9 +23,7 @@ const primaryImage = (image_id) => {
 </script>
 
 <template>
-  <PersistentPanel storage-key="trackable.details.images" title="Bilder" editable
-  :badge="storeTrackable.images.length"
-  >
+  <Panel class="mx-2 my-2" v-model:collapsed="collapsed" header="Bilder" toggleable>
     <Galleria :value="storeTrackable.images" class="w-full"
     :responsiveOptions="responsiveOptions" :numVisible="5"
     :showItemNavigators="true"
@@ -32,9 +32,12 @@ const primaryImage = (image_id) => {
         <div class="gallery-image-wrapper">
           <img :src="`http://localhost:8000/images/${slotProps?.item.filename}`" :alt="slotProps.item.filename" class="gallery-image" />
 
-          <div class="image-controls">
+          <div class="gallery-controls-right">
             <Button @click="primaryImage(slotProps?.item.id)" label="❤️ Like" size="small"/>
             <Button @click="deleteImage(slotProps?.item.id)" label="🗑️ Delete" severity="danger" size="small"/>
+          </div>
+          <div class="gallery-controls-left">
+            {{ storeTrackable.images.length }}
           </div>
         </div>
       </template>
@@ -44,10 +47,7 @@ const primaryImage = (image_id) => {
         <!-- </div> -->
       </template>
     </Galleria>
-    <template #editor>
-      <Upload :name="storeTrackable.id" class="w-full h-full"></Upload>
-    </template>
-  </PersistentPanel>
+  </Panel>
 </template>
 
 <style scoped>
@@ -77,14 +77,21 @@ const primaryImage = (image_id) => {
   object-fit: contain; /* Bild skalieren, ohne das Seitenverhältnis zu verzerren */
 }
 
-/* Overlay oben rechts */
-.image-controls {
+.gallery-controls-right {
   position: absolute;
   top: 8px;
   right: 8px;
   display: flex;
   gap: 4px;
 }
+.gallery-controls-left {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  gap: 4px;
+}
+
 .image-controls button {
 }
 

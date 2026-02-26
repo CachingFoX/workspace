@@ -17,6 +17,7 @@ import TrackableImages from '@/components/trackable/images.vue'
 import TrackableLinkedTrackables from '@/components/trackable/linkedTrackables.vue'
 import TrackableSameSeries from '@/components/trackable/TrackablesSameSeries.vue'
 import TrackableSameTag from '@/components/trackable/TrackablesSameTag.vue'
+import DropZone from '@/components/trackable/dropzone.vue'
 
 const confirm = useConfirm();
 const router = useRouter();
@@ -62,43 +63,45 @@ function onAddTrackable() {
 
 <template>
   <ConfirmDialog></ConfirmDialog>
-  <BaseLayout>
-    <template v-slot:header>
-      <TrackableTitle/>
-    </template>
-    <template v-slot:mainstage>
-      <div class="px-2 pt-2" v-if="storeTrackable.complete" >
-        <div class="flex align-items-center">
-          <div class="flex-grow-1">
-            <ButtonGroup class="mr-3">
-              <Button @click="goToListItem(storeTrackable.id)" label="Zurück" icon="pi pi-angle-double-left"/>
-            </ButtonGroup>
-            <ButtonGroup>
-              <Button @click="" label="Refresh Stammdaten" icon="pi pi-refresh"/>
-            </ButtonGroup>
-          </div>
-          <div>
-            <ButtonGroup>
-              <Button @click="onDelete" severity="danger" icon="pi pi-trash" label="Löschen"/>
-            </ButtonGroup>
+  <DropZone>
+    <BaseLayout>
+      <template v-slot:header>
+        <TrackableTitle/>
+      </template>
+      <template v-slot:mainstage>
+        <div class="px-2 pt-2" v-if="storeTrackable.complete" >
+          <div class="flex align-items-center">
+            <div class="flex-grow-1">
+              <ButtonGroup class="mr-3">
+                <Button @click="goToListItem(storeTrackable.id)" label="Zurück" icon="pi pi-angle-double-left"/>
+              </ButtonGroup>
+              <ButtonGroup>
+                <Button @click="" label="Refresh Stammdaten" icon="pi pi-refresh"/>
+              </ButtonGroup>
+            </div>
+            <div>
+              <ButtonGroup>
+                <Button @click="onDelete" severity="danger" icon="pi pi-trash" label="Löschen"/>
+              </ButtonGroup>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="pt-2">
-        <TrackableMasterData/>
-      </div>
-      <div v-if="!storeTrackable.complete" class="pt-2 px-2">
-        <Button icon="pi pi-plus" label="Neuen Trackable hinzufügen" @click="onAddTrackable"/>
-      </div>
-      <div v-if="storeTrackable.complete" class="pt-2">
-        <TrackableImages/>
-        <TrackableProperties/>
-        <TrackableLinkedTrackables property="linkedTrackables"/>
-        <TrackableSameSeries :series="storeTrackable.series" :self="storeTrackable.private_code"/>
-        <TrackableSameTag :series="storeTrackable.series" :self="storeTrackable.private_code" :tags="storeTrackable.tags"/>
-      </div>
-    </template>
-  </BaseLayout>
+        <div class="pt-2">
+          <TrackableMasterData/>
+        </div>
+        <div v-if="!storeTrackable.complete" class="pt-2 px-2">
+          <Button icon="pi pi-plus" label="Neuen Trackable hinzufügen" @click="onAddTrackable"/>
+        </div>
+        <div v-if="storeTrackable.complete" class="pt-2">
+          <TrackableImages/>
+          <TrackableProperties/>
+          <TrackableLinkedTrackables property="linkedTrackables"/>
+          <TrackableSameSeries :series="storeTrackable.series" :self="storeTrackable.private_code"/>
+          <TrackableSameTag :series="storeTrackable.series" :self="storeTrackable.private_code" :tags="storeTrackable.tags"/>
+        </div>
+      </template>
+    </BaseLayout>
+  </DropZone>
 </template>
 
 <style scoped>
