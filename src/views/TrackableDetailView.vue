@@ -2,7 +2,6 @@
 import 'primeflex/primeflex.css';
 import BaseLayout from '@/components/layout/BaseLayout.vue';
 import Navbar from '@/components/common/Navbar.vue';
-import LoginPanel from '@/components/LoginPanel.vue';
 </script>
 
 <template>
