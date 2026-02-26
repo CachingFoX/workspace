@@ -4,21 +4,24 @@ import CenterLayout from '@/components/layout/CenterLayout.vue';
 </script>
 
 <template>
+
   <div class="baselayout-container">
     <div class="baselayout-header">
       <slot name="header"/>
     </div>
-    <div v-if="$slots.mainstage" class="baselayout-mainstage ">
+    <div class="baselayout-mainstage ">
       <div class="scrollable-content h-full">
         <slot name="mainstage"/>
       </div>
     </div>
-    <div v-if="$slots.centerstage" class="baselayout-centerstage">
+    <!--
+    <div class="baselayout-centerstage">
       <CenterLayout>
         <slot name="centerstage"/>
       </CenterLayout>
     </div>
-    <div v-if="$slots.footer" class="baselayout-footer">
+  -->
+    <div class="baselayout-footer">
       <slot name="footer"/>
     </div>
   </div>
@@ -47,9 +50,8 @@ import CenterLayout from '@/components/layout/CenterLayout.vue';
 }
 .baselayout-mainstage, .baselayout-centerstage {
   width: 100%;
-  flex: 1 1 0;
-  /*flex-grow: 1;
-  flex-shrink: 0;*/
+  flex-grow: 1;
+  flex-shrink: 0;
   overflow: hidden;
   background: #fff;
   box-sizing: border-box;
