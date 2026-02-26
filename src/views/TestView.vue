@@ -1,7 +1,4 @@
 <script setup>
-import LayoutHeaderBodyFooter from '../components/LayoutHeaderBodyFooter.vue'
-import icons1 from '@/assets/form-icon-set1.png'
-import icons2 from '@/assets/form-icon-set2.png'
 </script>
 
 <template>
