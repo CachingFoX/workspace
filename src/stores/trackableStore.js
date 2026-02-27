@@ -54,11 +54,13 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
     const createTrackable = async () => {
       try {
         _progress.value = true;
+        // TODO set State
         const result = await trackableService.createTrackable(data.value);
-        console.log("TrackableStore.createTrackable", result)
-        _data.value = result; // TODO if result is undefined
-        _complete.value = true;
-        _state.value = STATE_READY;
+        if (result !== undefined) {
+          readTrackable(result.public_code)
+        } else {
+          _state.value = STATE_FAIL;
+        }
       } catch (error) {
         console.error("createTrackable error", error);
         _state.value = STATE_FAIL;
