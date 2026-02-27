@@ -93,8 +93,8 @@ function onAddTrackable() {
           <Button icon="pi pi-plus" label="Neuen Trackable hinzufügen" @click="onAddTrackable"/>
         </div>
         <div v-if="storeTrackable.complete" class="pt-2">
-          <TrackableImages/>
           <TrackableProperties/>
+          <TrackableImages/>
           <TrackableLinkedTrackables property="linkedTrackables"/>
           <TrackableSameSeries :series="storeTrackable.series" :self="storeTrackable.private_code"/>
           <TrackableSameTag :series="storeTrackable.series" :self="storeTrackable.private_code" :tags="storeTrackable.tags"/>
