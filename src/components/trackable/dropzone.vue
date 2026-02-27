@@ -41,83 +41,6 @@ const onDrop = (event) => {
   }
 }
 
-async function uploadImage(formData, trackableId) {
-  const url = `http://localhost:8000/trackables/${trackableId}/images/`;
-
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      body: formData,
-      headers: {
-        'Accept': 'application/json'
-        // 'Content-Type' darf hier nicht gesetzt werden, fetch setzt es automatisch für multipart/form-data
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    throw error;
-  }
-}
-
-function estimateCurrentFile(formData, loadedBytes) {
-  // Schritt 1: File-Objekte aus FormData sammeln
-  const files = [];
-  for (const [key, value] of formData.entries()) {
-    if (value instanceof File) {
-      files.push(value);
-    }
-  }
-
-  // Schritt 2: kumulative Größen prüfen
-  let cumulative = 0;
-  for (const file of files) {
-    cumulative += file.size;
-    if (loadedBytes <= cumulative) {
-      return file.name;
-    }
-  }
-
-  // fallback
-  return files.length ? files[files.length - 1].name : null;
-}
-
-function uploadImageWithProgress(formData, trackableId, onProgress) {
-  return new Promise((resolve, reject) => {
-    const url = `http://localhost:8000/trackables/${trackableId}/images/`;
-
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', url);
-
-    // Upload-Progress Event
-    xhr.upload.onprogress = (event) => {
-
-      if (event.lengthComputable && onProgress) {
-        const percent = parseFloat(((event.loaded / event.total) * 100).toFixed(2));
-        const currentFile = estimateCurrentFile(formData, event.loaded);
-        onProgress(percent, currentFile);
-      }
-    };
-
-    xhr.onload = () => {
-      if (xhr.status >= 200 && xhr.status < 300) {
-        resolve(JSON.parse(xhr.responseText));
-      } else {
-        reject(new Error(`HTTP error! Status: ${xhr.status}`));
-      }
-    };
-
-    xhr.onerror = () => reject(new Error('Upload fehlgeschlagen'));
-    xhr.send(formData);
-  });
-}
-
-
 /**
  * Skeleton für Upload-Handler
  */
@@ -129,19 +52,17 @@ const handleUpload = async (files) => {
     const formData = new FormData()
     files.forEach(file => formData.append('files', file))
 
-      // uploadImage(formData, storeTrackable.id)
-    uploadImageWithProgress(formData, storeTrackable.id, (percent, currentfile) => {
-      progress.value = percent;
-      current_file.value = currentfile
-    }).then(console.log)
-      .catch(console.error);
-    } catch (error) {
-      // TODO toast
-      console.error("Fehler beim Upload:", error)
-    } finally {
-      isUploading.value = false;
-      storeTrackable.uploadImages();
-    }
+    storeTrackable.uploadImages(formData, (percent, currentfile) => {
+        progress.value = percent;
+        current_file.value = currentfile
+      }).then(console.log)
+        .catch(console.error);
+      } catch (error) {
+        // TODO toast
+        console.error("Fehler beim Upload:", error)
+      } finally {
+        isUploading.value = false;
+      }
 }
 
 </script>

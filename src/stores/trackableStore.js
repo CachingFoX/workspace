@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
+import { generateKeyBetween } from 'fractional-indexing';
 
 export const STATE_NO_INIT = "NO_INIT";
 export const STATE_LOADING_DB = "LOADING_DB";
@@ -59,7 +60,7 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
         _complete.value = true;
         _state.value = STATE_READY;
       } catch (error) {
-        console.error("loadTrackable error", error);
+        console.error("createTrackable error", error);
         _state.value = STATE_FAIL;
         _progress.value = false;
       } finally {
@@ -84,15 +85,13 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
         }
 
       } catch (error) {
-        console.error("loadTrackable error", error);
+        console.error("readTrackable error", error);
         _state.value = STATE_FAIL;
         _progress.value = false;
       } finally {
         _progress.value = false;
       }
     };
-
-    const loadTrackable = readTrackable;
 
     const updateTrackableFields = async (fields) => {
       Object.assign(_data.value, fields); // TODO in the future _data.properties ????
@@ -213,12 +212,13 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
       return property;
     };
 
-    const uploadImages = async () => {
+    const uploadImages = async (formData, callbackProgress) => {
       try {
         _progress.value = true;
-        _data.value.images = await trackableImagesService.getTrackableImages(trackable_id.value);
+        await trackableImagesService.createTrackableImages(trackable_id.value, formData, callbackProgress)
+        _data.value.images = await trackableImagesService.readTrackableImages(trackable_id.value);
       } catch (error) {
-        console.error("updateProperty error", error);
+        console.error("uploadImages error", error);
       } finally {
         _progress.value = false;
       }
@@ -230,16 +230,12 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
         await trackableImagesService.deleteTrackableImage(trackable_id.value, trackable_image_id);
 
         // reload properties
-        _data.value.images = await trackableImagesService.getTrackableImages(trackable_id.value);
+        _data.value.images = await trackableImagesService.readTrackableImages(trackable_id.value);
       } catch (error) {
         console.error("deleteImage error", error);
       } finally {
         _progress.value = false;
       }
-    }
-
-    const primaryImage = async (trackable_id) => {
-      console.log(trackable_id);
     }
 
     // --- Getter ---
@@ -275,7 +271,33 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
     });
     const trackable_id = computed(() => _data.value.id);
     const hq_trackable_id = computed(() => _data.value.tb_id);
-    const images = computed(() => _data.value.images ?? []);
+    const images = computed(() => {
+      if (!_data.value.images?.length) {
+        return []
+      }
+
+      /* TODO this info must be stored in the database */
+      let rank = null;
+      _data.value.images.forEach((item) => {
+        if (!item.rank) {
+          rank = generateKeyBetween(rank, null)
+          item.rank = rank
+          // TODO mark rank as updated
+        } else {
+          rank = item.rank
+        }
+      })
+
+      return _data.value.images.sort((a, b) => {
+        if (!a?.rank || !b?.rank) { return true }
+        return a.rank > b.rank
+      })
+    });
+
+    /*
+
+    */
+
     const name = computed(() => _data.value.title);
     const owner = computed(() => _data.value.owner);
     const private_code = computed(() => _data.value.private_code);
@@ -314,11 +336,9 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
       readTrackableHQ,
       createTrackable,
       readTrackable,
-      loadTrackable, // obsolete use readTrackable
       updateTrackableFields,
       deleteTrackable,
 
-      //
       attachTag,
       dettachTag,
 
@@ -332,8 +352,6 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
 
       uploadImages,
       deleteImage,
-      primaryImage,
-      //refreshImages,
     };
   });
 };

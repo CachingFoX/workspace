@@ -24,7 +24,7 @@ const route = useRoute();
 watch(
   () => route.params.id,
   (newState, oldState) => {
-    storeTrackable.loadTrackable(route.params.id.toUpperCase());
+    storeTrackable.readTrackable(route.params.id.toUpperCase());
   }
 )
 
@@ -39,7 +39,7 @@ onBeforeMount(()=>{
 onMounted(async () => {
   await storeTags.load();
   // TODO place it better
-  storeTrackable.loadTrackable(trackingNumber.value);
+  storeTrackable.readTrackable(trackingNumber.value);
 })
 
 
