@@ -7,12 +7,13 @@ import { useToast } from "primevue/usetoast";
 import { useTrackableStore } from "@/di/trackables.js"
 import { useConfirm } from "primevue/useconfirm";
 // components
-import PropertyString from '@/components/trackable/details/property_string.vue'
+//import PropertyString from '@/components/trackable/details/property_string.vue'
+import PropertyString from '@/components/trackable/details/property_simple.vue'
 import PropertyText from '@/components/trackable/details/property_text.vue'
 import PropertyTrackables from '@/components/trackable/details/property_trackables.vue'
 import Tags from '@/components/trackable/tags.vue'
 import { useLocalStorageRef } from '@/utils/localStorageRef';
-
+import {makeRouteButton, makeLinkButton, formatDateTime} from '@/components/trackable/details/property_helper'
 
 const confirm = useConfirm();
 const router = useRouter();
@@ -43,8 +44,19 @@ function onRemove(property) {
   storeTrackable.deleteProperty(property.id);
 }
 
+function onLink(i) {
+  if (i?.property_value?.length) {
+    window.open(i.property_value, "_blank" );
+  }
+}
+
 const comp = {
   'string':                 { component: PropertyString },
+  'string.hyperlink':       { component: PropertyString, bindings: {
+    buttons: [
+      { icon: 'pi-globe', show: true, command: onLink }
+    ]
+  } },
   'string.uppercase':       { component: PropertyString, bindings: { 'format': 'uppercase' } },
   'string.lowercase':       { component: PropertyString, bindings: { 'format': 'lowercase' } },
   'string.trackingnumbers': { component: PropertyTrackables },
@@ -66,6 +78,7 @@ const comp = {
             :property="property"
             editable removable
             placeholder="Click to edit"
+            clipboard
             v-bind="comp[property.property_type].bindings"
             @update="onUpdate"
             @remove="onRemove"

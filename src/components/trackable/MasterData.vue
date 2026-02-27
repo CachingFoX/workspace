@@ -3,7 +3,7 @@ import { ref } from 'vue'
 // prime vue
 import { useTrackableStore } from "@/di/trackables.js"
 // components
-import PropertyString from '@/components/trackable/details/property_string.vue'
+import PropertyString from '@/components/trackable/details/property_simple.vue'
 import { geocachingService } from "@/di/trackables.js"
 import {makeRouteButton, makeLinkButton, formatDateTime} from '@/components/trackable/details/property_helper'
 
@@ -20,7 +20,7 @@ const items = [
     component: PropertyString, bindings: {
       value: storeTrackable.series,
       buttons: [
-        makeRouteButton("/series/"+storeTrackable.series,'pi-tags','Alle Trackables'),
+        makeRouteButton(true, "/series/"+storeTrackable.series,'pi-tags',/*'Alle Trackables'*/),
       ]
     }
   },
@@ -29,7 +29,8 @@ const items = [
     bindings: {
       value: storeTrackable.private_code,
       buttons: [
-        makeLinkButton(geocachingService.getLinkGeocachingTrackable(storeTrackable.private_code),'pi-globe','Trackable auf www.geocaching.com öffnen'),
+        makeLinkButton(true, geocachingService.getLinkGeocachingTrackable(storeTrackable.private_code),'pi-globe',
+        /*'Trackable auf www.geocaching.com öffnen'*/),
       ]
     }
   },
@@ -38,7 +39,8 @@ const items = [
     bindings: {
       value: storeTrackable.public_code,
       buttons: [
-        makeLinkButton(geocachingService.getLinkGeocachingTrackable(storeTrackable.public_code),'pi-globe','Trackable auf www.geocaching.com öffnen'),
+        makeLinkButton(true, geocachingService.getLinkGeocachingTrackable(storeTrackable.public_code),'pi-globe',
+        /*'Trackable auf www.geocaching.com öffnen'*/),
       ]
     }
   },
@@ -47,7 +49,8 @@ const items = [
     bindings: {
       value: storeTrackable.hq_trackable_id,
       buttons: [
-        makeLinkButton(geocachingService.getLinkGeocachingTrackableById(storeTrackable.hq_trackable_id),'pi-globe','Trackable auf www.geocaching.com öffnen'),
+        makeLinkButton(true, geocachingService.getLinkGeocachingTrackableById(storeTrackable.hq_trackable_id),'pi-globe',
+        /*'Trackable auf www.geocaching.com öffnen'*/),
       ]
     }
   },
@@ -57,9 +60,11 @@ const items = [
       icon: storeTrackable.activated ? 'pi pi-user' : 'pi pi-times',
       value: storeTrackable.activated ? storeTrackable.owner : 'not activated',
       buttons: [
-        makeRouteButton(storeTrackable.activated ? "/owner/"+storeTrackable.owner : null,'pi-tags','Alle Trackables'),
-        makeLinkButton(storeTrackable.activated ? geocachingService.getLinkGeocachingUserProfile(storeTrackable.owner) : null,'pi-globe','Profil auf www.geocaching.com öffnen'),
-      ]
+        makeRouteButton(storeTrackable.activated, "/owner/"+storeTrackable.owner,'pi-tags',/*'Alle Trackables'*/),
+        makeLinkButton(storeTrackable.activated, geocachingService.getLinkGeocachingUserProfile(storeTrackable.owner),'pi-globe',
+        /*'Profil auf www.geocaching.com öffnen'*/),
+      ],
+      clipboard: storeTrackable.activated
     }
   },
   { name: 'Created',
@@ -87,6 +92,7 @@ const items = [
             <div v-if="item.name">
               <component
                 :is="item.component"
+                clipboard
                 v-bind="item.bindings">
               </component>
             </div>

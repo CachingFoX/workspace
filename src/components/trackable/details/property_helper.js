@@ -17,11 +17,11 @@ export function formatDateTime(timeString) {
   return `${datePart} ${timePart}`;
 }
 
-export function makeRouteButton(route, icon, label) {
-  return { route: route, icon: icon, label: label }
+export function makeRouteButton(visible, route, icon, label) {
+  return { route: route, icon: icon, label: label, show: visible }
 }
 
-export function makeLinkButton(link, icon, label) {
-  return { link: link, icon: icon, label: label }
+export function makeLinkButton(visible, link, icon, label) {
+  return { link: link, icon: icon, label: label, show: visible }
 }
 
