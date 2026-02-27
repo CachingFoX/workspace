@@ -78,19 +78,30 @@ const items = [
 </script>
 
 <template>
-  <div class="panel mx-2 p-2 px-3">
-    <div class="grid-container">
-      <template v-for="(item, index) in items" :key="index" >
-        <div v-if="item.name" class="no-wrap">{{item.name}}</div>
-        <div v-else></div>
-        <div v-if="item.name">
-          <component
-            :is="item.component"
-            v-bind="item.bindings">
-          </component>
+  <div class="flex align-items-stretch gap-2 mx-2">
+    <div class="flex-grow-1 panel p-3">
+        <div class="grid-container">
+          <template v-for="(item, index) in items" :key="index" >
+            <div v-if="item.name" class="no-wrap">{{item.name}}</div>
+            <div v-else></div>
+            <div v-if="item.name">
+              <component
+                :is="item.component"
+                v-bind="item.bindings">
+              </component>
+            </div>
+            <div v-else></div>
+          </template>
         </div>
-        <div v-else></div>
-      </template>
+    </div>
+    <div class="flex-shrink-0 flex-shrink-0 panel" >
+      <div class="flex align-items-center h-full">
+        <img v-if="storeTrackable.images.length"
+          class="gallery-image mx-8" style="max-width: 250px; max-height: 250px"
+          :src="`http://localhost:8000/images/${storeTrackable.images[0].filename}`"
+        />
+        <i class="pi pi-image mx-8" style="font-size: 196px; color: lightgrey"  v-else/>
+      </div>
     </div>
   </div>
 </template>
@@ -164,6 +175,7 @@ const items = [
   max-width: 100%;
   max-height: 100%;
   object-fit: contain; /* Bild skalieren, ohne das Seitenverhältnis zu verzerren */
+  border-radius: 10px;
 }
 
 /* Overlay oben rechts */
