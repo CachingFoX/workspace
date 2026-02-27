@@ -15,6 +15,9 @@ const current_file = ref('')
 let dragCounter = 0
 
 const onDragEnter = (event) => {
+  if (!event.dataTransfer?.types?.includes('Files')) {
+    return;
+  }
   dragCounter++
   isDragging.value = true
 }
