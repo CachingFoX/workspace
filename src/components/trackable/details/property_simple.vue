@@ -144,7 +144,7 @@ const shortcutDisplay = computed(() => (isMac ? '⌘' : 'Ctrl'))
 </script>
 
 <template>
-  <div class="w-full">
+  <div class="w-full" style="position:relative;">
     <InputGroup>
         <IconField>
           <InputIcon class="pi" :class="props.icon" v-if="props.icon"/>
@@ -176,28 +176,7 @@ const shortcutDisplay = computed(() => (isMac ? '⌘' : 'Ctrl'))
         />
       </template>
     </InputGroup>
-
-    <!--
-    <div class="flex">
-      <div class="flex justify-content-center align-items-center display"
-        :class="{'select': buttons.length }" style="height: 32px">
-        <div class="flex-shrink-0"><i v-if="props.icon" class="pi pl-2" :class="props.icon"/></div>
-        <div class="flex-shrink-1 pl-2 pr-2 no-select no-wrap" @click="onEdit"
-        :style="{ color: isValueAvailable ? '#000' : '#666' }">
-          {{displayText}}
-        </div>
-        <div class="flex-shrink-0">
-          <Button v-if="!editing" v-for="item in buttons"
-            :icon="`pi ${item.icon}`"
-            :label="item.label"
-            :severity="item.severity ?? ''"
-            :disabled="item.enabled == undefined ? false : !item.enabled"
-            size="small"
-            @click="onClick(item)"
-          />
-        </div>
-      </div>
-    </div>-->
+    <div class="double-click-catcher" @dblclick.prevent="onEdit" v-show="!editing"/>
   </div>
 </template>
 
@@ -206,15 +185,23 @@ const shortcutDisplay = computed(() => (isMac ? '⌘' : 'Ctrl'))
   background-color: transparent;
   color: hsl(0, 0%, 40%);
   opacity: 1;
-  /*
+
   border-color: transparent;
   box-shadow: none;
-  */
+
   user-select: none;
   pointer-events: none;
 }
 
-
+.double-click-catcher {
+  position:absolute;
+  left:0;
+  right:0;
+  top:0;
+  bottom:0;
+  background-color: transparent;
+  z-index: 900;
+}
 
 .display {
   border: 1px solid transparent;

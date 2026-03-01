@@ -7,7 +7,6 @@ import { useToast } from "primevue/usetoast";
 import { useTrackableStore } from "@/di/trackables.js"
 import { useConfirm } from "primevue/useconfirm";
 // components
-//import PropertyString from '@/components/trackable/details/property_string.vue'
 import PropertyString from '@/components/trackable/details/property_simple.vue'
 import PropertyText from '@/components/trackable/details/property_text.vue'
 import PropertyTrackables from '@/components/trackable/details/property_trackables.vue'
@@ -55,7 +54,8 @@ const comp = {
   'string.hyperlink':       { component: PropertyString, bindings: {
     buttons: [
       { icon: 'pi-globe', show: true, command: onLink }
-    ]
+    ],
+    icon: "pi-external-link"
   } },
   'string.uppercase':       { component: PropertyString, bindings: { 'format': 'uppercase' } },
   'string.lowercase':       { component: PropertyString, bindings: { 'format': 'lowercase' } },
