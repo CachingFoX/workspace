@@ -68,7 +68,7 @@ const comp = {
   <Panel class="mx-2" v-model:collapsed="collapsed" header="Eigenschaften" toggleable>
     <div class="grid-container">
       <div class="grid-item left" >Schlagwörter</div>
-      <div class="grid-item right"><Tags/></div>
+      <div class="grid-item right"><Tags class="w-full"/></div>
 
       <template v-for="property in filteredProperties" :key="property.id">
         <div class="grid-item left" >{{ property.property_name }}</div>
