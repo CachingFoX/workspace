@@ -9,6 +9,7 @@ import { geocachingService } from "@/di/trackables.js"
 import { useRouter } from 'vue-router';
 import { useToast } from 'primevue';
 import InputGroupAddon from 'primevue/inputgroupaddon';
+import ShortcutBadge from '@/components/common/ShortcutBadge.vue';
 
 const router = useRouter();
 const toast = useToast();
@@ -138,9 +139,6 @@ onBeforeMount(()=>{
 onBeforeMount(() => {
   model.value = formattedValue.value;
 })
-
-const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0
-const shortcutDisplay = computed(() => (isMac ? '⌘' : 'Ctrl'))
 </script>
 
 <template>
@@ -155,15 +153,8 @@ const shortcutDisplay = computed(() => (isMac ? '⌘' : 'Ctrl'))
             @keydown.esc="onCancel"
             @keydown.enter="onUpdate"
             />
-          <div class="shortcut-badge-container">
-            <span class="shortcut-badge key shortcut-badge-key mr-1" v-show="isEditing">Enter</span>
-            <span class="shortcut-badge key shortcut-badge-key" v-show="isEditing">ESC</span>
-            <!--
-            <span class="shortcut-badge key shortcut-badge-key">{{ shortcutDisplay }}</span>
-            <span class="shortcut-badge no-key shortcut-badge">+</span>
-            <span class="shortcut-badge key shortcut-badge-key">K</span>
-            -->
-          </div>
+          <ShortcutBadge v-show="isEditing" :keys="[['Enter'],['ESC']]" />
+
       </IconField>
       <template v-for="item in buttons">
         <Button
@@ -203,63 +194,6 @@ const shortcutDisplay = computed(() => (isMac ? '⌘' : 'Ctrl'))
   z-index: 900;
 }
 
-.display {
-  border: 1px solid transparent;
-  border-radius: 8px;
-}
-.display Button {
-  visibility:hidden;
-}
-.display:hover Button {
-  visibility:visible;
-}
-.display:focus-within {
-  border: 2px solid blue;
-}
 
-Button {
-  border-radius: 0px !important;
-}
-Button:last-child {
-  border-top-right-radius: 8px !important;
-  border-bottom-right-radius: 8px !important;
-}
-
-
-/* ------------ */
-
-.select:hover {
-  border: 1px solid #ddd;
-}
-
-
-.shortcut-badge-container {
-  position: absolute;
-  right: 0.5rem; /* Abstand zum rechten Rand */
-  top: 45%;
-  transform: translateY(-50%);
-  z-index: 900;
-}
-
-.shortcut-badge {
-  color: #333;
-  font-size: 0.75rem;
-  font-weight: 500;
-  padding: 2px 6px;
-  font-family: monospace;
-  user-select: none;
-  pointer-events: none;
-  background-color: #ffffff;
-}
-
-.shortcut-badge.no-key{
-  padding: 2px 3px;
-}
-
-.shortcut-badge.key {
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  box-shadow: 2px 1px 4px rgba(0,0,0,0.1);
-}
 
 </style>
