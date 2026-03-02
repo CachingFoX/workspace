@@ -104,7 +104,7 @@ const comp = {
 .grid-container {
   display: grid; /* Grid aktivieren */
   grid-template-columns: auto 1fr; /* auto 2fr auto 1fr; */
-  grid-gap: 2px; /* Abstand zwischen den Elementen */
+  grid-gap: 3px; /* Abstand zwischen den Elementen */
   column-gap: 10px;
   padding: 0;
 }
