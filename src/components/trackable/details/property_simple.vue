@@ -157,7 +157,7 @@ onBeforeMount(() => {
           @keydown.enter="onUpdate"
           @focus="focus = true" @blur="focus = false"
           />
-        <div class="double-click-catcher" @dblclick.prevent="onEdit" v-if="!editing"/>
+        <div class="double-click-catcher" @dblclick.prevent="onEdit" v-if="!editing && props.editable"/>
         <ShortcutBadge v-show="isEditing & focus" :keys="[['Enter'],['ESC']]" />
       </IconField>
       <template v-for="item in buttons">
