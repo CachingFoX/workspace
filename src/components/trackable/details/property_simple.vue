@@ -140,8 +140,6 @@ onBeforeMount(()=>{
 onBeforeMount(() => {
   model.value = formattedValue.value;
 })
-
-
 </script>
 
 <template>
@@ -158,7 +156,7 @@ onBeforeMount(() => {
           @focus="focus = true" @blur="focus = false"
           />
         <div class="double-click-catcher" @dblclick.prevent="onEdit" v-if="!editing && props.editable"/>
-        <ShortcutBadge v-show="isEditing & focus" :keys="[['Enter'],['ESC']]" />
+        <ShortcutBadge v-show="isEditing & focus" :shortcuts="['Enter','ESC']" />
       </IconField>
       <template v-for="item in buttons">
         <Button

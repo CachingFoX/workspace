@@ -10,7 +10,8 @@ import Button from 'primevue/button';
 import Menubar from 'primevue/menubar';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
-import NavbarIcon from '@/components/common/NavbarIcon.vue';
+import NavbarIcon from '@/components/common/NavbarIcon.vue'
+import SearchField from '@/components/common/SearchField.vue'
 import Avatar from 'primevue/avatar';
 import { useBaseStore } from '@/stores/base.js'
 
@@ -25,48 +26,9 @@ const props = defineProps({
   },
 });
 
-const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0
-const shortcutDisplay = computed(() => (isMac ? '⌘' : 'Ctrl'))
-
-const searchModel = ref('');
-const searchInput = ref(null);
-const isFocused = ref(false);
-
-// Tastenkombination global
-async function handleShortcut(event) {
-  const isShortcutPressed = (isMac ? event.metaKey : event.ctrlKey) && event.key.toLowerCase() === 'k'
-  if (isShortcutPressed) {
-    event.preventDefault()
-    setFocusSearchInputField()
-  }
-}
-
-async function setFocusSearchInputField() {
-    await nextTick()
-    const inputEl = searchInput.value.$el.querySelector('input')
-    searchInput.value.$el.focus();
-}
-
-function logout() {
-  router.push("/login")
-}
-
 function onGotoTrackable(e) {
-  searchModel.value = "";
-  router.push("/trackable/"+e.target.value)
+  router.push("/trackable/"+e)
 }
-
-function onNewTrackable() {
-  router.push("/trackable/new");
-}
-
-onMounted(() => {
-  window.addEventListener('keydown', handleShortcut)
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('keydown', handleShortcut)
-})
 
 const items = ref([
     {
@@ -146,27 +108,7 @@ const items = ref([
 
       <template v-if="!blank" #end>
         <div class="flex align-items-center gap-2">
-          <IconField  >
-              <InputIcon class="pi pi-search" />
-              <InputText v-model="searchModel"
-                placeholder="Tracking Code"
-                ref="searchInput"
-                class="search-input"
-                :class="{ 'focused': isFocused }"
-                @focus="isFocused = true"
-                @blur="isFocused = false"
-                @keydown.enter="onGotoTrackable"
-              />
-              <!-- <InputIcon class="pi pi-spin pi-spinner" v-show="storeFilteredData.run"/> -->
-              <div class="shortcut-badge-container">
-                <span class="shortcut-badge key shortcut-badge-key">{{ shortcutDisplay }}</span>
-                <span class="shortcut-badge no-key shortcut-badge">+</span>
-                <span class="shortcut-badge key shortcut-badge-key">K</span>
-              </div>
-          </IconField>
-
-          <!--<Button label="New Trackable" icon="pi pi-plus" @click="onNewTrackable"/>-->
-          <!--<Button label="Logout" as="router-link" to="/logout"/>-->
+          <SearchField @change="onGotoTrackable"/>
           <Avatar :label="storeBase.username1stLetter" class="ml-2 mr-2" style="background-color: #ece9fc; color: #2a1261" shape="circle" />
         </div>
       </template>
