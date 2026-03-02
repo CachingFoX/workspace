@@ -195,9 +195,9 @@ async function onDelete() {
 </script>
 
 <template>
-  <div>
+  <InputGroup>
     <AutoComplete
-    ref="acRef"
+      ref="acRef"
       v-model="trackablesModel"
       :suggestions="suggestedTrackables"
       :typeahead="true"
@@ -210,6 +210,7 @@ async function onDelete() {
       size="normal"
       :loading="loading"
       @remove="handleRemove"
+      class="w-full"
     >
       <template #chip="{ value, removeCallback }">
         <div class="custom-chip no-select">
@@ -224,14 +225,11 @@ async function onDelete() {
         </div>
       </template>
     </AutoComplete>
-
-    <InputGroup>
-      <Button severity="primary" label="Speichern" icon="pi pi-check" @click="onSave"
-        :disabled="!isChanged"/>
-      <Button severity="danger" label="Verwerfen" icon="pi pi-times" @click="onCancel"
-        :disabled="!isChanged"/>
-    </InputGroup>
-  </div>
+    <Button severity="primary" label="Speichern" icon="pi pi-check" @click="onSave"
+      v-if="isChanged"/>
+    <Button severity="danger" label="Verwerfen" icon="pi pi-times" @click="onCancel"
+      v-if="isChanged"/>
+  </InputGroup>
 </template>
 
 <style scoped>
