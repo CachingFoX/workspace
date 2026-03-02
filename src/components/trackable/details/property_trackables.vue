@@ -78,8 +78,10 @@ const suggestedTrackables = computed(() => {
   let queryUpperCase = query.value.toUpperCase()
 
   let result = notSelectedTags.value.filter( i => {
-    return  i.title.toLowerCase().includes(queryLowerCase)|| //  i.title.toLowerCase().startsWith(queryLowerCase)||
-      i.private_code.startsWith(queryUpperCase) ;
+    return i.title.toLowerCase().includes(queryLowerCase) ||
+           i.series.toLowerCase().includes(queryLowerCase) ||
+           i.private_code.startsWith(queryUpperCase) ||
+           i.public_code.startsWith(queryUpperCase);
   }).sort(sortTrackablesByTitle)
 
   loading.value = false;
@@ -137,32 +139,6 @@ onBeforeMount(()=>{
 })
 
 /*
-import { useConfirm } from "primevue/useconfirm";
-const confirm = useConfirm();
-
-const disableDelete = computed(() => {
-  return linkedTrackables.value?.id === null ?? true;
-});
-
-const disableSave = computed(() => {
-  return (model.value ?? "") == (linkedTrackables.value?.property_value ?? "")
-});
-
-const onEdit = () => {
-  model.value = linkedTrackables.value?.property_value ?? "";
-}
-
-const onSave = () => {
-  editing.value = false;
-  if (model.value != linkedTrackables.value.property_value) {
-    storeTrackable.setPropertyByName(property_name, model.value);
-  }
-};
-
-const onCancel = () => {
-  editing.value = false;
-  model.value = linkedTrackables.value.property_value;
-};
 
 const confirm_delete = {
   message: 'Möchtest du die Eigenschaft löschen?',
@@ -188,29 +164,24 @@ const confirm_delete = {
   reject: () => {}
 }
 
-async function onDelete() {
-  confirm.require(confirm_delete)
-}
 */
 </script>
 
 <template>
   <InputGroup>
-    <AutoComplete
-      ref="acRef"
+    <AutoComplete class="w-full" ref="acRef"
       v-model="trackablesModel"
-      :suggestions="suggestedTrackables"
-      :typeahead="true"
       multiple
       optionLabel="title"
+      dropdown
+      size="normal"
+      :suggestions="suggestedTrackables"
+      :typeahead="true"
+      :loading="loading"
+      @remove="handleRemove"
       @complete="search"
       @option-unselect="onUnselect"
       @option-select="onSelect"
-      dropdown
-      size="normal"
-      :loading="loading"
-      @remove="handleRemove"
-      class="w-full"
     >
       <template #chip="{ value, removeCallback }">
         <div class="custom-chip no-select">
@@ -222,6 +193,24 @@ async function onDelete() {
               icon: { style: { marginTop: '2px', padding: '0px 3px' } }
             }"
           />
+        </div>
+      </template>
+      <template #option="slotProps">
+        <div class="flex align-items-center gap-2 p-0">
+          <img
+            :src="slotProps.option.icon_url"
+            class="w-8 h-8 rounded-full"
+          />
+          <div>
+            <div>
+              <span class="font-semibold mr-2">{{ slotProps.option.title }}</span>
+            </div>
+            <div class="text-sm text-gray-500">
+              <span class="">{{ slotProps.option.series }}</span>
+              <span v-if="slotProps.option.private_code"> • {{slotProps.option.private_code}}</span>
+              <span class=""> • {{slotProps.option.public_code}}</span>
+            </div>
+          </div>
         </div>
       </template>
     </AutoComplete>
