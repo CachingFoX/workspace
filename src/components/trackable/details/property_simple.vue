@@ -144,17 +144,17 @@ onBeforeMount(() => {
 <template>
   <div class="w-full" style="position:relative;">
     <InputGroup>
-        <IconField>
-          <InputIcon class="pi" :class="props.icon" v-if="props.icon"/>
-          <InputText class="w-full" ref="refInput"
-            v-model="model"
-            :disabled="isNotEditing"
-            :placeholder="props.placeholder"
-            @keydown.esc="onCancel"
-            @keydown.enter="onUpdate"
-            />
-          <ShortcutBadge v-show="isEditing" :keys="[['Enter'],['ESC']]" />
-
+      <IconField>
+        <InputIcon class="pi" :class="props.icon" v-if="props.icon"/>
+        <InputText class="w-full" ref="refInput"
+          v-model="model"
+          :disabled="isNotEditing"
+          :placeholder="props.placeholder"
+          @keydown.esc="onCancel"
+          @keydown.enter="onUpdate"
+          />
+        <div class="double-click-catcher" @dblclick.prevent="onEdit" />
+        <ShortcutBadge v-show="isEditing" :keys="[['Enter'],['ESC']]" />
       </IconField>
       <template v-for="item in buttons">
         <Button
@@ -167,7 +167,7 @@ onBeforeMount(() => {
         />
       </template>
     </InputGroup>
-    <div class="double-click-catcher" @dblclick.prevent="onEdit" v-show="!editing"/>
+
   </div>
 </template>
 
