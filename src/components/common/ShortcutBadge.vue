@@ -1,12 +1,11 @@
 <script setup>
-import { FormFieldClasses } from '@primevue/forms'
 import { computed, nextTick, ref, onBeforeMount, onBeforeUnmount, onMounted, watch, watchEffect } from 'vue'
 
 const emit = defineEmits(['shortcut'])
 
 const props = defineProps({
   'shortcuts': { Type: Object, default: [], required: true},
-  'listen': { Type: Boolean, default: FormFieldClasses, required: false}
+  'listen': { Type: Boolean, default: false, required: false}
 })
 
 /*
