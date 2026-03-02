@@ -84,6 +84,7 @@ function onCopyToClipboard() {
 const emit = defineEmits(['update','remove'])
 
 const editing = ref(false)
+const focus = ref(false)
 
 async function onEdit() {
   editing.value = true;
@@ -139,6 +140,8 @@ onBeforeMount(()=>{
 onBeforeMount(() => {
   model.value = formattedValue.value;
 })
+
+
 </script>
 
 <template>
@@ -152,9 +155,10 @@ onBeforeMount(() => {
           :placeholder="props.placeholder"
           @keydown.esc="onCancel"
           @keydown.enter="onUpdate"
+          @focus="focus = true" @blur="focus = false"
           />
         <div class="double-click-catcher" @dblclick.prevent="onEdit" v-if="!editing"/>
-        <ShortcutBadge v-show="isEditing" :keys="[['Enter'],['ESC']]" />
+        <ShortcutBadge v-show="isEditing & focus" :keys="[['Enter'],['ESC']]" />
       </IconField>
       <template v-for="item in buttons">
         <Button
