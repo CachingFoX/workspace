@@ -17,7 +17,7 @@ onMounted(() => {
 });
 
 function onClick(e) {
-  router.push("/tag/"+e.id)
+  router.push(`/tag/${e.id}?label=${e.name}`)
 }
 </script>
 
