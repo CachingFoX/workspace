@@ -32,6 +32,11 @@ const trackingNumber = computed(()=>{
   return route.params.id.toUpperCase()
 })
 
+const autoload = computed(()=>{
+  console.log(route.query, route.query.masterdata, route.query.masterdata == "autoload" ? true : false)
+  return route.query.masterdata == "autoload" ? true : false
+})
+
 onBeforeMount(()=>{
   storeTrackable.$reset()
 })
@@ -62,7 +67,7 @@ const ritems = reactive(['database']);
       <TrackableLoad          v-if="storeTrackable.state == STATE_NO_INIT" text="Lade Trackable"/>
       <TrackableLoad     v-else-if="storeTrackable.state == STATE_LOADING_DB" :text="`Lade ${trackingNumber}`"/>
       <TrackableLoad     v-else-if="storeTrackable.state == STATE_LOADING_HQ" :text="`Lade ${trackingNumber} von www.geocaching.com`"/>
-      <TrackableUnknown  v-else-if="storeTrackable.state == STATE_UNKNOWN" :tracking-number="trackingNumber"/>
+      <TrackableUnknown  v-else-if="storeTrackable.state == STATE_UNKNOWN" :tracking-number="trackingNumber" :auto-load="autoload"/>
       <TrackableDetails  v-else-if="storeTrackable.state == STATE_READY" />
       <CenterLayout     v-else>
         Unhandled state '{{storeTrackable.state}}'
