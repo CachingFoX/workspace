@@ -88,6 +88,10 @@ export const createTagsStore = (tagService) => {
     const progress = computed(() => _progress.value);
     const state = computed(() => _state.value);
     const tags = computed(() => {
+      if (!_tags.value?.length) {
+        load();
+      }
+
       let field = _sortBy.value;
       let direction = _sortDirection.value;
       let r = sortByAttribute(_tags.value, field, direction ? 'desc' : 'asc');
