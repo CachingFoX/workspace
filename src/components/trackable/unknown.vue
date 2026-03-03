@@ -1,12 +1,13 @@
 <script setup>
 import Button from 'primevue/button';
 import { useTrackableStore } from "@/di/trackables.js"
-import { computed } from 'vue';
+import { computed, onBeforeMount } from 'vue';
 
 const storeTrackable = useTrackableStore();
 
 const props = defineProps({
   'trackingNumber': { type: String, default: "", required: true },
+  'autoLoad': { type: Boolean, default: false, required: false },
 })
 
 function onClick() {
@@ -15,6 +16,12 @@ function onClick() {
 
 const isPublicCode = computed(()=>{
   return props.trackingNumber.startsWith("TB")
+})
+
+onBeforeMount(()=>{
+  if (!isPublicCode.value && props.autoLoad) {
+    onClick();
+  }
 })
 </script>
 
