@@ -25,8 +25,6 @@ const props = defineProps({
 const model = ref(null);
 const loading = ref(false);
 const inputfield = ref(null);
-const isFocused = ref(false);
-
 
 async function setFocus() {
   await nextTick()
@@ -37,7 +35,6 @@ async function clearFocus() {
   await nextTick()
   inputfield.value.$el.querySelector('input').blur();
 }
-
 
 const query = ref(null);
 

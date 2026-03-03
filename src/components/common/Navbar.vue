@@ -3,17 +3,25 @@ import { ref, watch, computed, onMounted, nextTick } from 'vue'
 import { onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router';
 
-import 'primeflex/primeflex.css';
-import Badge from 'primevue/badge';
-import InputText from 'primevue/inputtext';
-import Button from 'primevue/button';
-import Menubar from 'primevue/menubar';
-import IconField from 'primevue/iconfield';
-import InputIcon from 'primevue/inputicon';
-import NavbarIcon from '@/components/common/NavbarIcon.vue'
-import SearchField from '@/components/common/SearchField.vue'
 import Avatar from 'primevue/avatar';
+import Badge from 'primevue/badge';
+import Dialog from 'primevue/dialog';
+import Menubar from 'primevue/menubar';
+import NavbarIcon from '@/components/common/NavbarIcon.vue'
+
+import IconField from 'primevue/iconfield';
+import InputText from 'primevue/inputtext';
+import InputIcon from 'primevue/inputicon';
+import InputGroup from 'primevue/inputgroup';
+import InputGroupAddon from 'primevue/inputgroupaddon';
+
 import { useBaseStore } from '@/stores/base.js'
+import { useTrackableStore, useTrackableListStore, useTagsStore } from "@/di/trackables.js"
+import { seriesService } from "@/di/trackables.js"
+
+import AdvancedSearchBar from '@/components/common/AdvancedSearchBar/AdvancedSearchBar.vue';
+import ShortcutBadge from '@/components/common/ShortcutBadge.vue';
+
 
 const storeBase = useBaseStore();
 
@@ -26,8 +34,10 @@ const props = defineProps({
   },
 });
 
-function onGotoTrackable(e) {
-  router.push("/trackable/"+e)
+function onShortcut(event) {
+  if (event == 'META_k_') {
+    visibleSearchBar.value = true;
+  }
 }
 
 const items = ref([
@@ -80,9 +90,34 @@ const items = ref([
         */
 ]);
 
+const storeTrackables = useTrackableListStore();
+const storeTags = useTagsStore();
+const series = ref(null)
+const visibleSearchBar = ref(false);
+
+onMounted(() => {
+  seriesService.get_all_series().then((e)=>{
+    series.value = e;
+  })
+});
 </script>
 
 <template>
+  <Dialog v-model:visible="visibleSearchBar" modal position="top" :style="{ width: '80%'}">
+    <template #header>
+      <div class="inline-flex items-center justify-center gap-2">
+          <span class="font-bold whitespace-nowrap">Advanced Search</span>
+      </div>
+    </template>
+    <div>
+      <AdvancedSearchBar class="w-full"
+        :trackables="storeTrackables.trackables"
+        :series="series"
+        :tags="storeTags.tags"
+        placeholder="Search for trackables, tags and series or add a new trackable"
+      />
+    </div>
+  </Dialog>
   <div class="navbar-container">
     <Menubar :model="items" class="border-none shadow-none">
       <template #start>
@@ -108,8 +143,25 @@ const items = ref([
 
       <template v-if="!blank" #end>
         <div class="flex align-items-center gap-2">
-          <SearchField @change="onGotoTrackable"/>
-          <Avatar :label="storeBase.username1stLetter" class="ml-2 mr-2" style="background-color: #ece9fc; color: #2a1261" shape="circle" />
+          <!-- fake search field -->
+          <div>
+            <InputGroup @click="visibleSearchBar = true">
+              <InputGroupAddon>
+                <i class="pi pi-search mr-2"></i>
+                <span class="pr-7 no-select">Search</span>
+                <div style="position: relative; top: -1px; right: -8px">
+                  <ShortcutBadge
+                    :shortcuts="[['META', 'k']]"
+                    :listen="true"
+                    @shortcut="onShortcut"
+                  />
+                </div>
+              </InputGroupAddon>
+            </InputGroup>
+          </div>
+          <div>
+            <Avatar :label="storeBase.username1stLetter" class="ml-2 mr-2" style="background-color: #ece9fc; color: #2a1261" shape="circle" />
+          </div>
         </div>
       </template>
     </Menubar>
@@ -121,43 +173,17 @@ const items = ref([
   box-sizing: border-box;
   border-bottom: 1px solid #ccc;
 }
-
 .p-button.p-component {
   text-decoration: none;
 }
 
-.shortcut-badge-container {
-  position: absolute;
-  right: 0.5rem; /* Abstand zum rechten Rand */
-  top: 45%;
-  transform: translateY(-50%);
+.p-inputgroup {
+  border: 1px solid transparent;
+  border-radius: 6px;
+}
+.p-inputgroup:hover {
+  border-color: black;
+  color: black;
 }
 
-.shortcut-badge {
-  color: #333;
-  font-size: 0.75rem;
-  font-weight: 500;
-  padding: 2px 6px;
-  font-family: monospace;
-  user-select: none;
-  pointer-events: none;
-  background-color: #ffffff;
-}
-
-.shortcut-badge.no-key{
-  padding: 2px 3px;
-}
-
-.shortcut-badge.key {
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  box-shadow: 2px 1px 4px rgba(0,0,0,0.1);
-}
-
-.search-input {
-  width: 250px;
-}
-.p-inputtext.focused {
-  width: 300px;
-}
 </style>

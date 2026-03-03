@@ -1,31 +1,54 @@
 <script setup>
+import { computed, nextTick, ref, onBeforeMount, onMounted, watch } from 'vue'
+import { useTrackableStore, useTrackableListStore, useTagsStore } from "@/di/trackables.js"
+import AdvancedSearchBar from '@/components/common/AdvancedSearchBar/AdvancedSearchBar.vue';
+import { seriesService } from "@/di/trackables.js"
+import Dialog from 'primevue/dialog';
+import Button from 'primevue/button';
+
+const storeTrackables = useTrackableListStore();
+const storeTags = useTagsStore();
+const series = ref(null)
+
+const emits = defineEmits(['change'])
+
+onMounted(() => {
+  seriesService.get_all_series().then((e)=>{
+    console.log(e)
+    series.value = e;
+  })
+});
+
+const visible = ref(false)
 </script>
 
 <template>
-  <!-- align-content-center align-items-center -->
-  <div class="flex t-container justify-content-center align-items-end align-content-start gap-1 flex-wrap">
-    <div class="t-item">A</div>
-    <div class="t-item">B</div>
-    <div class="t-item">C</div>
-    <div class="t-item">D</div>
-    <div class="t-item flex-shrink-0">E</div>
-    <div class="t-item flex-shrink-0">F</div>
-    <div class="t-item">G</div>
-    <div class="t-item">H</div>
-    <div class="t-item">I</div>
-    <div class="t-item">J</div>
+  <Button label="Show" @click="visible = true" />
+  <div class="p-5 w-full">
+    <AdvancedSearchBar class="w-full"
+      :trackables="storeTrackables.trackables"
+      :series="series"
+      :tags="storeTags.tags"
+      placeholder="Search for trackables, tags and series"
+    />
   </div>
+  <Dialog v-model:visible="visible" modal position="top" :style="{ width: '80%'}">
+    <template #header>
+      <div class="inline-flex items-center justify-center gap-2">
+          <span class="font-bold whitespace-nowrap">Advanced Search</span>
+      </div>
+    </template>
+    <div>
+      <AdvancedSearchBar class="w-full"
+        :trackables="storeTrackables.trackables"
+        :series="series"
+        :tags="storeTags.tags"
+        placeholder="Search for trackables, tags and series or add a new trackable"
+      />
+    </div>
+  </Dialog>
 </template>
 
 <style scoped>
-.t-container {
-  width: 100%;
-  height: 100%;
-  background-color: pink;
-}
-.t-item {
-  background-color: cornflowerblue;
-  width: 15rem;
-  height: 5rem;
-}
+
 </style>
