@@ -21,6 +21,7 @@ const sublabel = computed(()=>{
 <template>
   <AdvancedSearchItem
     item-type="Trackable"
+    item-type-color="success"
     :item-label="props.data.title"
     :item-sublabel="sublabel"
     :item-image="props.data.icon_url"

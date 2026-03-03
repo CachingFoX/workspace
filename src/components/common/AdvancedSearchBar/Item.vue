@@ -3,6 +3,7 @@ import Tag from 'primevue/tag';
 
 const props = defineProps({
   itemType: { Type: String, default: null, required: false },
+  itemTypeColor: { Type: String, default: "info", required: false },
   itemLabel: { Type: String, default: "???", required: true },
   itemImage: { Type: String, default: "???", required: true },
   itemSublabel: { Type: String, default: null, required: false },
@@ -28,7 +29,7 @@ const props = defineProps({
     </div>
     <div class="flex-grow-0">
       <slot name="right">
-        <Tag severity="info">{{props.itemType}}</Tag>
+        <Tag :severity="props.itemTypeColor">{{props.itemType}}</Tag>
       </slot>
     </div>
   </div>

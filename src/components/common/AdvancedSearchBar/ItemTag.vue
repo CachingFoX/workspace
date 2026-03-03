@@ -7,7 +7,10 @@ const props = defineProps({
 </script>
 
 <template>
-  <AdvancedSearchItem item-type="Schlagwort" :item-label="props.data.name">
+  <AdvancedSearchItem
+    item-type="Schlagwort"
+    item-type-color="info"
+    :item-label="props.data.name">
     <template #left>
       <i class="pi pi-tag mt-2 ml-2"/>
     </template>

@@ -5,7 +5,6 @@ import { useRouter } from 'vue-router';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
 import AutoComplete from 'primevue/autocomplete';
-
 import AdvancedSearchEmpty from      '@/components/common/AdvancedSearchBar/Empty.vue';
 import AdvancedSearchItemSeries from '@/components/common/AdvancedSearchBar/ItemSeries.vue';
 import AdvancedSearchItemTag from       '@/components/common/AdvancedSearchBar/ItemTag.vue';
@@ -43,6 +42,7 @@ const search = (event) => {
 }
 
 const sortTrackablesByTitle = (a,b) => {return a.title.localeCompare(b.title)}
+const sortItemsByLabel = (a,b) => {return a.label.localeCompare(b.label)}
 
 const suggestedTrackables = computed(() => {
   if (!query.value?.length || !props.trackables?.length) {
@@ -60,8 +60,11 @@ const suggestedTrackables = computed(() => {
     return i.title.toLowerCase().includes(queryLowerCase) ||
            i.series.toLowerCase().includes(queryLowerCase) ||
            i.private_code.startsWith(queryUpperCase) ||
-           i.public_code.startsWith(queryUpperCase);
-  }).sort(sortTrackablesByTitle)
+           i.public_code.startsWith(queryUpperCase) ||
+           i.tags.some(t=> {
+            return t.name.toLowerCase().includes(queryLowerCase)
+          })
+  })
 
   result.push(...resultTBs.map(i=>{
     return { type: 'trackable', label: i.title, route: `/trackable/${i.public_code}` , data: i }
@@ -87,6 +90,10 @@ const suggestedTrackables = computed(() => {
     return { type: 'series', label: i.series, route: `/series/${i.series}`, data: i }
   }))
 
+  // ----------
+
+  result.sort(sortItemsByLabel);
+
   loading.value = false;
   return result;
 });
@@ -106,18 +113,16 @@ function onChange(event) {
 }
 
 function onEnter() {
-  console.log(model.value)
   if (typeof model.value == 'string' && model.value?.length >= 6) {
     router.push(`/trackable/${model.value.trim().toUpperCase()}?masterdata=autoload`)
   }
-
-  // searchModel.value = "";
-  // clearFocus()
-  // emits('change', e.target.value)
 }
 
+const allItems = computed(()=>{
+  return props.trackables.length + props.tags.length + props.series.length
+})
+
 onMounted(()=>{
-  console.log("x")
   setFocus()
 })
 </script>
@@ -125,7 +130,6 @@ onMounted(()=>{
 <template>
   <IconField>
     <InputIcon class="pi pi-search" />
-
     <AutoComplete class="w-full" ref="inputfield"
       v-model="model"
       optionLabel="label"
@@ -139,6 +143,7 @@ onMounted(()=>{
       @keydown.enter="onEnter"
       inputClass="w-full"
       autofocus
+      scrollHeight="25rem"
     >
       <template #empty="slotProps">
         <AdvancedSearchEmpty :model="model"/>
@@ -147,6 +152,10 @@ onMounted(()=>{
         <component :is="itemTypes[slotProps.option.type]" :data="slotProps.option.data" />
       </template>
     </AutoComplete>
+    <InputIcon>
+      <span v-show="suggestedTrackables.length && model">{{suggestedTrackables.length}} Treffer</span>
+      <span v-show="!(suggestedTrackables.length && model)">{{ allItems }} Einträge</span>
+    </InputIcon>
   </IconField>
 </template>
 

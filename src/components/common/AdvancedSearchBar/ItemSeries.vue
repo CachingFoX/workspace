@@ -9,6 +9,7 @@ const props = defineProps({
 <template>
   <AdvancedSearchItem
     item-type="Serie"
+    item-type-color="warn"
     :item-label="props.data.series"
     :item-image="props.data.icon_url"
   />
