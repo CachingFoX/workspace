@@ -45,6 +45,7 @@ export function createGeocachingService({
     return `https://www.geocaching.com/track/details.aspx?id=${tracking_number}`
   }
   function getLinkGeocachingUserProfile(username) {
+    username = encodeURIComponent(username).replace(/%20/g, '+'); // application/x-www-form-urlencoded
     return `https://www.geocaching.com/p/default.aspx?u=${username}`;
   }
   function openNewTab(url) {
