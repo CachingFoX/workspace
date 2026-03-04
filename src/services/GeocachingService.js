@@ -1,3 +1,6 @@
+import { HTTP_STATUS_404_NOT_FOUND } from './httpstatus.js'
+
+/* service methods are state-less */
 export function createGeocachingService({
   baseUrl,
   httpClient,
@@ -20,18 +23,19 @@ export function createGeocachingService({
     };
   };
 
-  const getTrackableData = async (tracking_code) => {
-    const response = await httpClient(`${baseUrl}/trackables/geocaching/${encodeURIComponent(tracking_code)}`, {
+  const getTrackableMasterDataByTrackingNumber = async (trackingnumber) => {
+    const response = await httpClient(`${baseUrl}/trackables/geocaching/${encodeURIComponent(trackingnumber)}`, {
       method: 'GET',
       headers: getHeaders(),
     });
 
-    if (!response.ok) {
-      const errorBody = await response.text();
-      throw new Error(`Failed to fetch trackable data (${response.status}): ${errorBody}`);
+    if (response.ok) {
+      return response.json();
+    } else if (response.status == HTTP_STATUS_404_NOT_FOUND) {
+      return null;
+    } else {
+      fnError(_name, `Fail to fetch trackable master data from www.geocaching.com by tracking number`, response)
     }
-
-    return response.json();
   };
 
   // links to geocaching.com
@@ -48,17 +52,15 @@ export function createGeocachingService({
     username = encodeURIComponent(username).replace(/%20/g, '+'); // application/x-www-form-urlencoded
     return `https://www.geocaching.com/p/default.aspx?u=${username}`;
   }
-  function openNewTab(url) {
-    window.open(url, '_blank');
-  }
 
   return {
     registerErrorNotification,
-    getTrackableData,
+
+    getTrackableMasterDataByTrackingNumber,
+
     getLinkGeocachingTrackable,
     getLinkGeocachingTrackableActivation,
     getLinkGeocachingTrackableById,
     getLinkGeocachingUserProfile,
-    openNewTab,
   };
 }

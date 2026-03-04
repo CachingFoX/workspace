@@ -39,7 +39,7 @@ async function onCreate() {
 
 async function onLoad() {
   try {
-    const result = await geocachingService.getTrackableData(trackable_reference_code.value);
+    const result = await geocachingService.getTrackableMasterDataByTrackingNumber(trackable_reference_code.value);
     data.value = result;
   } catch (error) {
     toast.add({ severity: 'error', summary: 'API Error', detail: error.message, life: 3000 });

@@ -4,12 +4,13 @@ import { watch, onMounted, computed, onBeforeMount, ref, reactive } from 'vue'
 import TrackableDetails from '../components/TrackableDetails.vue';
 import TrackableLoad from '../components/TrackableLoad.vue';
 import TrackableUnknown from '@/components/trackable/unknown.vue';
+import TrackableUnknownHQ from '@/components/trackable/unknown_hq.vue';
 
 import BaseLayout from '@/components/layout/BaseLayout.vue';
 import CenterLayout from '@/components/layout/CenterLayout.vue';
 import Navbar from '@/components/common/Navbar.vue';
 import Footer from '@/components/common/Footer.vue';
-import { STATE_UNKNOWN,
+import { STATE_UNKNOWN_DB, STATE_UNKNOWN_HQ,
   STATE_LOADING_DB, STATE_LOADING_HQ,
   STATE_NO_INIT, STATE_READY } from '../stores/trackableStore.js'
 import { useRoute, useRouter } from 'vue-router';
@@ -33,7 +34,6 @@ const trackingNumber = computed(()=>{
 })
 
 const autoload = computed(()=>{
-  console.log(route.query, route.query.masterdata, route.query.masterdata == "autoload" ? true : false)
   return route.query.masterdata == "autoload" ? true : false
 })
 
@@ -64,11 +64,12 @@ const ritems = reactive(['database']);
       <Navbar/>
     </template>
     <template v-slot:mainstage>
-      <TrackableLoad          v-if="storeTrackable.state == STATE_NO_INIT" text="Lade Trackable"/>
-      <TrackableLoad     v-else-if="storeTrackable.state == STATE_LOADING_DB" :text="`Lade ${trackingNumber}`"/>
-      <TrackableLoad     v-else-if="storeTrackable.state == STATE_LOADING_HQ" :text="`Lade ${trackingNumber} von www.geocaching.com`"/>
-      <TrackableUnknown  v-else-if="storeTrackable.state == STATE_UNKNOWN" :tracking-number="trackingNumber" :auto-load="autoload"/>
-      <TrackableDetails  v-else-if="storeTrackable.state == STATE_READY" />
+      <TrackableLoad           v-if="storeTrackable.state == STATE_NO_INIT" text="Lade Trackable"/>
+      <TrackableLoad      v-else-if="storeTrackable.state == STATE_LOADING_DB" :text="`Lade ${trackingNumber}`"/>
+      <TrackableLoad      v-else-if="storeTrackable.state == STATE_LOADING_HQ" :text="`Lade ${trackingNumber} von www.geocaching.com`"/>
+      <TrackableUnknown   v-else-if="storeTrackable.state == STATE_UNKNOWN_DB" :tracking-number="trackingNumber" :auto-load="autoload"/>
+      <TrackableUnknownHQ v-else-if="storeTrackable.state == STATE_UNKNOWN_HQ" :tracking-number="trackingNumber"/>
+      <TrackableDetails   v-else-if="storeTrackable.state == STATE_READY" />
       <CenterLayout     v-else>
         Unhandled state '{{storeTrackable.state}}'
       </CenterLayout>

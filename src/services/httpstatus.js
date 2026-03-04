@@ -1,0 +1,2 @@
+export const HTTP_STATUS_200_OKAY = 200
+export const HTTP_STATUS_404_NOT_FOUND = 404

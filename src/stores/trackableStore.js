@@ -5,7 +5,6 @@ import { generateKeyBetween } from 'fractional-indexing';
 export const STATE_NO_INIT = "NO_INIT";
 export const STATE_LOADING_DB = "LOADING_DB";
 export const STATE_LOADING_HQ = "LOADING_HQ";
-export const STATE_UNKNOWN = "UNKNOWN";
 export const STATE_UNKNOWN_DB = "UNKNOWN_DB";
 export const STATE_UNKNOWN_HQ = "UNKNOWN_HQ";
 export const STATE_READY = "READY";
@@ -37,15 +36,16 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
       try {
         _progress.value = true;
         _state.value = STATE_LOADING_HQ;
-        const result = await geocachingService.getTrackableData(tracking_number);
-        // TODO undefined => new state READLY UNKNOWN / NOT IN THE SYSTEM
-        _data.value = result;
-        console.log(result);
-        // data.value = result;
-        // TODO state
-        _state.value = STATE_READY;
+        const masterdata = await geocachingService.getTrackableMasterDataByTrackingNumber(tracking_number);
+        if (masterdata) {
+          _data.value = masterdata;
+          _state.value = STATE_READY;
+        } else {
+          _state.value = STATE_UNKNOWN_HQ;
+        }
       } catch (error) {
-        console.log(error);
+        _state.value = STATE_FAIL;
+        console.error("readTrackableHQ", error);
       } finally {
         _progress.value = false;
       }
@@ -62,9 +62,8 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
           _state.value = STATE_FAIL;
         }
       } catch (error) {
-        console.error("createTrackable error", error);
         _state.value = STATE_FAIL;
-        _progress.value = false;
+        console.error("createTrackable error", error);
       } finally {
         _progress.value = false;
       }
@@ -78,12 +77,12 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
         _progress.value = true;
         _state.value = STATE_LOADING_DB;
         _data.value = await trackableService.getTrackableByNumber(tracking_number);
-        if (_data.value !== undefined) {
+        if (_data.value) {
           _properties.value = await trackablePropertiesService.getTrackableProperties(trackable_id.value);
           _complete.value = true;
           _state.value = STATE_READY;
         } else {
-          _state.value = STATE_UNKNOWN;
+          _state.value = STATE_UNKNOWN_DB;
         }
 
       } catch (error) {

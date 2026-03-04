@@ -1,5 +1,6 @@
-/* service methods are state-less */
+import { HTTP_STATUS_404_NOT_FOUND } from './httpstatus.js'
 
+/* service methods are state-less */
 export function createTrackableService({
   baseUrl,
   httpClient,
@@ -151,10 +152,12 @@ export function createTrackableService({
       headers: getHeaders(),
     });
 
-    if (!response.ok) {
-      fnError(_name, `Fetch trackable by tracking number fails`, response)
-    } else {
+    if (response.ok) {
       return response.json();
+    } else if (response.status == HTTP_STATUS_404_NOT_FOUND) {
+      return null;
+    } else {
+      fnError(_name, `Fetch trackable by tracking number fails`, response)
     }
   };
 
