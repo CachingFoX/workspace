@@ -9,6 +9,7 @@ import AdvancedSearchEmpty from      '@/components/common/AdvancedSearchBar/Empt
 import AdvancedSearchItemSeries from '@/components/common/AdvancedSearchBar/ItemSeries.vue';
 import AdvancedSearchItemTag from       '@/components/common/AdvancedSearchBar/ItemTag.vue';
 import AdvancedSearchItemTrackable from '@/components/common/AdvancedSearchBar/ItemTrackable.vue';
+import ToggleSwitch from 'primevue/toggleswitch';
 
 const router = useRouter();
 
@@ -35,13 +36,46 @@ async function clearFocus() {
   inputfield.value.$el.querySelector('input').blur();
 }
 
-const query = ref(null);
+// const query = ref(null);
 
 const search = (event) => {
-  query.value = event.query.trim();
+  console.log("search", event.query, model.value, event)
+  // query.value = event.query.trim();
 }
 
 const sortItemsByLabel = (a,b) => {return a.label.localeCompare(b.label)}
+
+const grouped = ref(true)
+
+const suggestedItemsCount = computed(()=>{
+  if (!suggestedItems.value?.length) {
+    return 0;
+  }
+  if (!grouped.value ) {
+    return suggestedItems.value.length;
+  }
+  let items = 0;
+  suggestedItems.value.forEach(group => {
+    items += group.items.length
+  });
+  return items;
+});
+
+
+function addItems(suggestions, grouped, groupLabel, newSuggestions) {
+  if (newSuggestions?.length) {
+    if (!grouped) {
+      suggestions.push(...newSuggestions)
+    } else {
+      newSuggestions.sort(sortItemsByLabel);
+      suggestions.push({
+        label: groupLabel,
+        code: groupLabel,
+        items: [...newSuggestions]
+      })
+    }
+  }
+}
 
 /*
   {
@@ -51,21 +85,28 @@ const sortItemsByLabel = (a,b) => {return a.label.localeCompare(b.label)}
     data: stores the data
   }
 */
-const suggestedTrackables = computed(() => {
-  console.time("Berechnung");
+const suggestedItems = computed(() => {
+  let userInput = model.value
 
-  if (!query.value?.length || !props.trackables?.length) {
+  if (!userInput?.trim().length ) {
+    console.log("no suggests");
     return []
   }
+
+  console.time("Berechnung");
+
   loading.value = true
 
-  nextTick();
-  let queryLowerCase = query.value.toLowerCase()
-  let queryUpperCase = query.value.toUpperCase()
+  userInput = userInput.trim();
+  let queryLowerCase = userInput.toLowerCase()
+  let queryUpperCase = userInput.toUpperCase()
 
-  let result = [];
+  let suggestedItems = [];
+  let results = [];
 
-  let resultTBs = props.trackables.filter( i => {
+  // ------------
+
+  results = props.trackables.filter( i => {
     return i.title.toLowerCase().includes(queryLowerCase) ||
            i.series.toLowerCase().includes(queryLowerCase) ||
            i.private_code.startsWith(queryUpperCase) ||
@@ -75,38 +116,41 @@ const suggestedTrackables = computed(() => {
           })
   })
 
-  result.push(...resultTBs.map(i=>{
+  addItems(suggestedItems, grouped.value, 'Trackables', results.map((i)=>{
     return { type: 'trackable', label: i.title, route: `/trackable/${i.public_code}` , data: i }
   }))
 
   // ------------
 
-  let resultTags = props.tags.filter ( t => {
+  results = props.tags.filter ( t => {
     return t.name.toLowerCase().includes(queryLowerCase);
   })
 
-  result.push(...resultTags.map(i=>{
+  addItems(suggestedItems, grouped.value, 'Tags', results.map((i)=>{
     return { type: 'tag', label: i.name, route: `/tag/${i.id}?label=${i.name}`, data: i }
   }))
 
   // ------------
 
-  let resultSeries = props.series.filter ( s => {
+  results = props.series.filter ( s => {
     return s.series.toLowerCase().includes(queryLowerCase);
   })
 
-  result.push(...resultSeries.map( i=>{
+  addItems(suggestedItems, grouped.value, 'Series', results.map((i)=>{
     return { type: 'series', label: i.series, route: `/series/${i.series}`, data: i }
   }))
 
   // ----------
 
-  result.sort(sortItemsByLabel);
+  if (!grouped.value) {
+    suggestedItems.sort(sortItemsByLabel);
+  }
 
   loading.value = false;
 
   console.timeEnd("Berechnung");
-  return result;
+  console.log(suggestedItems)
+  return suggestedItems;
 });
 
 
@@ -136,7 +180,7 @@ const allItems = computed(()=>{
 })
 
 const isTrackingNumber = computed(()=>{
-  if (typeof model.value == 'string' && model.value?.length >= 6) {
+  if (typeof model.value == 'string' && model.value?.trim().length >= 6) {
     let a = model.value.trim().toUpperCase()
     if (!a.includes(' ') && !a.startsWith('TB')) {
       return true;
@@ -157,8 +201,10 @@ onMounted(()=>{
     <AutoComplete class="w-full" ref="inputfield"
       v-model="model"
       optionLabel="label"
+      :optionGroupLabel="grouped ? 'label' : null"
+      :optionGroupChildren="grouped ? 'items' : null"
       size="normal"
-      :suggestions="suggestedTrackables"
+      :suggestions="suggestedItems"
       :typeahead="true"
       :loading="loading"
       :placeholder="props.placeholder"
@@ -179,11 +225,21 @@ onMounted(()=>{
       </template>
     </AutoComplete>
     <InputIcon v-show="!loading" class="mr-6">
-      <span class="no-select" v-show="suggestedTrackables.length && model">{{suggestedTrackables.length}} Treffer</span>
+      <span class="no-select" v-show="suggestedItemsCount && model">{{suggestedItemsCount}} Treffer</span>
       <span class="no-select" v-show="!model?.length">{{ allItems }} Einträge</span>
     </InputIcon>
   </IconField>
+  <label class="switch-label mt-2">
+    <ToggleSwitch v-model="grouped" />
+    <span>Vorschläge gruppieren</span>
+  </label>
 </template>
 
 <style scoped>
+.switch-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
 </style>
