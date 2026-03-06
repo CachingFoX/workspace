@@ -51,12 +51,7 @@ function onLink(i) {
 
 const comp = {
   'string':                 { component: PropertyString },
-  'string.hyperlink':       { component: PropertyString, bindings: {
-    buttons: [
-      { icon: 'pi-globe', show: true, command: onLink }
-    ],
-    icon: "pi-external-link"
-  } },
+  'string.hyperlink':       { component: PropertyString, bindings: { 'hyperlink': true } },
   'string.uppercase':       { component: PropertyString, bindings: { 'format': 'uppercase' } },
   'string.lowercase':       { component: PropertyString, bindings: { 'format': 'lowercase' } },
   'string.trackingnumbers': { component: PropertyTrackables },

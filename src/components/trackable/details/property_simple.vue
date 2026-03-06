@@ -26,6 +26,7 @@ const props = defineProps({
   format: { type: String, default: 'none', required: false,
     validator: (val) => ['uppercase', 'lowercase', 'none'].includes(val),
   },
+  hyperlink: { type: Boolean, default: false, required: false },
 })
 
 function formatString(text, format) {
@@ -122,8 +123,30 @@ function onClick(item) {
 const isEditing = computed(()=>{return editing.value})
 const isNotEditing = computed(()=>{return !editing.value})
 
+const isHyperlink = computed(()=>{
+  if (!props.hyperlink || formattedValue.value == null || typeof(formattedValue.value) != 'string') {
+    return false;
+  }
+
+  return formattedValue.value?.startsWith("https://") || formattedValue.value?.startsWith("http://")
+})
+
+const hyperlink = computed(()=>{
+  if (isHyperlink.value) {
+    return formattedValue.value
+  }
+  return ""
+});
+
+
+
 onBeforeMount(()=>{
   buttons.value = buttons.value.concat(props.buttons)
+
+  if (props.hyperlink) {
+    buttons.value.push({ icon: 'pi-external-link', link: hyperlink.value, show: isNotEditing && isHyperlink})
+  }
+
   if (props.editable) {
     buttons.value.push({ icon: 'pi-pencil', command: onEdit, show: isNotEditing })
     buttons.value.push({ icon: 'pi-check', command: onUpdate, show: isEditing })
@@ -140,22 +163,49 @@ onBeforeMount(()=>{
 onBeforeMount(() => {
   model.value = formattedValue.value;
 })
+
+function onClickCatcher() {
+  if (!model.value?.length) {
+    onEdit()
+  } else if (isHyperlink.value) {
+    window.open(model.value, '_blank')
+  } else {
+  }
+}
+
+const styleClickCatcher = computed(()=>{
+  let cursor = ''
+  if (!model.value?.length) {
+    cursor = 'text'
+  } else if (isHyperlink.value) {
+    cursor = 'pointer'
+  } else {
+    cursor = 'default'
+  }
+
+  return {'cursor' : cursor}
+});
 </script>
 
 <template>
   <div class="w-full" style="position:relative;">
     <InputGroup>
       <IconField>
-        <InputIcon class="pi" :class="props.icon" v-if="props.icon"/>
+        <InputIcon class="pi pi-external-link" v-if="isHyperlink" style="z-index: 900;"/>
         <InputText class="w-full" ref="refInput"
           v-model="model"
           :disabled="isNotEditing"
           :placeholder="props.placeholder"
+          :class="{ 'is-hyperlink': isHyperlink }"
           @keydown.esc="onCancel"
           @keydown.enter="onUpdate"
           @focus="focus = true" @blur="focus = false"
           />
-        <div class="double-click-catcher" @dblclick.prevent="onEdit" v-if="!editing && props.editable"/>
+        <div class="double-click-catcher"
+          @dblclick.prevent="onEdit"
+          @click="onClickCatcher"
+          :style="styleClickCatcher"
+          v-if="!editing && props.editable"/>
         <ShortcutBadge v-show="isEditing & focus" :shortcuts="['Enter','ESC']" />
       </IconField>
       <template v-for="item in buttons">
@@ -176,7 +226,7 @@ onBeforeMount(() => {
 <style scoped>
 :deep(.p-inputtext:disabled) {
   background-color: transparent;
-  color: hsl(0, 0%, 40%);
+  color: hsl(0, 0%, 20%);
   opacity: 1;
 
   border-color: transparent;
@@ -184,6 +234,15 @@ onBeforeMount(() => {
 
   user-select: none;
   pointer-events: none;
+}
+
+.p-inputtext::placeholder {
+  color: hsl(0, 0%, 20%);
+  opacity: 0.42;
+}
+
+.is-hyperlink {
+  color: cornflowerblue !important;
 }
 
 .double-click-catcher {
