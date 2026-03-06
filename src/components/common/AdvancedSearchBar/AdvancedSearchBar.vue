@@ -180,7 +180,7 @@ onMounted(()=>{
     </AutoComplete>
     <InputIcon v-show="!loading" class="mr-6">
       <span class="no-select" v-show="suggestedTrackables.length && model">{{suggestedTrackables.length}} Treffer</span>
-      <span class="no-select" v-show="suggestedTrackables.length && !model.length">{{ allItems }} Einträge</span>
+      <span class="no-select" v-show="!model?.length">{{ allItems }} Einträge</span>
     </InputIcon>
   </IconField>
 </template>
