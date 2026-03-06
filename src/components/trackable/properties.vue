@@ -50,12 +50,13 @@ function onLink(i) {
 }
 
 const comp = {
-  'string':                 { component: PropertyString },
-  'string.hyperlink':       { component: PropertyString, bindings: { 'hyperlink': true } },
-  'string.uppercase':       { component: PropertyString, bindings: { 'format': 'uppercase' } },
-  'string.lowercase':       { component: PropertyString, bindings: { 'format': 'lowercase' } },
-  'string.trackingnumbers': { component: PropertyTrackables },
-  'text':                   { component: PropertyText },
+  'geocaches':        { component: PropertyString },
+  'string':           { component: PropertyString },
+  'string.hyperlink': { component: PropertyString, bindings: { 'hyperlink': true } },
+  'string.lowercase': { component: PropertyString, bindings: { 'format': 'lowercase' } },
+  'string.uppercase': { component: PropertyString, bindings: { 'format': 'uppercase' } },
+  'text':             { component: PropertyText },
+  'trackingnumbers':  { component: PropertyTrackables },
 }
 
 function getPlaceholderText(propertyName) {
