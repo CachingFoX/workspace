@@ -115,6 +115,7 @@ onMounted(() => {
         :series="series"
         :tags="storeTags.tags"
         placeholder="Search for trackables, tags and series or add a new trackable"
+        @select="visibleSearchBar = false"
       />
     </div>
   </Dialog>

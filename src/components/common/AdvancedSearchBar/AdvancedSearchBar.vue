@@ -12,7 +12,7 @@ import AdvancedSearchItemTrackable from '@/components/common/AdvancedSearchBar/I
 
 const router = useRouter();
 
-const emits = defineEmits(['change'])
+const emits = defineEmits(['select'])
 
 const props = defineProps({
   series: { Type: Object, default: [], required: false},
@@ -41,10 +41,19 @@ const search = (event) => {
   query.value = event.query.trim();
 }
 
-const sortTrackablesByTitle = (a,b) => {return a.title.localeCompare(b.title)}
 const sortItemsByLabel = (a,b) => {return a.label.localeCompare(b.label)}
 
+/*
+  {
+    type:
+    lable: defines what is shown in the input field
+    route:
+    data: stores the data
+  }
+*/
 const suggestedTrackables = computed(() => {
+  console.time("Berechnung");
+
   if (!query.value?.length || !props.trackables?.length) {
     return []
   }
@@ -95,6 +104,8 @@ const suggestedTrackables = computed(() => {
   result.sort(sortItemsByLabel);
 
   loading.value = false;
+
+  console.timeEnd("Berechnung");
   return result;
 });
 
@@ -108,12 +119,14 @@ const itemTypes = {
 
 function onChange(event) {
   if (typeof event.value == 'object' && event.value.route?.length) {
+    emits('select', event.value)
     router.push(event.value.route)
   }
 }
 
 function onEnter() {
-  if (typeof model.value == 'string' && model.value?.length >= 6) {
+  if (isTrackingNumber.value) {
+    emits('select', model.value)
     router.push(`/trackable/${model.value.trim().toUpperCase()}?masterdata=autoload`)
   }
 }
@@ -121,6 +134,17 @@ function onEnter() {
 const allItems = computed(()=>{
   return props.trackables.length + props.tags.length + props.series.length
 })
+
+const isTrackingNumber = computed(()=>{
+  if (typeof model.value == 'string' && model.value?.length >= 6) {
+    let a = model.value.trim().toUpperCase()
+    if (!a.includes(' ') && !a.startsWith('TB')) {
+      return true;
+    }
+  }
+  return false;
+})
+
 
 onMounted(()=>{
   setFocus()
@@ -138,23 +162,25 @@ onMounted(()=>{
       :typeahead="true"
       :loading="loading"
       :placeholder="props.placeholder"
+      :delay="300"
       @complete="search"
       @change="onChange"
       @keydown.enter="onEnter"
       inputClass="w-full"
       autofocus
-      scrollHeight="25rem"
+      scrollHeight="26rem"
+      dropdown
     >
       <template #empty="slotProps">
-        <AdvancedSearchEmpty :model="model"/>
+        <AdvancedSearchEmpty @click="onEnter" :input="model" :show-button="isTrackingNumber"/>
       </template>
       <template #option="slotProps">
         <component :is="itemTypes[slotProps.option.type]" :data="slotProps.option.data" />
       </template>
     </AutoComplete>
-    <InputIcon>
-      <span v-show="suggestedTrackables.length && model">{{suggestedTrackables.length}} Treffer</span>
-      <span v-show="!(suggestedTrackables.length && model)">{{ allItems }} Einträge</span>
+    <InputIcon v-show="!loading" class="mr-6">
+      <span class="no-select" v-show="suggestedTrackables.length && model">{{suggestedTrackables.length}} Treffer</span>
+      <span class="no-select" v-show="suggestedTrackables.length && !model.length">{{ allItems }} Einträge</span>
     </InputIcon>
   </IconField>
 </template>
