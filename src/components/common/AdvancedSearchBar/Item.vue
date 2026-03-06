@@ -5,7 +5,7 @@ const props = defineProps({
   itemType: { Type: String, default: null, required: false },
   itemTypeColor: { Type: String, default: "info", required: false },
   itemLabel: { Type: String, default: "???", required: true },
-  itemImage: { Type: String, default: "???", required: true },
+  itemImage: { Type: String, default: "null", required: false },
   itemSublabel: { Type: String, default: null, required: false },
 })
 </script>

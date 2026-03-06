@@ -110,7 +110,7 @@ onMounted(() => {
       </div>
     </template>
     <div>
-      <AdvancedSearchBar class="w-full"
+      <AdvancedSearchBar
         :trackables="storeTrackables.trackables"
         :series="series"
         :tags="storeTags.tags"
