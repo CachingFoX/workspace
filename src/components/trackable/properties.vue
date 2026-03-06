@@ -57,6 +57,13 @@ const comp = {
   'string.trackingnumbers': { component: PropertyTrackables },
   'text':                   { component: PropertyText },
 }
+
+function getPlaceholderText(propertyName) {
+  const placeholders = {
+    'SSOCA Link': 'Click here to set a link to https://wiki.ssoca.eu'
+  }
+  return placeholders[propertyName] ?? "Click to edit";
+}
 </script>
 
 <template>
@@ -72,7 +79,7 @@ const comp = {
             :value="property.property_value"
             :property="property"
             editable removable
-            placeholder="Click to edit"
+            :placeholder="getPlaceholderText(property.property_name)"
             clipboard
             v-bind="comp[property.property_type].bindings"
             @update="onUpdate"
