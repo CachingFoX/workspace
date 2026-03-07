@@ -62,7 +62,7 @@ const litems = reactive([
   }
     */
 ])
-const ritems = reactive(['database']);
+const ritems = reactive([]);
 </script>
 
 <template>

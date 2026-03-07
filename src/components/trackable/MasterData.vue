@@ -6,6 +6,7 @@ import { useTrackableStore } from "@/di/trackables.js"
 import PropertyString from '@/components/trackable/details/property_simple.vue'
 import { geocachingService } from "@/di/trackables.js"
 import {makeRouteButton, makeLinkButton, formatDateTime} from '@/components/trackable/details/property_helper'
+import { imageUrl } from "@/utils/imageUrl"
 
 const storeTrackable = useTrackableStore();
 
@@ -104,7 +105,7 @@ const items = [
       <div class="flex align-items-center h-full">
         <img v-if="storeTrackable.images.length"
           class="gallery-image mx-8" style="max-width: 250px; max-height: 250px"
-          :src="`http://localhost:8000/images/${storeTrackable.images[0].filename}`"
+          :src="imageUrl(storeTrackable.images[0].filename)"
         />
         <i class="pi pi-image mx-8" style="font-size: 196px; color: lightgrey"  v-else/>
       </div>

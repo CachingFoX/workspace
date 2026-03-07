@@ -1,11 +1,13 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
+import { getApiBaseUrl } from "@/config/apiConfig"
 
 const KEY_PREFIX = "TRACKABLE_"
 const KEY_AUTH_TOKEN = KEY_PREFIX + 'authToken';
 const KEY_USERNAME = KEY_PREFIX + 'username';
 
 // TODO store früh - vor dem router - initalisieren
+// TODO create a service or this
 
 export const useBaseStore = defineStore('base-X', () => {
   // TODO: on mount setzen bzw onMount aufrufen
@@ -16,7 +18,7 @@ export const useBaseStore = defineStore('base-X', () => {
 
   async function _login(username, password) {
     try {
-      const response = await fetch('http://localhost:8000/token', {
+      const response = await fetch(getApiBaseUrl() + '/token', {
         method: 'POST',
         headers: {
           'accept': 'application/json',
@@ -63,7 +65,7 @@ export const useBaseStore = defineStore('base-X', () => {
 
     try {
       const response = await fetch(
-        'http://localhost:8000/token',
+        getApiBaseUrl() + '/token',
         {
           method: 'DELETE',
           headers: {

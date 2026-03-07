@@ -6,6 +6,7 @@ import Tag from 'primevue/tag';
 import Card from 'primevue/card';
 import { trackableService } from '@/di/trackables'
 import ProgressSpinner from 'primevue/progressspinner';
+import { imageUrl } from "@/utils/imageUrl"
 
 const router = useRouter();
 const route = useRoute();
@@ -54,9 +55,6 @@ watchEffect(async ()=> {
   progress.value = false;
 });
 
-function makeImageUrl(image_filename) {
-  return 'http://localhost:8000/images/'+image_filename
-}
 
 function goToTrackable(tracking_code) {
   router.push("/trackable/"+tracking_code)
@@ -79,7 +77,7 @@ const series = computed(() => {
 });
 
 const main_image = computed(()=>{
-  return trackable.value?.images.length > 0 ? makeImageUrl(trackable.value.images[0].filename) : null
+  return trackable.value?.images.length > 0 ? imageUrl(trackable.value.images[0].filename) : null
 })
 const icon = computed(()=>{
   return trackable.value?.icon_url ? trackable.value.icon_url : ""

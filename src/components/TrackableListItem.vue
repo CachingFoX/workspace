@@ -2,6 +2,7 @@
 import { computed, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import Tag from 'primevue/tag';
+import { imageUrl } from "@/utils/imageUrl"
 
 const router = useRouter();
 const route = useRoute()
@@ -23,10 +24,6 @@ function makeIconUrl(icon_url) {
   return 'https://www.geocaching.com'+icon_url;
 }
 
-function makeImageUrl(image_filename) {
-  return 'http://localhost:8000/images/'+image_filename
-}
-
 function goToTrackable(tracking_code) {
   router.push("/trackable/"+tracking_code)
 }
@@ -43,7 +40,7 @@ const item = computed(() => props.trackable);
     <!-- right: image -->
     <div class="flex-shrink-0 flex justify-content-center align-items-center border" style="width: 100px; height: 100px;">
       <img
-        :src="item.images.length ? makeImageUrl(item.images[0]?.filename) : makeIconUrl(item.icon_url)"
+        :src="item.images.length ? imageUrl(item.images[0]?.filename) : makeIconUrl(item.icon_url)"
         class="card"
         :class="{ 'card-img': item.images.length, 'card-icon': !item.images.length }"
       />

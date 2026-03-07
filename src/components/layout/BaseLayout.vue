@@ -59,11 +59,5 @@ import CenterLayout from '@/components/layout/CenterLayout.vue';
   width: 100%;
   /* Höhe passt sich dem Inhalt an */
   flex-shrink: 0;
-  background: #fafafa;
-  padding: 1rem;
-  padding-bottom: 0.1rem;
-  padding-top: 0.1rem;
-  box-sizing: border-box;
-  border-top: 2px solid #eee;
 }
 </style>

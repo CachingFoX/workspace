@@ -8,6 +8,7 @@ import ButtonGroup from 'primevue/buttongroup';
 import Panel from 'primevue/panel';
 import { useTrackableStore } from "@/di/trackables.js"
 import { useLocalStorageRef } from '@/utils/localStorageRef';
+import { imageUrl } from "@/utils/imageUrl"
 
 // components
 import PersistentPanel from '@/components/trackable/panel.vue'
@@ -117,7 +118,7 @@ function setImagePrevious(index) {
       <template #item="slotProps">
         <img
           class="gallery-image p-4"
-          :src="`http://localhost:8000/images/${slotProps?.item.filename}`"
+          :src="imageUrl(slotProps?.item.filename)"
         />
         <div class="gallery-controls-left">
           <div class="p-2" style="background: darkgray; color: white; border-radius: 4px;">
@@ -139,7 +140,7 @@ function setImagePrevious(index) {
       <template #thumbnail="slotProps">
         <img
           class="thumbnail-image"
-          :src="`http://localhost:8000/images/${slotProps?.item.filename}`"
+          :src="imageUrl(slotProps?.item.filename)"
           :class="{ 'active-thumbnail': slotProps.index === activeIndex }"
         />
       </template>

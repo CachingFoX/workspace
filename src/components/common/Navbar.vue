@@ -18,6 +18,8 @@ import InputGroupAddon from 'primevue/inputgroupaddon';
 import { useBaseStore } from '@/stores/base.js'
 import { useTrackableStore, useTrackableListStore, useTagsStore } from "@/di/trackables.js"
 import { seriesService } from "@/di/trackables.js"
+import { API_ENVIRONMENT, getApiEnvironment } from "@/config/apiConfig"
+
 
 import AdvancedSearchBar from '@/components/common/AdvancedSearchBar/AdvancedSearchBar.vue';
 import ShortcutBadge from '@/components/common/ShortcutBadge.vue';
@@ -100,6 +102,10 @@ onMounted(() => {
     series.value = e;
   })
 });
+
+const isProductive = computed(()=>{
+  return getApiEnvironment() == API_ENVIRONMENT.PRODUCTIVE
+})
 </script>
 
 <template>
@@ -120,7 +126,8 @@ onMounted(() => {
     </div>
   </Dialog>
   <div class="navbar-container">
-    <Menubar :model="items" class="border-none shadow-none">
+    <Menubar :model="items" class="border-none border-noround shadow-none"
+       :class="{ 'is-not-productive' : !isProductive }" >
       <template #start>
         <NavbarIcon class="hidden sm:inline"/>
         <span class="ml-2 font-medium text-2xl">Our Trackables</span>
@@ -170,6 +177,10 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.is-not-productive {
+  background-color: crimson;
+}
+
 .navbar-container {
   box-sizing: border-box;
   border-bottom: 1px solid #ccc;

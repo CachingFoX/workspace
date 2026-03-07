@@ -4,7 +4,7 @@ export const API_ENVIRONMENT = {
   DEVELOPMENT: "development"
 }
 
-const API_ENVIRONMENT_CONFIGURATIONS = {
+export const API_ENVIRONMENT_CONFIGURATIONS = {
   [API_ENVIRONMENT.PRODUCTIVE]: {
     name: 'Productive',
     baseUrl: 'http://localhost:8000' // 7000

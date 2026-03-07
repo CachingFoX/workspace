@@ -2,6 +2,7 @@
 import { reactive, watch, computed, onMounted, onBeforeMount } from 'vue'
 import FooterItem from '@/components/common/FooterItem.vue'
 import { useBaseStore, useTrackableListStore } from '@/di/trackables.js'
+import { API_ENVIRONMENT, getApiEnvironment, getApiBaseUrl } from "@/config/apiConfig"
 
 const storeBase = useBaseStore();
 
@@ -10,9 +11,9 @@ const props = defineProps({
 })
 
 const item = reactive({
-  icon: 'pi-database',
-  text: computed(()=>{return storeBase.baseInfo['short_name']}),
-  tooltip: computed(()=>{return "Database: " + storeBase.baseInfo['database_url']+"\n\nUpload: "+storeBase.baseInfo['upload_path']}),
+  icon: 'pi-flag',
+  text: computed(()=>{return getApiEnvironment()}),
+  tooltip: computed(()=>{return "API BaseURL\n" + getApiBaseUrl()+ "\n\nAPI Version: " + storeBase.baseInfo['version']}),
   class: "monospace blue",
   show: true,
 })
@@ -23,5 +24,5 @@ onMounted(() => {
 </script>
 
 <template>
-  <FooterItem :item="item"/>
+  <FooterItem :item="item" />
 </template>
