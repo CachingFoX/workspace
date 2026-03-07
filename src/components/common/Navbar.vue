@@ -1,32 +1,18 @@
 <script setup>
 import { ref, watch, computed, onMounted, nextTick } from 'vue'
-import { onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router';
 
 import Avatar from 'primevue/avatar';
 import Badge from 'primevue/badge';
-import Dialog from 'primevue/dialog';
 import Menubar from 'primevue/menubar';
 import NavbarIcon from '@/components/common/NavbarIcon.vue'
-
-import IconField from 'primevue/iconfield';
-import InputText from 'primevue/inputtext';
-import InputIcon from 'primevue/inputicon';
-import InputGroup from 'primevue/inputgroup';
-import InputGroupAddon from 'primevue/inputgroupaddon';
+import NavbarFakeSearchField from '@/components/common/NavbarFakeSearchField.vue';
+import AdvancedSearchDialog from './AdvancedSearchDialog/AdvancedSearchDialog.vue';
 
 import { useBaseStore } from '@/stores/base.js'
-import { useTrackableStore, useTrackableListStore, useTagsStore } from "@/di/trackables.js"
-import { seriesService } from "@/di/trackables.js"
 import { API_ENVIRONMENT, getApiEnvironment } from "@/config/apiConfig"
 
-
-import AdvancedSearchBar from '@/components/common/AdvancedSearchDialog/AdvancedSearchBar.vue';
-import ShortcutBadge from '@/components/common/ShortcutBadge.vue';
-
-
 const storeBase = useBaseStore();
-
 const router = useRouter();
 
 const props = defineProps({
@@ -38,7 +24,7 @@ const props = defineProps({
 
 function onShortcut(event) {
   if (event == 'META_k_') {
-    visibleSearchBar.value = true;
+    visibleAdvancedSearchDialog.value = true;
   }
 }
 
@@ -62,46 +48,10 @@ const items = ref([
         label: 'Tags',
         icon: 'pi pi-tags',
         route: '/tags'
-    },
-  /*
-    {
-        label: 'Projects',
-        icon: 'pi pi-search',
-        badge: 3,
-        items: [
-            {
-                label: 'Core',
-                icon: 'pi pi-bolt',
-                shortcut: '⌘+S'
-            },
-            {
-                label: 'Blocks',
-                icon: 'pi pi-server',
-                shortcut: '⌘+B'
-            },
-            {
-                separator: true
-            },
-            {
-                label: 'UI Kit',
-                icon: 'pi pi-pencil',
-                shortcut: '⌘+U'
-            }
-        ]
     }
-        */
 ]);
 
-const storeTrackables = useTrackableListStore();
-const storeTags = useTagsStore();
-const series = ref(null)
-const visibleSearchBar = ref(false);
-
-onMounted(() => {
-  seriesService.get_all_series().then((e)=>{
-    series.value = e;
-  })
-});
+const visibleAdvancedSearchDialog = ref(false);
 
 const isProductive = computed(()=>{
   return getApiEnvironment() == API_ENVIRONMENT.PRODUCTIVE
@@ -109,22 +59,7 @@ const isProductive = computed(()=>{
 </script>
 
 <template>
-  <Dialog v-model:visible="visibleSearchBar" modal position="top" :style="{ width: '80%'}">
-    <template #header>
-      <div class="inline-flex items-center justify-center gap-2">
-          <span class="font-bold whitespace-nowrap">Advanced Search</span>
-      </div>
-    </template>
-    <div>
-      <AdvancedSearchBar
-        :trackables="storeTrackables.trackables"
-        :series="series"
-        :tags="storeTags.tags"
-        placeholder="Search for trackables, tags and series or add a new trackable"
-        @select="visibleSearchBar = false"
-      />
-    </div>
-  </Dialog>
+  <AdvancedSearchDialog v-model:visible="visibleAdvancedSearchDialog"/>
   <div class="navbar-container">
     <Menubar :model="items" class="border-none border-noround shadow-none"
        :class="{ 'is-not-productive' : !isProductive }" >
@@ -153,19 +88,7 @@ const isProductive = computed(()=>{
         <div class="flex align-items-center gap-2">
           <!-- fake search field -->
           <div>
-            <InputGroup @click="visibleSearchBar = true">
-              <InputGroupAddon>
-                <i class="pi pi-search mr-2"></i>
-                <span class="pr-7 no-select">Search</span>
-                <div style="position: relative; top: -1px; right: -8px">
-                  <ShortcutBadge
-                    :shortcuts="[['META', 'k']]"
-                    :listen="true"
-                    @shortcut="onShortcut"
-                  />
-                </div>
-              </InputGroupAddon>
-            </InputGroup>
+            <NavbarFakeSearchField @activate="visibleAdvancedSearchDialog = true"/>
           </div>
           <div>
             <Avatar :label="storeBase.username1stLetter" class="ml-2 mr-2" style="background-color: #ece9fc; color: #2a1261" shape="circle" />
@@ -197,5 +120,4 @@ const isProductive = computed(()=>{
   border-color: black;
   color: black;
 }
-
 </style>
