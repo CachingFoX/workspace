@@ -25,7 +25,7 @@ const notSelectedTags = computed(()=>{
 const search = (event) => {
   let query = event.query.toLowerCase()
   suggestedTags.value = notSelectedTags.value.filter( i => {
-    return i.name.toLowerCase().startsWith(query);
+    return i.name.toLowerCase().includes(query);
   })
 }
 
