@@ -7,11 +7,11 @@ export const API_ENVIRONMENT = {
 export const API_ENVIRONMENT_CONFIGURATIONS = {
   [API_ENVIRONMENT.PRODUCTIVE]: {
     name: 'Productive',
-    baseUrl: 'http://localhost:8000' // 7000
+    baseUrl: 'http://localhost:7000'
   },
   [API_ENVIRONMENT.DEVELOPMENT]: {
     name: 'Development',
-    baseUrl: 'http://localhost:8000' // 9000
+    baseUrl: 'http://localhost:9000'
   },
 }
 

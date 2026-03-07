@@ -3,7 +3,7 @@ from backend.settings import ApiSettings
 
 settings = ApiSettings(
     database_url="sqlite:///./data/develop/app.db",
-    short_name="develop",
+    short_name="development",
     upload_path="./data/develop/uploads",
 )
 
