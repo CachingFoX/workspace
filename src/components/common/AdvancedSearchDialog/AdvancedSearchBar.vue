@@ -5,10 +5,10 @@ import { useRouter } from 'vue-router';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
 import AutoComplete from 'primevue/autocomplete';
-import AdvancedSearchEmpty from      '@/components/common/AdvancedSearchBar/Empty.vue';
-import AdvancedSearchItemSeries from '@/components/common/AdvancedSearchBar/ItemSeries.vue';
-import AdvancedSearchItemTag from       '@/components/common/AdvancedSearchBar/ItemTag.vue';
-import AdvancedSearchItemTrackable from '@/components/common/AdvancedSearchBar/ItemTrackable.vue';
+import AdvancedSearchEmpty from      '@/components/common/AdvancedSearchDialog/Empty.vue';
+import AdvancedSearchItemSeries from '@/components/common/AdvancedSearchDialog/ItemSeries.vue';
+import AdvancedSearchItemTag from       '@/components/common/AdvancedSearchDialog/ItemTag.vue';
+import AdvancedSearchItemTrackable from '@/components/common/AdvancedSearchDialog/ItemTrackable.vue';
 import ToggleSwitch from 'primevue/toggleswitch';
 
 const router = useRouter();

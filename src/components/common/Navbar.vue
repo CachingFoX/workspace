@@ -21,7 +21,7 @@ import { seriesService } from "@/di/trackables.js"
 import { API_ENVIRONMENT, getApiEnvironment } from "@/config/apiConfig"
 
 
-import AdvancedSearchBar from '@/components/common/AdvancedSearchBar/AdvancedSearchBar.vue';
+import AdvancedSearchBar from '@/components/common/AdvancedSearchDialog/AdvancedSearchBar.vue';
 import ShortcutBadge from '@/components/common/ShortcutBadge.vue';
 
 

@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import AdvancedSearchItem from '@/components/common/AdvancedSearchBar/Item.vue'
+import AdvancedSearchItem from '@/components/common/AdvancedSearchDialog/Item.vue'
 
 const props = defineProps({
   data: { Type: Object, default: null, required: true }

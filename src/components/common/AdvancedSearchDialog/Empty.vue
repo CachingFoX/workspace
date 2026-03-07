@@ -1,6 +1,6 @@
 <script setup>
 import { computed, nextTick, ref, onBeforeMount, onMounted, watch } from 'vue'
-import AdvancedSearchItem from '@/components/common/AdvancedSearchBar/Item.vue'
+import AdvancedSearchItem from '@/components/common/AdvancedSearchDialog/Item.vue'
 import Button from 'primevue/button'
 
 const props = defineProps({
