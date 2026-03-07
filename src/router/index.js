@@ -3,17 +3,12 @@ import '@/main.css'
 import 'primeflex/primeflex.css';
 import 'primeicons/primeicons.css'
 import { useBaseStore } from '../stores/base.js'
-// import About from '../views/About.vue';
-import NewTrackable from '../NewTrackable.vue'; // ../views/...
 import TrackablesListView from '@/views/trackables/TrackablesListView.vue';
 import TrackableView from '../views/TrackableView.vue';
-import TrackableNewView from '../views/TrackableNewView.vue';
-import TrackableUnknownView from '../views/TrackableUnknownView.vue'
 import TestView from '../views/TestView.vue';
 import LoginView from '../views/LoginView.vue';
 import LogoutView from '../views/LogoutView.vue';
 import DashboardView from '../views/DashboardView.vue';
-import MainView from '../views/MainView.vue';
 import TagsAdministrationView from '@/views/TagsAdministrationView.vue';
 import OwnerTrackablesView from '@/views/trackables/OwnerTrackablesView.vue';
 import SeriesTrackablesView from '@/views/trackables/SeriesTrackablesView.vue';
@@ -52,11 +47,6 @@ const routes = [
     component: SeriesTrackablesView,
   },
   {
-    path: '/main',
-    name: 'Main',
-    component: MainView,
-  },
-  {
     path: '/tags',
     name: 'Tags Administration',
     component: TagsAdministrationView,
@@ -70,16 +60,6 @@ const routes = [
     path: '/trackables',
     name: 'Trackables',
     component: TrackablesListView
-  },
-  {
-    path: '/trackable/new/:id?',
-    name: 'NewTrackable',
-    component: TrackableNewView
-  },
-  {
-    path: '/trackable/unknown/:id',
-    name: 'UnknownTrackable',
-    component: TrackableUnknownView
   },
   {
     path: '/trackable/:id',
