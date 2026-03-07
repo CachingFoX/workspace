@@ -20,14 +20,13 @@ const props = defineProps({
   padding-bottom: 0.2rem;
   padding-top: 0.2rem;
 }
+.item-container:hover {
+  filter: brightness(1.15);
+}
 
-.blue {
+.information {
   background-color: cornflowerblue;
   color: white;
 }
-.blue:hover {
-  background-color: cornflowerblue;
-  opacity: 0.850;
-  color: white;
-}
+
 </style>

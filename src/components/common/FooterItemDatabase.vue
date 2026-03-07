@@ -13,7 +13,7 @@ const item = reactive({
   icon: 'pi-database',
   text: computed(()=>{return storeBase.baseInfo['short_name']}),
   tooltip: computed(()=>{return "Database: " + storeBase.baseInfo['database_url']+"\n\nUpload: "+storeBase.baseInfo['upload_path']}),
-  class: "monospace blue",
+  class: "monospace information",
   show: true,
 })
 

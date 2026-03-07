@@ -14,7 +14,7 @@ const item = reactive({
   icon: 'pi-flag',
   text: computed(()=>{return getApiEnvironment()}),
   tooltip: computed(()=>{return "API BaseURL\n" + getApiBaseUrl()+ "\n\nAPI Version: " + storeBase.baseInfo['version']}),
-  class: "monospace blue",
+  class: "monospace information",
   show: true,
 })
 
