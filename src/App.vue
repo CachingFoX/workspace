@@ -36,7 +36,7 @@ onBeforeMount(() => {
 
 <template>
   <router-view/>
-  <Toast/>
+  <Toast position="bottom-right"/>
 </template>
 
 <style scoped>

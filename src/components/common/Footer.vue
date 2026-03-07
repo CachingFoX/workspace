@@ -1,8 +1,9 @@
 <script setup>
 import { ref, watch, computed, onMounted, nextTick } from 'vue'
 import FooterItem from '@/components/common/FooterItem.vue'
-import FooterItemDatabase from '@/components/common/FooterItemDatabase.vue'
 import FooterItemApiEnvironment from '@/components/common/FooterItemApiEnvironment.vue'
+import FooterItemDatabase from '@/components/common/FooterItemDatabase.vue'
+import FooterItemUser from '@/components/common/FooterItemUser.vue'
 import { API_ENVIRONMENT, getApiEnvironment } from "@/config/apiConfig"
 
 const props = defineProps({
@@ -46,6 +47,7 @@ const isProductive = computed(()=>{
       <!-- right -->
       <div class="flex gap-0">
         <component v-for="item in props.right" :is="_component(item)" :item="item" />
+        <FooterItemUser/>
         <FooterItemApiEnvironment/>
         <FooterItemDatabase/>
       </div>
