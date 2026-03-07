@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, computed, watchEffect } from 'vue'
+import { onMounted, ref, computed, watchEffect, reactive } from 'vue'
 import 'primeflex/primeflex.css';
 import BaseLayout from '@/components/layout/BaseLayout.vue';
 import Navbar from '@/components/common/Navbar.vue';
@@ -52,6 +52,17 @@ const evenWidgets = computed(() =>
 const oddWidgets = computed(() =>
   widgets.value.filter((_, index) => index % 2 !== 0)
 )
+
+const litems = reactive([
+  /*
+  {
+    icon: computed(()=>{return storeTrackable.progress ? 'pi-spin pi-cog' : 'pi-cog'}),
+    text: computed(()=>{return storeTrackable.progress ? "In Arbeit" : "Bereit" }),
+    show: true,
+  }
+    */
+])
+const ritems = reactive(['database']);
 </script>
 
 <template>
@@ -85,7 +96,8 @@ const oddWidgets = computed(() =>
     </template>
 
     <template v-slot:footer>
-      <Footer/>
+      <Footer :left="litems" :right="ritems"/>
     </template>
+
   </BaseLayout>
 </template>
