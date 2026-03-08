@@ -2,17 +2,16 @@
 import { reactive, watch, computed, onMounted, onBeforeMount } from 'vue'
 import FooterItem from '@/components/common/FooterItem.vue'
 import { useBaseStore, useTrackableListStore } from '@/di/trackables.js'
+import appVersion from '@/config/version.js'
 
 const storeBase = useBaseStore();
 
 const item = reactive({
-  icon: 'pi-database',
-  text: computed(()=>{return storeBase.baseInfo['short_name']}),
+  icon: 'pi-info-circle',
+  text: computed(()=>{return appVersion}),
   tooltip: computed(()=>{
     const x = [
-      "Database", storeBase.baseInfo['database_url'],
-      "",
-      "Upload Path", storeBase.baseInfo['upload_path'],
+      "Application version", appVersion
     ]
     return x.join("\n")
   }),

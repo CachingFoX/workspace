@@ -4,6 +4,7 @@ import FooterItem from '@/components/common/FooterItem.vue'
 import FooterItemApiEnvironment from '@/components/common/FooterItemApiEnvironment.vue'
 import FooterItemDatabase from '@/components/common/FooterItemDatabase.vue'
 import FooterItemUser from '@/components/common/FooterItemUser.vue'
+import FooterItemAppVersion from '@/components/common/Footer/ItemAppVersion.vue'
 import { API_ENVIRONMENT, getApiEnvironment } from "@/config/apiConfig"
 
 const props = defineProps({
@@ -17,7 +18,6 @@ const itemtypes = {
 }
 
 function _component(item) {
-  console.info("type", typeof item)
   if (typeof item === 'object') {
     return FooterItem;
   }
@@ -50,6 +50,7 @@ const isProductive = computed(()=>{
         <FooterItemUser/>
         <FooterItemApiEnvironment/>
         <FooterItemDatabase/>
+        <FooterItemAppVersion/>
       </div>
     </div>
   </div>

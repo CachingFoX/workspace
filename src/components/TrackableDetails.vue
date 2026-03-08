@@ -18,6 +18,7 @@ import TrackableLinkedTrackables from '@/components/trackable/linkedTrackables.v
 import TrackableSameSeries from '@/components/trackable/TrackablesSameSeries.vue'
 import TrackableSameTag from '@/components/trackable/TrackablesSameTag.vue'
 import DropZone from '@/components/trackable/dropzone.vue'
+import Shortcut from '@/components/common/Shortcut.vue'
 
 const confirm = useConfirm();
 const router = useRouter();
@@ -56,6 +57,12 @@ async function onDelete() {
   })
 }
 
+function onShortcut(x) {
+  if (x == 'Enter_') {
+    onAddTrackable();
+  }
+}
+
 function onAddTrackable() {
   storeTrackable.createTrackable()
 }
@@ -90,6 +97,7 @@ function onAddTrackable() {
           <TrackableMasterData/>
         </div>
         <div v-if="!storeTrackable.complete" class="pt-2 px-2">
+          <Shortcut :shortcuts="['Enter']" @shortcut="onShortcut"/>
           <Button icon="pi pi-plus" label="Neuen Trackable hinzufügen" @click="onAddTrackable"/>
         </div>
         <div v-if="storeTrackable.complete" class="pt-2">

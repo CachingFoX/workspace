@@ -6,14 +6,19 @@ import { API_ENVIRONMENT, getApiEnvironment, getApiBaseUrl } from "@/config/apiC
 
 const storeBase = useBaseStore();
 
-const props = defineProps({
-  item: { type: [Object, String], default: null, required: true}
-})
-
 const item = reactive({
   icon: 'pi-flag',
-  text: computed(()=>{return getApiEnvironment()}),
-  tooltip: computed(()=>{return "API BaseURL\n" + getApiBaseUrl()+ "\n\nAPI Version: " + storeBase.baseInfo['version']}),
+  text: computed(()=>{return getApiEnvironment()+":"+storeBase.baseInfo['version']}),
+  tooltip: computed(()=>{
+    const x = [
+      "API Environment:", getApiEnvironment(),
+      "",
+      "API Version:", storeBase.baseInfo['version'],
+      "",
+      "API BaseURL:", getApiBaseUrl(),
+    ]
+    return x.join("\n")
+  }),
   class: "monospace information",
   show: true,
 })
