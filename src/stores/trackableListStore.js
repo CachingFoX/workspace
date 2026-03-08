@@ -16,6 +16,17 @@ export const createTrackableListStore = (trackableService) => {
 
       try {
         const data = await trackableService.getAllTrackables();
+
+        data.forEach(t => {
+          // special sort order - images with empty rank at the end
+          t.images.sort((a, b) => {
+            if (a.rank && !b.rank) { return false }
+            if (!a.rank && b.rank) { return true }
+            if (!a.rank && !b.rank) { return false }
+            return a.rank > b.rank
+          })
+        });
+
         items.value = data;
       } catch (err) {
         error.value = err;

@@ -305,6 +305,7 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
           let oldRank = rank
           rank = generateKeyBetween(rank, null)
           item.rank = rank
+          updateImageRank(item.id, rank)
         } else {
           rank = item.rank
         }
