@@ -15,7 +15,7 @@ import AdvancedSearchItemTrackable from '@/components/common/AdvancedSearchDialo
 const router = useRouter();
 const store = useAdvancedSearchStore();
 
-const emits = defineEmits(['select'])
+const emits = defineEmits(['hide'])
 
 const props = defineProps({
   placeholder: { Type: String, default: [], required: false}
@@ -41,15 +41,18 @@ const itemTypes = {
 
 function onChange(event) {
   if (typeof event.value == 'object' && event.value.route?.length) {
-    emits('select', event.value)
+    emits('hide', event.value)
     router.push(event.value.route)
+    store.updateURLSearchParameterOff();
+    store.queryString = ""
   }
 }
 
 function onEnter() {
   if (store.isQueryStringTrackingNumber) {
-    emits('select', store.queryString)
+    emits('hide', store.queryString)
     router.push(`/trackable/${store.queryStringUpperCase}?masterdata=autoload`)
+    store.updateURLSearchParameterOff();
     store.queryString = ""
   }
 }

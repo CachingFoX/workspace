@@ -26,6 +26,5 @@ export function setApiEnvironment(env) {
 }
 
 export function getApiBaseUrl() {
-  console.log("API config:", getApiEnvironment(), "with BaseURL", API_ENVIRONMENT_CONFIGURATIONS[getApiEnvironment()].baseUrl)
   return API_ENVIRONMENT_CONFIGURATIONS[getApiEnvironment()].baseUrl
 }

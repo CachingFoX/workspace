@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref, computed, nextTick } from 'vue';
+import { useRoute, useRouter } from 'vue-router'
 import { useTrackableListStore, useTagsStore } from "@/di/trackables.js"
 import { seriesService } from "@/di/trackables.js"
 
@@ -13,6 +14,8 @@ export const ADVANCED_SEARCH_TYPES = {
 
 export const useAdvancedSearchStore = defineStore('advanced-search', () => {
   // --- State ---
+  const router = useRouter();
+  const route = useRoute();
   const storeTrackables = useTrackableListStore();
   const storeTags = useTagsStore();
   const seriesX = ref([])
@@ -20,10 +23,17 @@ export const useAdvancedSearchStore = defineStore('advanced-search', () => {
   const _loading = ref(false)
   const _grouped = ref(true);
   const _types = ref(Object.values(ADVANCED_SEARCH_TYPES));
-
+  let _updateURLSearchParameter = false;
 
   // --- Actions ---
   const $reset = () => {
+  }
+
+  function updateURLSearchParameterOn() {
+    _updateURLSearchParameter = true;
+  }
+  function updateURLSearchParameterOff() {
+    _updateURLSearchParameter = false;
   }
 
   // --- Getter ---
@@ -34,7 +44,6 @@ export const useAdvancedSearchStore = defineStore('advanced-search', () => {
     // TODO in einen eigene Store verschieben
     if (seriesX.value.length == 0) {
       seriesService.get_all_series().then((r) => {
-        console.log("***", r)
         seriesX.value = r
         return r
       })
@@ -47,6 +56,20 @@ export const useAdvancedSearchStore = defineStore('advanced-search', () => {
   const numberOfItems = computed(() => {
     return trackables.value.length + tags.value.length + series.value.length
   })
+
+  function updateURLSearchParameter(parameterName, newVal) {
+    if (_updateURLSearchParameter) {
+      const newQuery = { ...route.query }
+
+      if (newVal?.length) {
+        newQuery[parameterName] = newVal
+      } else {
+        delete newQuery[parameterName]   // entfernt das Attribut komplett
+      }
+
+      router.replace({ query: newQuery })
+    }
+  }
 
   function addItems(suggestions, grouped, groupLabel, newSuggestions) {
     if (newSuggestions?.length) {
@@ -69,7 +92,7 @@ export const useAdvancedSearchStore = defineStore('advanced-search', () => {
       return []
     }
 
-    console.time("suggestions");
+    // console.time("suggestions");
 
     _loading.value = true
 
@@ -113,7 +136,7 @@ export const useAdvancedSearchStore = defineStore('advanced-search', () => {
 
     _loading.value = false;
 
-    console.timeEnd("suggestions");
+    // console.timeEnd("suggestions");
     return suggestedItems;
   });
 
@@ -127,12 +150,20 @@ export const useAdvancedSearchStore = defineStore('advanced-search', () => {
     get: () => {
       return _types.value?.length ? _types.value : Object.values(ADVANCED_SEARCH_TYPES)
     },
-    set: (v) => { _types.value = v }
+    set: (v) => {
+      _types.value = v
+      updateURLSearchParameter("types", _types.value)
+    }
   })
+
+
 
   const queryString = computed({
     get: () => _input.value,
-    set: (v) => { _input.value = (v?.length ? v : "").trim() }
+    set: (v) => {
+      _input.value = (v?.length ? v : "").trim()
+      updateURLSearchParameter("query", _input.value)
+    }
   })
   const queryStringUpperCase = computed(() => {
     return _input.value.trim().toUpperCase()
@@ -183,6 +214,9 @@ export const useAdvancedSearchStore = defineStore('advanced-search', () => {
   return {
     // actions
     $reset,
+    updateURLSearchParameterOff,
+    updateURLSearchParameterOn,
+
     // getters
     series,
     tags,

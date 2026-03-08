@@ -26,6 +26,7 @@ function onShowResults() {
       types: store.types
     }
   })
+  visible.value = false;
 }
 </script>
 
@@ -55,7 +56,7 @@ function onShowResults() {
       </div>
       <AdvancedSearchBar
         placeholder="Search for trackables, tags and series or add a new trackable"
-        @select="visible = false"
+        @hide="visible = false"
       />
     </div>
   </Dialog>
