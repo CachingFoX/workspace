@@ -9,7 +9,7 @@ import TrackableUnknownHQ from '@/components/trackable/unknown_hq.vue';
 import BaseLayout from '@/components/layout/BaseLayout.vue';
 import CenterLayout from '@/components/layout/CenterLayout.vue';
 import Navbar from '@/components/common/Navbar.vue';
-import Footer from '@/components/common/Footer.vue';
+import Footer from '@/components/common/Footer/Footer.vue';
 import { STATE_UNKNOWN_DB, STATE_UNKNOWN_HQ,
   STATE_LOADING_DB, STATE_LOADING_HQ,
   STATE_NO_INIT, STATE_READY } from '../stores/trackableStore.js'

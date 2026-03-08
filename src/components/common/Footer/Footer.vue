@@ -1,10 +1,10 @@
 <script setup>
 import { ref, watch, computed, onMounted, nextTick } from 'vue'
-import FooterItem from '@/components/common/FooterItem.vue'
-import FooterItemApiEnvironment from '@/components/common/FooterItemApiEnvironment.vue'
-import FooterItemDatabase from '@/components/common/FooterItemDatabase.vue'
-import FooterItemUser from '@/components/common/FooterItemUser.vue'
+import FooterItem from '@/components/common/Footer/Item.vue'
+import FooterItemApiEnvironment from '@/components/common/Footer/ItemApiEnvironment.vue'
 import FooterItemAppVersion from '@/components/common/Footer/ItemAppVersion.vue'
+import FooterItemDatabase from '@/components/common/Footer/ItemDatabase.vue'
+import FooterItemUser from '@/components/common/Footer/ItemUser.vue'
 import { API_ENVIRONMENT, getApiEnvironment } from "@/config/apiConfig"
 
 const props = defineProps({

@@ -1,6 +1,6 @@
 <script setup>
 import { reactive, watch, computed, onMounted, onBeforeMount } from 'vue'
-import FooterItem from '@/components/common/FooterItem.vue'
+import FooterItem from '@/components/common/Footer/Item.vue'
 import { useBaseStore, useTrackableListStore } from '@/di/trackables.js'
 import appVersion from '@/config/version.js'
 

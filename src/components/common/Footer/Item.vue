@@ -1,6 +1,4 @@
 <script setup>
-import FooterItem from '@/components/common/FooterItem.vue'
-
 const props = defineProps({
   item: { type: [Object,String], default: null, required: true}
 })
@@ -28,5 +26,4 @@ const props = defineProps({
   background-color: cornflowerblue;
   color: white;
 }
-
 </style>

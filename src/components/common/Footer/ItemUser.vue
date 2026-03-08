@@ -1,8 +1,6 @@
 <script setup>
 import { reactive, watch, computed, onMounted, onBeforeMount } from 'vue'
-import FooterItem from '@/components/common/FooterItem.vue'
-import { useTrackableListStore } from '@/di/trackables.js'
-import { API_ENVIRONMENT, getApiEnvironment, getApiBaseUrl } from "@/config/apiConfig"
+import FooterItem from '@/components/common/Footer/Item.vue'
 import { useBaseStore } from '@/stores/base.js'
 
 const storeBase = useBaseStore();

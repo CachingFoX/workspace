@@ -3,7 +3,7 @@ import { onMounted, ref, computed, watchEffect, reactive } from 'vue'
 import 'primeflex/primeflex.css';
 import BaseLayout from '@/components/layout/BaseLayout.vue';
 import Navbar from '@/components/common/Navbar.vue';
-import Footer from '@/components/common/Footer.vue';
+import Footer from '@/components/common/Footer/Footer.vue';
 import Divider from 'primevue/divider';
 import BaseInfoWidget from '../components/dashboard/BaseInfoWidget.vue'
 import LoginInfoWidget from '../components/dashboard/LoginInfoWidget.vue'

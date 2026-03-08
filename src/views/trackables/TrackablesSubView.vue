@@ -4,7 +4,7 @@ import { useRouter, useRoute } from 'vue-router';
 import { useTrackableListStore } from '@/di/trackables';
 import BaseLayout from '@/components/layout/BaseLayout.vue';
 import Navbar from '@/components/common/Navbar.vue';
-import Footer from '@/components/common/Footer.vue';
+import Footer from '@/components/common/Footer/Footer.vue';
 import DataViewTrackables from '@/components/trackables/DataViewTrackables.vue'
 
 const storeTrackables = useTrackableListStore();
