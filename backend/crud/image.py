@@ -1,51 +1,45 @@
 from sqlalchemy.orm import Session
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 from backend.models import modelImage
+from backend.crud.trackable import (
+    _get_trackable_by_internal_id,
+)
+from sqlalchemy.exc import IntegrityError
 
-'''
-def _read_all_properties(trackable_id: int, db: Session):
-    exists_trackable(trackable_id, db)
+def _delete_trackable_image(trackable_id: int, image_id: int, db: Session):
+    # check if trackable_id exists
+    trackable = _get_trackable_by_internal_id(trackable_id, db)
 
-    stmt = (
-        select(
-            modelTrackableProperty.id,
-            modelTrackableProperty.text.label("PropertyValue"),
-            modelProperty.id.label("PropertyId"),
-            modelProperty.name.label("PropertyName"),
-            modelProperty.type.label("PropertyType"),
-        )
-        .select_from(
-            outerjoin(
-                modelProperty,
-                modelTrackableProperty,
-                and_(
-                    modelTrackableProperty.property_id == modelProperty.id,
-                    modelTrackableProperty.trackable_id == bindparam("trackable_id"),
-                ),
-            )
-        )
-        .order_by(modelProperty.id)  # .nulls_last()
-    )
+    # check if image_id exists
+    image = _get_image_by_internal_id(image_id, db)
 
-    return db.execute(stmt, {"trackable_id": trackable_id}).mappings()  # , .all()
-
-
-def _patch(
-    trackable_id: int, trackable_property_id: int, value: str, db: Session
-) -> modelTrackableProperty:
-    trackable_property = db.get(modelTrackableProperty, trackable_property_id)
-    if not trackable_property:
+    if image.trackable_id != trackable.id:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Trackable Property with id '{trackable_property_id}' not found.",
-        )
+            detail=f"Trackable {trackable_id} has no image {image_id}.",
+        )  
 
+    db.delete(image)
+    db.commit()
+
+def _update_image(trackable_id, image_id, update, db):
+    # check if trackable_id exists
+    trackable = _get_trackable_by_internal_id(trackable_id, db)
+
+    # check if image_id exists
+    image = _get_image_by_internal_id(image_id, db)
+
+    # check if image_id is associated with trackable_id
+    if image.trackable_id != trackable.id:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Trackable {trackable_id} has no image {image_id}.",
+        )        
     try:
-        trackable_property.text = value
-
+        image.rank = update.rank
         db.commit()
-        db.refresh(trackable_property)
-        return trackable_property
+        db.refresh(image)
+        return
     except ValueError as e:
         db.rollback()
         raise HTTPException(
@@ -58,49 +52,20 @@ def _patch(
         )  # TODO status and detail
 
 
-def _attach_new_property(
-    trackable_id: int, newProperty: schemaTrackablePropertyNew, db: Session
-) -> schemaTrackableProperty:
-    trackable = _get_trackable_by_internal_id(trackable_id, db)
 
-    # prüfen ob Property existiert
-    # TODO stimmt das so - prüfe ich hier wirklich ob der tag schon existiert oder noch nicht existiert
-    property = db.get(modelProperty, newProperty.property_id)
-    if not property:
-        raise HTTPException(
-            status_code=404, detail=f"Property '{newProperty.property_id}' not found"
-        )
-
+def _get_image_by_internal_id(image_id: int, db: Session) -> modelImage:
     """
-    # TODO
-    # prüfen, ob Relation schon existiert
-    existing = db.get(modelTrackableTag, (newTag.trackable_id, newTag.tag_id))
-    if existing:
-        raise HTTPException(status_code=400, detail="Relation already exists")
+    Returns an image data record referenced his internal database id
+
+    :param image_id: Description
+    :type image_id: int
+    :param db: Description
+    :type db: Session
     """
-
-    # TODO prüfen ob die property zu trackable gehört
-
-    trackableProperty = modelTrackableProperty(
-        trackable_id=trackable.id,
-        property_id=newProperty.property_id,
-        text=newProperty.property_value,
-    )
-    db.add(trackableProperty)
-    db.commit()
-    db.refresh(trackableProperty)
-    return trackableProperty
-'''
-
-
-def _delete_trackable_image(trackable_id: int, trackable_image_id: int, db: Session):
-    trackable_image = db.get(modelImage, trackable_image_id)
-    if not trackable_image:
+    image = db.get(modelImage, image_id)
+    if not image:
         raise HTTPException(
-            status_code=404,
-            detail=f"Trackable property with id {trackable_image_id} does not exist.",
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Image with internal id '{image_id}' not found.",
         )
-    # TODO prüfen ob das image zu trackable gehört
-    # TODO delete file from filesystem
-    db.delete(trackable_image)
-    db.commit()
+    return image

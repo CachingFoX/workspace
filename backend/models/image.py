@@ -10,6 +10,6 @@ class Image(Base):
     trackable_id = Column(Integer, ForeignKey("trackables.id"), nullable=False)
     filename = Column(String)
     comment = Column(String)
-    gallery = Column(Boolean)
+    rank = Column(String)
 
     trackable = relationship("Trackable", back_populates="images")

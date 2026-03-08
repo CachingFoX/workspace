@@ -1,8 +1,8 @@
 import os
 import uuid
-from fastapi import APIRouter, UploadFile, File, Depends
+from fastapi import APIRouter, UploadFile, File, Depends, HTTPException, status
 from backend.models import modelImage
-from backend.schemas import schemaImageEmbbed
+from backend.schemas import schemaImageEmbbed, schemaImageRank
 from sqlalchemy.orm import Session
 from backend.database import get_db
 from backend.settings import ApiSettings
@@ -11,8 +11,9 @@ from backend.crud.trackable import (
     _get_trackable_by_internal_id,
 )
 from backend.crud.image import (
-    _delete_trackable_image,
+    _delete_trackable_image, _get_image_by_internal_id, _update_image
 )
+from sqlalchemy.exc import IntegrityError
 
 
 router = APIRouter(
@@ -57,7 +58,7 @@ async def upload_images(
             trackable_id=trackable.id,
             filename=file_id + extension,
             comment="",
-            gallery=False,
+            rank="",
         )
         db.add(image)
         db.commit()
@@ -75,3 +76,12 @@ def delete_trackable_property(
     db: Session = Depends(get_db),
 ):
     _delete_trackable_image(trackable_id, trackable_image_id, db)
+
+@router.patch("/{image_id}", status_code=status.HTTP_204_NO_CONTENT)
+def update_image_rank(
+    trackable_id: int,
+    image_id: int,
+    update: schemaImageRank,
+    db: Session = Depends(get_db),
+):
+    _update_image(trackable_id, image_id, update, db)

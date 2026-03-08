@@ -56,14 +56,19 @@ const visible = computed(() =>
 function __move(lIndex, rIndex, index, nIndex) {
   let lRank = lIndex == null ? null : storeTrackable.images[lIndex].rank
   let rRank = rIndex == null ? null : storeTrackable.images[rIndex].rank
+  let image_id = storeTrackable.images[index].id
 
   let newRank = generateKeyBetween(lRank, rRank)
 
   console.log(index, lRank, rRank, newRank)
 
-  storeTrackable.images[index].rank_update = true; // must be before change rank
   storeTrackable.images[index].rank = newRank
   activeIndex.value = nIndex;
+
+
+  storeTrackable.updateImageRank(image_id, newRank );
+
+  return newRank
 }
 
 function setImageFirst(index) {
@@ -71,7 +76,6 @@ function setImageFirst(index) {
     return;
   }
   __move(null, 0, index, 0);
-
 }
 
 function setImageLast(index) {

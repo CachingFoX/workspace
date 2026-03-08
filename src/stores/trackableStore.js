@@ -232,8 +232,20 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
 
         // reload properties
         _data.value.images = await trackableImagesService.readTrackableImages(trackable_id.value);
+        // TODO rank neu sortieren
       } catch (error) {
         console.error("deleteImage error", error);
+      } finally {
+        _progress.value = false;
+      }
+    }
+
+    const updateImageRank = async (trackable_image_id, rank) => {
+      try {
+        _progress.value = true;
+        await trackableImagesService.updateTrackableImage(trackable_id.value, trackable_image_id, { rank: rank })
+      } catch (error) {
+        console.error("updateImageRank error", error);
       } finally {
         _progress.value = false;
       }
@@ -272,27 +284,33 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
     });
     const trackable_id = computed(() => _data.value.id);
     const hq_trackable_id = computed(() => _data.value.tb_id);
+
     const images = computed(() => {
       if (!_data.value.images?.length) {
         return []
       }
 
-      /* TODO this info must be stored in the database */
+      // special sort order - images with empty rank at the end
+      _data.value.images.sort((a, b) => {
+        if (a.rank && !b.rank) { return false }
+        if (!a.rank && b.rank) { return true }
+        if (!a.rank && !b.rank) { return false }
+        return a.rank > b.rank
+      })
+
+      // create missing ranks
       let rank = null;
       _data.value.images.forEach((item) => {
         if (!item.rank) {
+          let oldRank = rank
           rank = generateKeyBetween(rank, null)
           item.rank = rank
-          // TODO mark rank as updated
         } else {
           rank = item.rank
         }
       })
 
-      return _data.value.images.sort((a, b) => {
-        if (!a?.rank || !b?.rank) { return true }
-        return a.rank > b.rank
-      })
+      return _data.value.images
     });
 
     /*
@@ -353,6 +371,7 @@ export const createTrackableStore = (trackableService, trackablePropertiesServic
 
       uploadImages,
       deleteImage,
+      updateImageRank,
     };
   });
 };

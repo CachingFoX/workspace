@@ -4,6 +4,9 @@ from fastapi.responses import FileResponse
 from backend.settings import ApiSettings
 from backend.dependencies import get_settings, get_only_basename
 import os
+from backend.crud.trackable import (
+    _get_trackable_by_internal_id,
+)
 
 router = APIRouter(
     prefix="/images",

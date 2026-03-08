@@ -26,6 +26,7 @@ from backend.schemas.trackable import (
     TrackableCreate as schemaTrackableCreate,
 )
 from backend.schemas.image import ImageEmbbed as schemaImageEmbbed
+from backend.schemas.image import ImageRank as schemaImageRank
 from backend.schemas.base import (
     AuthenticationToken as schemaAuthenticationToken,
     User as schemaUser,

@@ -101,8 +101,22 @@ export function createTrackableImagesService({
     });
   };
 
-  const updateTrackableImage = async (trackable_id, trackable_image_id) => {
-    console.error("not implemented")
+  const updateTrackableImage = async (trackable_id, image_id, data) => {
+    try {
+      const response = await httpClient(`${baseUrl}/trackables/${trackable_id}/images/${image_id}`, {
+        method: 'PATCH',
+        headers: getHeaders(),
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        fnError(_name, `Update trackable-image ${image_id} of trackable ${trackable_id} fails`, response)
+      } else {
+        return;
+      }
+    } catch (err) {
+      throw err;
+    }
   };
 
   const deleteTrackableImage = async (trackable_id, trackable_image_id) => {
