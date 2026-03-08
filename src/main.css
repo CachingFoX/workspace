@@ -19,7 +19,14 @@ body,
 }
 
 .no-select {
-  user-select: none
+  user-select: none;
+  /* Standard */
+  -webkit-user-select: none;
+  /* Für Safari/ältere Chrome-Versionen */
+  -moz-user-select: none;
+  /* Für Firefox */
+  -ms-user-select: none;
+  /* Für alte IE-Versionen */
 }
 
 .clickable {

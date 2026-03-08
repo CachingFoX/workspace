@@ -43,7 +43,7 @@ const hasRemoveHandler = computed(() => {
 </script>
 
 <template>
-  <Tag class="mr-1 mb-1 unselectable">
+  <Tag class="mr-1 mb-1 no-select">
     <div class="flex items-center gap-2 px-1">
       <span class=""
       :class="hasClickHandler ? 'cursor-pointer pi-hover' : 'font-medium'"
@@ -61,12 +61,6 @@ const hasRemoveHandler = computed(() => {
 </template>
 
 <style scoped>
-.unselectable {
-  user-select: none;          /* Standard */
-  -webkit-user-select: none;  /* Für Safari/ältere Chrome-Versionen */
-  -moz-user-select: none;     /* Für Firefox */
-  -ms-user-select: none;      /* Für alte IE-Versionen */
-}
 .cursor-default {
   cursor: default;
 }
