@@ -1,24 +1,32 @@
 <script setup>
-import { ref, watch, computed, onMounted, nextTick, watchEffect } from 'vue'
 import Dialog from 'primevue/dialog';
 import AdvancedSearchBar from '@/components/common/AdvancedSearchDialog/AdvancedSearchBar.vue';
-import { useBaseStore } from '@/stores/base.js'
-import { useTrackableStore, useTrackableListStore, useTagsStore } from "@/di/trackables.js"
-import { seriesService } from "@/di/trackables.js"
-import { API_ENVIRONMENT, getApiEnvironment } from "@/config/apiConfig"
+import ToggleSwitch from 'primevue/toggleswitch';
+import SelectButton from 'primevue/selectbutton';
+import Button from 'primevue/button';
+import { useAdvancedSearchStore, ADVANCED_SEARCH_TYPES } from '@/stores/AdvancedSearchStore.js'
+import { useRouter } from 'vue-router';
+
+const store = useAdvancedSearchStore();
+const router = useRouter();
 
 const visible = defineModel('visible')
 
-const storeTrackables = useTrackableListStore();
-const storeTags = useTagsStore();
-const series = ref(null)
+const options = [
+  { 'name': "Trackables", value: ADVANCED_SEARCH_TYPES.TRACKABLE },
+  { 'name': "Schlagwörter", value: ADVANCED_SEARCH_TYPES.TAG },
+  { 'name': "Serien", value: ADVANCED_SEARCH_TYPES.SERIES },
+]
 
-
-onMounted(() => {
-  seriesService.get_all_series().then((e)=>{
-    series.value = e;
+function onShowResults() {
+  router.push({
+    path: "/trackables",
+    query: {
+      query: store.queryString,
+      types: store.types
+    }
   })
-});
+}
 </script>
 
 <template>
@@ -29,13 +37,35 @@ onMounted(() => {
       </div>
     </template>
     <div>
+      <div class="flex my-2 gap-1 align-items-center justify-content-center" style="z-index: 900;">
+        <div>
+          <SelectButton v-model="store.types" :options="options" optionLabel="name" optionValue="value" multiple aria-labelledby="multiple" />
+        </div>
+        <div class="flex-grow-1"/>
+        <div>
+          <Button label="Trackables in Liste anzeigen"
+            @click="onShowResults"
+            v-show="store.filteredTrackables.length && store.suggestions.length"/>
+        </div>
+        <div class="flex-grow-1"/>
+        <label class="switch-label">
+          <ToggleSwitch v-model="store.grouped" />
+          <span>Vorschläge gruppieren</span>
+        </label>
+      </div>
       <AdvancedSearchBar
-        :trackables="storeTrackables.trackables"
-        :series="series"
-        :tags="storeTags.tags"
         placeholder="Search for trackables, tags and series or add a new trackable"
         @select="visible = false"
       />
     </div>
-</Dialog>
+  </Dialog>
 </template>
+
+<style scoped>
+.switch-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+</style>
