@@ -36,6 +36,7 @@ public/images
 
 __pycache__
 
+data/backup_*/*
 data/develop/*
 data/develop_*/*
 data/prod/*

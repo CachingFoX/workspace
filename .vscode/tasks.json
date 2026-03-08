@@ -81,6 +81,19 @@
             }
         },
         {
+            "label": "Backup prod data",
+            "type": "shell",
+            "command": "source /workspace/scripts/backup_prod_data.sh",
+            "group": "none",
+            "icon": {
+                "id": "file-submodule"
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
             "label": "Clone prod data for develop",
             "type": "shell",
             "command": "source /workspace/scripts/clone_prod_data.sh",
