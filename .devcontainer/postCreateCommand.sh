@@ -1,36 +1,28 @@
 #!/usr/bin/env bash
 set -e
 
+# Files
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PACKAGES_FILE="$SCRIPT_DIR/packages"
 REQUIREMENTS_FILE="$SCRIPT_DIR/requirements.txt"
 
-die() {
-  echo "❌ $1" >&2
-  exit "${2:-1}"
-}
+# Validate files
+[[ -f "$PACKAGES_FILE" ]] || { echo "packages file missing"; exit 1; }
+[[ -f "$REQUIREMENTS_FILE" ]] || { echo "requirements.txt missing"; exit 1; }
 
-[[ -f "$PACKAGES_FILE" ]] || die "packages fehlt unter $PACKAGES_FILE"
-[[ -r "$PACKAGES_FILE" ]] || die "$PACKAGES_FILE nicht lesbar"
-[[ -s "$PACKAGES_FILE" ]] || die "$PACKAGES_FILE ist leer"
-
-[[ -f "$REQUIREMENTS_FILE" ]] || die "$REQUIREMENTS_FILE nicht gefunden"
-[[ -r "$REQUIREMENTS_FILE" ]] || die "$REQUIREMENTS_FILE nicht lesbar"
-[[ -s "$REQUIREMENTS_FILE" ]] || die "$REQUIREMENTS_FILE ist leer"
-
+# Install system packages
 sudo apt-get update
 sudo apt-get install -y $(grep -vE '^\s*#|^\s*$' "$PACKAGES_FILE")
-# sudo apt-get upgrade -y
 
-# prepare python environment
-python3 -m venv .venv
+# Activate venv
+PYTHON_VENV="/workspace/.venv"
+source "$PYTHON_VENV/bin/activate"
 
-source .venv/bin/activate
-pip install --upgrade pip
-pip install -r "$REQUIREMENTS_FILE"
+# Upgrade pip and install requirements
+"$PYTHON_VENV/bin/pip" install --upgrade pip
+"$PYTHON_VENV/bin/pip" install -r "$REQUIREMENTS_FILE"
 
-#  npm install vue-router@4
+# Ensure pytest installed
+"$PYTHON_VENV/bin/pip" install pytest
 
-# sudo apt-get install ftp
-# sudo apt-get install lftp
-# sudo apt install apache2-utils
+echo "✅ Python venv ready at $PYTHON_VENV"
