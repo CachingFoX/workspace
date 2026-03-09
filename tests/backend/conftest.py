@@ -16,6 +16,7 @@ trackable_3_private_code = "TBA164J"
 @pytest.fixture
 def client():
     settings = ApiSettingsInMemory(
+        short_name="...",
         upload_path="./.tmp/uploads",
     )
     api = create_api(settings)
