@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router';
 import '@/main.css'
 import 'primeflex/primeflex.css';
 import 'primeicons/primeicons.css'
-import { useBaseStore } from '../stores/base.js'
 import TrackablesListView from '@/views/trackables/TrackablesListView.vue';
 import TrackableView from '../views/TrackableView.vue';
 import TestView from '../views/TestView.vue';
@@ -66,7 +65,6 @@ const routes = [
     name: 'Trackable Details',
     component: TrackableView
   },
-
   {
     path: '/test',
     name: 'Test',
@@ -79,8 +77,13 @@ const router = createRouter({
   routes
 });
 
+
+
 // Global Guard
 router.beforeEach((to, from, next) => {
+  next();
+
+  /*
   const storeBase = useBaseStore();
 
   if (!to.meta.noAuthRequired && !storeBase.isLoggedIn) {
@@ -94,6 +97,7 @@ router.beforeEach((to, from, next) => {
   } else {
     next() // alles okay, weiter
   }
+    */
 })
 
 

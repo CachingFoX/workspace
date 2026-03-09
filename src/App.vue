@@ -4,7 +4,10 @@ import Toast from 'primevue/toast';
 import { onBeforeMount } from 'vue';
 import { geocachingService, tagService, trackableService, commonService, tokenService, trackablePropertiesService, trackableImagesService, ownerService, seriesService } from "./di/trackables.js"
 import { useToast } from 'primevue';
+import { useApiStore } from '@/di/trackables.js';
+import WaitForBackendAnimation from '@/components/common/WaitForBackendAnimation.vue'
 
+const storeApi = useApiStore()
 
 const toast = useToast();
 
@@ -35,7 +38,8 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <router-view/>
+  <WaitForBackendAnimation v-if="!storeApi.available"/>
+  <router-view v-else/>
   <Toast position="bottom-right"/>
 </template>
 
