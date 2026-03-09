@@ -8,25 +8,25 @@ import httpx
 from backend.database import get_db
 
 router = APIRouter(
-    prefix="/trackables/geocaching",
+    prefix="/geocaching/trackables",
     tags=["Geocaching HQ services"],
 )
 
 
-@router.get("/{trackable_id}", response_model=schemaTrackable.TrackableExtern)
-async def get_trackable_info(trackable_id: str, db: Session = Depends(get_db)):
+@router.get("/{tracking_number}", response_model=schemaTrackable.TrackableExtern)
+async def get_trackable_info(tracking_number: str, db: Session = Depends(get_db)):
     """
     Ruft Informationen über einen Geocaching Trackable ab.
 
     Parameter:
-    - trackable_id: Der Tracking-Code des Trackables
+    - tracking_number: Der Tracking-Code des Trackables
 
     Rückgabe:
     - JSON mit name, icon, origin_name, owner, series
     """
 
     # URL zusammenbauen
-    url = f"https://www.geocaching.com/track/details.aspx?tracker={trackable_id}"
+    url = f"https://www.geocaching.com/track/details.aspx?tracker={tracking_number}"
 
     try:
         # HTTP Request
@@ -55,7 +55,7 @@ async def get_trackable_info(trackable_id: str, db: Session = Depends(get_db)):
             return JSONResponse(
                 status_code=404,
                 content={
-                    "detail": f"The Travel Bug {trackable_id} you requested does not exist in the system."
+                    "detail": f"The Travel Bug {tracking_number} you requested does not exist in the system."
                 },
             )
 
@@ -79,7 +79,7 @@ async def get_trackable_info(trackable_id: str, db: Session = Depends(get_db)):
 
         db_trackable = modelTrackable(
             # id=-1,
-            private_code=trackable_id.upper(),
+            private_code=tracking_number.upper(),
             public_code=public_code,
             title=name,
             series=series,

@@ -2,7 +2,7 @@ from fastapi import status
 
 
 def test_read_trackables_geocaching_activated(client, test_database):
-    response = client.get("/trackables/geocaching/XXXXXX")
+    response = client.get("/geocaching/trackables/XXXXXX")
     assert response.status_code == status.HTTP_200_OK
     result = response.json()
     assert len(result) == 7
@@ -16,7 +16,7 @@ def test_read_trackables_geocaching_activated(client, test_database):
 
 
 def test_read_trackables_geocaching_inactive(client, test_database):
-    response = client.get("/trackables/geocaching/FX5910")
+    response = client.get("/geocaching/trackables/FX5910")
     assert response.status_code == status.HTTP_200_OK
     result = response.json()
     assert len(result) == 7
@@ -30,7 +30,7 @@ def test_read_trackables_geocaching_inactive(client, test_database):
 
 
 def test_read_trackables_geocaching_unknown(client, test_database):
-    response = client.get("/trackables/geocaching/ZZZZZZ")
+    response = client.get("/geocaching/trackables/ZZZZZZ")
     assert response.status_code == status.HTTP_404_NOT_FOUND
     result = response.json()
     assert (

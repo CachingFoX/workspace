@@ -24,7 +24,7 @@ export function createGeocachingService({
   };
 
   const getTrackableMasterDataByTrackingNumber = async (trackingnumber) => {
-    const response = await httpClient(`${baseUrl}/trackables/geocaching/${encodeURIComponent(trackingnumber)}`, {
+    const response = await httpClient(`${baseUrl}/geocaching/trackables/${encodeURIComponent(trackingnumber)}`, {
       method: 'GET',
       headers: getHeaders(),
     });
