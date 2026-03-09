@@ -5,7 +5,6 @@ import BaseLayout from '@/components/layout/BaseLayout.vue';
 import Navbar from '@/components/common/Navbar.vue';
 import Footer from '@/components/common/Footer/Footer.vue';
 import Divider from 'primevue/divider';
-import BaseInfoWidget from '../components/dashboard/BaseInfoWidget.vue'
 import LoginInfoWidget from '../components/dashboard/LoginInfoWidget.vue'
 import TrackablesWidget from '@/components/dashboard/TrackablesWidget.vue';
 import OwnerCloudWidget from '@/components/dashboard/OwnerCloudWidget.vue';
@@ -14,7 +13,6 @@ import TagsCloudWidget from '@/components/dashboard/TagsCloudWidget.vue';
 import { useLocalStorageRef } from '@/utils/localStorageRef'
 
 const widgetsCatalog = {
-  "infowidget": { component: BaseInfoWidget, default: {} },
   "tagscloudwidget": { component: TagsCloudWidget, default: {} },
   "seriescloudwidget": { component: SeriesCloudWidget, default: {} },
   "logininfowidget": { component: LoginInfoWidget, default: {} },
@@ -24,7 +22,6 @@ const widgetsCatalog = {
 
 const dashboardConfiguration = useLocalStorageRef('dashboard', [
   { reference: "tagscloudwidget", configuration: {}}, // configuration must be initilized with an object (instead of null)
-  { reference: "infowidget", configuration: {} },
   { reference: "logininfowidget", configuration: {} },
   { reference: "seriescloudwidget", configuration: {} },
   { reference: "ownercloudwidget", configuration: {} },

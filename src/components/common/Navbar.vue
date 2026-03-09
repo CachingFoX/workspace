@@ -48,6 +48,11 @@ const items = ref([
         label: 'Tags',
         icon: 'pi pi-tags',
         route: '/tags'
+    },
+    {
+        label: 'ControlCenter',
+        icon: 'pi pi-cog',
+        route: '/control'
     }
 ]);
 

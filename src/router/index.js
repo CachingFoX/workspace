@@ -12,12 +12,18 @@ import TagsAdministrationView from '@/views/TagsAdministrationView.vue';
 import OwnerTrackablesView from '@/views/trackables/OwnerTrackablesView.vue';
 import SeriesTrackablesView from '@/views/trackables/SeriesTrackablesView.vue';
 import TagTrackablesView from '@/views/trackables/TagTrackablesView.vue';
+import ControlCenterView from '@/views/ControlCenterView.vue';
 
 const routes = [
   {
     path: '/',
     name: 'Root',
     component: DashboardView
+  },
+  {
+    path: '/control',
+    name: 'ControlCenter',
+    component: ControlCenterView
   },
   {
     path: '/login',
