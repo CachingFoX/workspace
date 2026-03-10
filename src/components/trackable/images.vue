@@ -102,11 +102,27 @@ function setImagePrevious(index) {
   __move(index-2<0?null:index-2, index-1, index, index-1);
 }
 
+const idOfTheFirstImage = computed(()=>{
+  console.log(storeTrackable.images?.length)
+  if (storeTrackable.images?.length) {
+    return storeTrackable.images[0].id
+  }
+  return -1
+})
+
+const idOfTheLastImage = computed(()=>{
+  console.log(storeTrackable.images?.length)
+  if (storeTrackable.images?.length) {
+    return storeTrackable.images[storeTrackable.images?.length-1].id
+  }
+  return -1
+})
+
 
 </script>
 
 <template>
-  <div class="mx-2 mb-2">
+  <div class="mx-2 mb-2 mt-2">
     <Galleria
       :value="storeTrackable.images"
       :responsiveOptions="responsiveOptions"
@@ -118,43 +134,81 @@ function setImagePrevious(index) {
       class="w-full"
       :reorderable="false"
       v-model:activeIndex="activeIndex"
+      :key="storeTrackable.images.length"
     >
       <template #item="slotProps">
-        <img
-          class="gallery-image p-4"
-          :src="imageUrl(slotProps?.item.filename)"
-        />
+        <div style="position: relative" class="p-4">
+          <img
+            class="gallery-image"
+            :src="imageUrl(slotProps?.item.filename)"
+          />
+          <span class="pi pi-star-fill primary-image-marker fill gallery" v-show="slotProps.item.id == idOfTheFirstImage"/>
+          <span class="pi pi-star primary-image-marker outline gallery" v-show="slotProps.item.id == idOfTheFirstImage"/>
+        </div>
+
+
+
         <div class="gallery-controls-left">
           <div class="p-2" style="background: darkgray; color: white; border-radius: 4px;">
             <i class="pi pi-image mr-1"/> {{ activeIndex+1 }} von {{ storeTrackable.images.length }}
           </div>
         </div>
+
         <div class="gallery-controls-right">
           <ButtonGroup>
-            <Button @click="setImageFirst(activeIndex)" icon="pi pi-angle-double-left" size="small"/>
-            <Button @click="setImagePrevious(activeIndex)" icon="pi pi-angle-left" size="small"/>
-            <Button @click="setImageFirst(activeIndex)" icon="pi pi-image" size="small"/>
-            <Button @click="setImageNext(activeIndex)" icon="pi pi-angle-right" size="small"/>
-            <Button @click="setImageLast(activeIndex)" icon="pi pi-angle-double-right" size="small"/>
+            <Button @click="setImageFirst(activeIndex)" icon="pi pi-angle-double-left" size="small"
+            :disabled="slotProps.item.id == idOfTheFirstImage" />
+            <Button @click="setImagePrevious(activeIndex)" icon="pi pi-angle-left" size="small"
+            :disabled="slotProps.item.id == idOfTheFirstImage"/>
+            <Button @click="setImageFirst(activeIndex)" icon="pi pi-star-fill" size="small"
+            :style="{ color: slotProps.item.id == idOfTheFirstImage ? '' : 'yellow' } "
+            :disabled="slotProps.item.id == idOfTheFirstImage"/>
+            <Button @click="setImageNext(activeIndex)" icon="pi pi-angle-right" size="small"
+            :disabled="slotProps.item.id == idOfTheLastImage"/>
+            <Button @click="setImageLast(activeIndex)" icon="pi pi-angle-double-right" size="small"
+            :disabled="slotProps.item.id == idOfTheLastImage"/>
           </ButtonGroup>
           <Button @click="onRemoveImage" icon="pi pi-trash" label="Löschen" severity="danger" size="small"/>
         </div>
       </template>
 
       <template #thumbnail="slotProps">
-        <img
-          class="thumbnail-image"
-          :src="imageUrl(slotProps?.item.filename)"
-          :class="{ 'active-thumbnail': slotProps.index === activeIndex }"
-        />
+        <div style="position: relative">
+          <img
+            class="thumbnail-image"
+            :src="imageUrl(slotProps?.item.filename)"
+          />
+          <span class="pi pi-star-fill primary-image-marker thumbnail fill" v-show="slotProps.item.id == idOfTheFirstImage"/>
+          <span class="pi pi-star primary-image-marker thumbnail outline" v-show="slotProps.item.id == idOfTheFirstImage"/>
+        </div>
       </template>
     </Galleria>
   </div>
 </template>
 
 <style scoped>
+.primary-image-marker {
+  position: absolute;
+}
+.primary-image-marker.thumbnail {
+  top: 0px;
+  right: -15px;
+  font-size: 14pt;
+}
+.primary-image-marker.gallery {
+  top: 0px;
+  right: -5px;
+  font-size: 24pt;
+}
 
-.image-stage {
+.primary-image-marker.fill {
+  color: yellow; top: 0;
+}
+.primary-image-marker.outline {
+  color: #888
+}
+
+.image-stage.fill {
   max-width: 348px;
   max-height: 384px;          /* feste Höhe */
   display: flex;
@@ -193,9 +247,5 @@ function setImagePrevious(index) {
   left: 8px;
   display: flex;
   gap: 4px;
-}
-
-.active-thumbnail {
-  border: 2px dashed cornflowerblue;
 }
 </style>

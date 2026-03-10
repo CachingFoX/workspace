@@ -25,7 +25,7 @@ const items = [
       ]
     }
   },
-  { name: 'Trackable Code',
+  { name: 'Tracking Number',
     component: PropertyString,
     bindings: {
       value: storeTrackable.private_code,
@@ -35,7 +35,7 @@ const items = [
       ]
     }
   },
-  { name: 'Public Code',
+  { name: 'TB Reference Number',
     component: PropertyString,
     bindings: {
       value: storeTrackable.public_code,
@@ -45,7 +45,7 @@ const items = [
       ]
     }
   },
-  { name: 'Id',
+  { name: 'TB Id',
     component: PropertyString,
     bindings: {
       value: storeTrackable.hq_trackable_id,

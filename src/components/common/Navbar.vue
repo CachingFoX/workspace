@@ -50,9 +50,24 @@ const items = ref([
         route: '/tags'
     },
     {
-        label: 'ControlCenter',
+        label: 'Control Center',
         icon: 'pi pi-cog',
         route: '/control'
+    },
+    {
+      label: "External Resources",
+      icon: 'pi pi-link',
+      items: [
+          {
+              label: 'SSOCA Wiki',
+              url: 'https://wiki.ssoca.eu/',
+              icon: 'pi pi-world',
+          },
+          {
+              label: 'Vite.js',
+              url: 'https://vitejs.dev/'
+          }
+      ]
     }
 ]);
 
@@ -73,7 +88,7 @@ const isProductive = computed(()=>{
         <span class="ml-2 font-medium text-2xl">Our Trackables</span>
       </template>
 
-      <template v-if="!blank" #item="{ item, props, hasSubmenu, root }">
+      <template v-if="!blank" #xitem="{ item, props, hasSubmenu, root }">
           <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
               <a v-ripple :href="href" v-bind="props.action" @click="navigate">
                   <span :class="item.icon" />
@@ -82,6 +97,7 @@ const isProductive = computed(()=>{
           </router-link>
 
           <a v-else v-ripple class="flex items-center" v-bind="props.action">
+
               <span>{{ item.label }}</span>
               <Badge v-if="item.badge" :class="{ 'ml-auto': !root, 'ml-2': root }" :value="item.badge" />
               <span v-if="item.shortcut" class="ml-auto border border-surface rounded bg-emphasis text-muted-color text-xs p-1">{{ item.shortcut }}</span>
@@ -99,6 +115,20 @@ const isProductive = computed(()=>{
             <Avatar :label="storeBase.username1stLetter" class="ml-2 mr-2" style="background-color: #ece9fc; color: #2a1261" shape="circle" />
           </div>
         </div>
+      </template>
+
+      <template #item="{ item, props, hasSubmenu }">
+          <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
+              <a v-ripple :href="href" v-bind="props.action" @click="navigate">
+                  <span :class="item.icon" />
+                  <span>{{ item.label }}</span>
+              </a>
+          </router-link>
+          <a v-else v-ripple :href="item.url" :target="item.target" v-bind="props.action">
+              <span class="pi" :class="item.icon" />
+              <span>{{ item.label }}</span>
+              <span v-if="hasSubmenu" class="pi pi-fw pi-angle-down" />
+          </a>
       </template>
     </Menubar>
   </div>

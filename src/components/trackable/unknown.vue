@@ -14,12 +14,12 @@ function onClick() {
   storeTrackable.readTrackableHQ(props.trackingNumber);
 }
 
-const isPublicCode = computed(()=>{
+const isTBReferenceCode = computed(()=>{
   return props.trackingNumber.startsWith("TB")
 })
 
 onBeforeMount(()=>{
-  if (!isPublicCode.value && props.autoLoad) {
+  if (!isTBReferenceCode.value && props.autoLoad) {
     onClick();
   }
 })
@@ -29,10 +29,10 @@ onBeforeMount(()=>{
   <div class="flex flex-column align-items-center justify-content-center row-gap-0" style="height: 100%;">
     <div class="font-bold font-huge">?</div>
     <div class="font-big">Trackable <b>{{props.trackingNumber}}</b> ist nicht in der Datenbank enthalten</div>
-    <div class="font-normal mt-2" v-show="!isPublicCode">
+    <div class="font-normal mt-2" v-show="!isTBReferenceCode">
       Den Trackable bei www.geocaching.com abfragen?
     </div>
-    <Button class="mt-2" v-show="!isPublicCode" label="Abfragen" @click="onClick"/>
+    <Button class="mt-2" v-show="!isTBReferenceCode" label="Abfragen" @click="onClick"/>
   </div>
 </template>
 
