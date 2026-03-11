@@ -7,7 +7,7 @@ import Textarea from 'primevue/textarea'
 import { geocachingService } from "@/di/trackables.js"
 import { useRouter } from 'vue-router';
 import { useToast } from 'primevue';
-
+import { marked } from 'marked'
 
 const props = defineProps({
   value: { type: [String, Number, null], default: null, required: true },
@@ -48,12 +48,17 @@ const isValueAvailable = computed(()=>{
 const displayText = computed(()=>{
   return isValueAvailable.value ? props.value : props.placeholder
 })
+const compiledMarkdown = computed(()=>{
+  return marked.parse(props.value);
+})
+
 
 </script>
 
 <template>
   <div v-show="!editing" @click="onEdit">
-    <pre class="no-select" :style="{ color: isValueAvailable ? '#000' : '#666' }">{{ displayText }}</pre>
+    <!-- <pre class="no-select" :style="{ color: isValueAvailable ? '#000' : '#666' }">{{ displayText }}</pre>-->
+    <div class="markdown" v-html="compiledMarkdown"></div>
   </div>
   <div v-show="editing">
     <div class="flex flex-column" >
@@ -76,7 +81,18 @@ const displayText = computed(()=>{
   </div>
 </template>
 
-<style scoped>
+<style>
+.markdown {
+  border: 1px solid lightgray;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.markdown > h1 {
+  margin-top: 0;
+}
+
+
 .p-inputtext {
   font-size: 16px;
 }

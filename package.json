@@ -1,6 +1,6 @@
 {
   "name": "vue-project",
-  "version": "0.31.0",
+  "version": "0.32.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -20,6 +20,7 @@
     "@vuelidate/validators": "^2.0.4",
     "@vueuse/core": "^14.0.0",
     "fractional-indexing": "^3.2.0",
+    "marked": "^17.0.4",
     "pinia": "^3.0.3",
     "primeflex": "^4.0.0",
     "primeicons": "^7.0.0",
