@@ -7,6 +7,7 @@ import { useToast } from "primevue/usetoast";
 import { useTrackableStore } from "@/di/trackables.js"
 import { useConfirm } from "primevue/useconfirm";
 // components
+import PropertyBoolean from '@/components/trackable/details/property_boolean.vue'
 import PropertyString from '@/components/trackable/details/property_simple.vue'
 import PropertyText from '@/components/trackable/details/property_text.vue'
 import PropertyTrackables from '@/components/trackable/details/property_trackables.vue'
@@ -50,6 +51,7 @@ function onLink(i) {
 }
 
 const comp = {
+  'boolean':          { component: PropertyBoolean, bindings: { labelFalse: 'nein', labelTrue: 'ja' }},
   'geocaches':        { component: PropertyString },
   'string':           { component: PropertyString },
   'string.hyperlink': { component: PropertyString, bindings: { 'hyperlink': true } },
