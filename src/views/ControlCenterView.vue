@@ -25,7 +25,6 @@ function onChange(event) {
   // NOTE: reload app immediately
   window.location.reload()
 }
-
 </script>
 
 <template>
@@ -47,15 +46,18 @@ function onChange(event) {
           @change="onChange"
            placeholder="Select an API environment" />
         </div>
-        <div class="col-3 font-semibold">Base&nbsp;URL</div>
-        <div class="col-9 text-sm" style="font-family: monospace, monospace;">
-          {{ getApiBaseUrl() }}
-        </div>
 
         <div class="col-3 font-semibold">Version</div>
         <div class="col-9 text-sm" style="font-family: monospace, monospace;">
           {{ storeApi.api_version }}
         </div>
+
+        <div class="col-3 font-semibold">Base&nbsp;URL</div>
+        <div class="col-9 text-sm" style="font-family: monospace, monospace;">
+          {{ getApiBaseUrl() }}
+        </div>
+
+
 
         <div class="col-3 font-semibold">Name</div>
         <div class="col-9 text-sm" style="font-family: monospace, monospace;">

@@ -61,11 +61,7 @@ const items = ref([
           {
               label: 'SSOCA Wiki',
               url: 'https://wiki.ssoca.eu/',
-              icon: 'pi pi-world',
-          },
-          {
-              label: 'Vite.js',
-              url: 'https://vitejs.dev/'
+              icon: 'pi pi-globe',
           }
       ]
     }
@@ -125,7 +121,7 @@ const isProductive = computed(()=>{
               </a>
           </router-link>
           <a v-else v-ripple :href="item.url" :target="item.target" v-bind="props.action">
-              <span class="pi" :class="item.icon" />
+              <span :class="item.icon" />
               <span>{{ item.label }}</span>
               <span v-if="hasSubmenu" class="pi pi-fw pi-angle-down" />
           </a>
