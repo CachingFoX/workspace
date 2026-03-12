@@ -49,6 +49,9 @@ const displayText = computed(()=>{
   return isValueAvailable.value ? props.value : props.placeholder
 })
 const compiledMarkdown = computed(()=>{
+  if (!props.value) {
+    return ""
+  }
   return marked.parse(props.value);
 })
 
@@ -57,8 +60,8 @@ const compiledMarkdown = computed(()=>{
 
 <template>
   <div v-show="!editing" @click="onEdit">
-    <!-- <pre class="no-select" :style="{ color: isValueAvailable ? '#000' : '#666' }">{{ displayText }}</pre>-->
-    <div class="markdown" v-html="compiledMarkdown"></div>
+    <div v-if="isValueAvailable" class="markdown" v-html="compiledMarkdown"></div>
+    <pre v-else="isValueAvailable" class="no-select" :style="{ color: isValueAvailable ? '#000' : '#666' }">{{ displayText }}</pre>
   </div>
   <div v-show="editing">
     <div class="flex flex-column" >
@@ -87,9 +90,11 @@ const compiledMarkdown = computed(()=>{
   border-radius: 8px;
   padding: 1rem;
 }
-
-.markdown > h1 {
+.markdown > *:first-child {
   margin-top: 0;
+}
+.markdown > *:last-child {
+  margin-bottom: 0;
 }
 
 
