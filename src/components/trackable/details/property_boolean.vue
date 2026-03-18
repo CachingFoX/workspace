@@ -104,9 +104,9 @@ onBeforeMount(()=>{
   <InputGroup :class="{ 'edit-mode' : editing }">
     <IconField class="w-full">
       <SelectButton v-model="model" :options="options" optionLabel="name" optionValue="value" :disabled="!editing" class="w-full"/>
-      <div class="double-click-catcher"
+      <div class="click-catcher"
           @dblclick.prevent="onEdit"
-          @click="onClickCatcher"
+          @click.prevent="onEdit"
           :style="styleClickCatcher"
           v-if="!editing && props.editable"/>
     </IconField>
@@ -129,7 +129,7 @@ onBeforeMount(()=>{
   border-color: var(--p-inputtext-hover-border-color);
   border-radius: 5px;
 }
-.double-click-catcher {
+.click-catcher {
   position:absolute;
   left:0;
   right:0;
