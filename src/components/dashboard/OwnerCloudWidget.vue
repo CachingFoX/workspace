@@ -11,6 +11,10 @@ const results = ref([]);
 
 onMounted(() => {
   ownerService.get_all_owners().then((e)=>{
+    e.forEach(element => {
+      element.icon = element.owner ? "pi-user" : "pi-times"
+      element.owner = element.owner ? element.owner : "not activated"
+    });
     results.value = e;
     ready.value = true;
   })
@@ -22,18 +26,17 @@ function onClick(e) {
 </script>
 
 <template>
+  <!-- TODO text und icon für "inactivate" / pi-times-->
   <CloudWidget
     title="Eigentümer"
     title-icon="pi-users"
-    badge
+    title-count
     :items="results"
     :ready="ready"
-    text-label="owner"
-    badge-label="count"
-    icon="pi-user"
+    label-text="owner"
+    label-count="count"
+    label-icon="icon"
     clickable
-    empty-text="not activated"
-    empty-icon="pi-times"
     @select="onClick"
   />
 </template>

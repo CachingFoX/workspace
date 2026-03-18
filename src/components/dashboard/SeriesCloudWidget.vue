@@ -25,14 +25,14 @@ function onClick(e) {
   <CloudWidget
     title="Serien"
     title-icon="pi-list"
-    badge
+    title-count
     :items="results"
     :ready="ready"
-    text-label="series"
-    badge-label="count"
-    image-label="icon_url"
+    label-text="series"
+    label-count="count"
+    label-image="icon_url"
     clickable
-    empty-image="https://www.geocaching.com/images/WptTypes/23.gif"
+    default-image="https://www.geocaching.com/images/WptTypes/23.gif"
     @select="onClick"
   />
 </template>

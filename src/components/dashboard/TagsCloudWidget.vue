@@ -25,15 +25,14 @@ function onClick(e) {
   <CloudWidget
     title="Schlagwörter"
     title-icon="pi-tags"
-    badge
+    title-count
     :items="results"
     :ready="ready"
-    text-label="name"
-    badge-label="use"
-    icon="pi-tag"
+    label-text="name"
+    label-count="use"
+    default-icon="pi-tag"
+    default-text="<unnamed>"
     clickable
-    empty-text="<unnamed>"
-    empty-icon="pi-times"
     @select="onClick"
   />
 </template>

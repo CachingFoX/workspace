@@ -22,38 +22,42 @@ const sort = defineGetterSetter(configuration, "sort", 'count_down')
 
 const sort_functions = {
   'text_up': (items) => {
-            if (!props.textLabel?.length) {
+            if (!props.labelText?.length) {
               return true;
             }
             items.sort( (a,b) => {
-              let _a = a[props.textLabel]
-              let _b = b[props.textLabel]
+              let _a = text(a)
+              let _b = text(b)
               return _a.localeCompare(_b)
             } )
           },
   'text_down': (items) => {
-            if (!props.textLabel?.length) {
+            if (!props.labelText?.length) {
               return true;
             }
             items.sort( (a,b) => {
-              if (props.textLabel?.length) {
-                let _a = a[props.textLabel]
-                let _b = b[props.textLabel]
-                return _b.localeCompare(_a)
-              }
-            } )
+              let _a = text(a)
+              let _b = text(b)
+              return _b.localeCompare(_a)
+            })
           },
   'count_up': (items) => {
+            if (!props.labelCount?.length) {
+              return true;
+            }
             items.sort( (a,b) => {
-              let _a = a[props.badgeLabel]
-              let _b = b[props.badgeLabel]
+              let _a = count(a)
+              let _b = count(b)
               return _a > _b
             })
           },
   'count_down': (items) => {
+            if (!props.labelCount?.length) {
+              return true;
+            }
             items.sort( (a,b) => {
-              let _a = a[props.badgeLabel]
-              let _b = b[props.badgeLabel]
+              let _a = count(a)
+              let _b = count(b)
               return _a < _b
             })
           },
@@ -110,18 +114,23 @@ function onClick(e) {
 const props = defineProps({
   title: { type: String, required: true, default: '<No Title>' },
   titleIcon: { type: String, required: false, default: '' },
+  titleCount: { type: Boolean, default: false, required: false },
+
   items: { type: Object, required: true, default: null },
   ready: { type: Boolean, required: false, default: false },
   menu: { type: Object, required: false, default: null },
   clickable: { type: Boolean, default: false, required: false },
 
-  textLabel: { type: String, default: null, required: false },
-  badgeLabel: { type: String, default: null, required: true },
-  imageLabel: { type: String, default: null, required: false },
-  icon: { type: String, default: null, required: false },
-  emptyText: { type: String, default: null, required: false },
-  emptyIcon: { type: String, default: null, required: false },
-  badge: { type: Boolean, default: null, required: false }
+  /* ---------------- */
+  labelAvatar: { type: String, default: null, required: true },
+  labelCount: { type: String, default: null, required: true },
+  labelIcon: { type: String, default: null, required: true },
+  labelImage: { type: String, default: null, required: true },
+  labelText: { type: String, default: null, required: true },
+  defaultAvatar: { type: String, default: null, required: false },
+  defaultIcon: { type: String, default: null, required: false },
+  defaultImage: { type: String, default: null, required: false },
+  defaultText: { type: String, default: null, required: false },
 });
 
 const menuItems = computed(()=>{
@@ -134,20 +143,43 @@ const menuItems = computed(()=>{
   return basic_menu_items.value
 })
 
-const badge = computed(()=>{
-  return props.badge == null ? null : props.items.length
+const titleCount = computed(()=>{
+  return props.titleCount ? props.items.length : null
 })
 
 onBeforeMount(()=>{
   updateMenu(sort.value);
 })
+
+const avatar = (item) => {
+  let avatar = item[props.labelAvatar]
+  return avatar ?? ( props.defaultAvatar ?? null )
+}
+const count = (item) => {
+  let count = item[props.labelCount]
+  return count ?? null
+}
+const icon = (item) => {
+  let icon = item[props.labelIcon]
+  return icon ?? ( props.defaultIcon ?? null )
+}
+const image = (item) => {
+  let image = item[props.labelImage]
+  return image ?? ( props.defaultImage ?? null )
+}
+const text = (item) => {
+  let text = item[props.labelText]
+  return text ?? ( props.defaultText ?? null )
+}
+
+
 </script>
 
 <template>
   <Panel
     :title="props.title"
     :title-icon="props.titleIcon"
-    :badge="badge"
+    :badge="titleCount"
     :menu="menuItems"
     v-model:collapsed="collapsed"
     >
@@ -161,13 +193,11 @@ onBeforeMount(()=>{
         v-show="(index < max || more)"
         class="mr-1"
         :item="item"
-        :text-label="props.textLabel"
-        :badge-label="props.badgeLabel"
-        :image-label="props.imageLabel"
-        :icon="props.icon"
-        :empty-text="props.emptyText"
-        :empty-icon="props.emptyIcon"
-        :empty-image="props.emptyImage"
+        :avatar="avatar(item)"
+        :icon="icon(item)"
+        :image="image(item)"
+        :text="text(item)"
+        :count="count(item)"
         :clickable
         @click="onClick"
       />

@@ -10,6 +10,7 @@ import TrackablesWidget from '@/components/dashboard/TrackablesWidget.vue';
 import OwnerCloudWidget from '@/components/dashboard/OwnerCloudWidget.vue';
 import SeriesCloudWidget from '@/components/dashboard/SeriesCloudWidget.vue';
 import TagsCloudWidget from '@/components/dashboard/TagsCloudWidget.vue';
+import TrackingNumberPrefixCloudWidget from '@/components/dashboard/TrackingNumberPrefixCloudWidget.vue';
 import { useLocalStorageRef } from '@/utils/localStorageRef'
 
 const widgetsCatalog = {
@@ -18,6 +19,7 @@ const widgetsCatalog = {
   "logininfowidget": { component: LoginInfoWidget, default: {} },
   "ownercloudwidget": { component: OwnerCloudWidget, default: {} },
   'trackableswidget': { component: TrackablesWidget, default: {} },
+  'trackingnumberprefixeswidget': { component: TrackingNumberPrefixCloudWidget, default: {} },
 };
 
 const dashboardConfiguration = useLocalStorageRef('dashboard', [
@@ -26,6 +28,7 @@ const dashboardConfiguration = useLocalStorageRef('dashboard', [
   { reference: "seriescloudwidget", configuration: {} },
   { reference: "ownercloudwidget", configuration: {} },
   { reference: "trackableswidget", configuration: {} },
+  { reference: "trackingnumberprefixeswidget", configuration: {} },
 ], 300);
 
 watchEffect(()=>{

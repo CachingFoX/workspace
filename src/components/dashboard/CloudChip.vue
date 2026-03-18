@@ -1,6 +1,6 @@
 <script setup>
-import { onMounted, computed } from 'vue'
-import Button from 'primevue/button';
+import { computed } from 'vue'
+import Avatar from 'primevue/avatar';
 import Badge from 'primevue/badge'
 import Chip from 'primevue/chip';
 
@@ -8,32 +8,31 @@ const props = defineProps({
   item: { type: Object, default: {}, required: true },
   clickable: { type: Boolean, default: false, required: false },
 
-  textLabel: { type: String, default: null, required: false },
-  badgeLabel: { type: String, default: null, required: true },
-  imageLabel: { type: String, default: null, required: true },
-  icon: { type: String, default: null, required: false },
-  emptyText: { type: String, default: null, required: false },
-  emptyIcon: { type: String, default: null, required: false }
+  avatar: { type: String, default: null, required: true },
+  count: { type: String, default: null, required: true },
+  icon: { type: String, default: null, required: true },
+  image: { type: String, default: null, required: true },
+  text: { type: String, default: null, required: true },
 });
 
 const emit = defineEmits(['click']);
 
-const text = computed(() => {
-  let text = props.item[props.textLabel]
-  return text?.length ? text : props.emptyText
+const avatar = computed(() => {
+  return props.avatar
+});
+const count = computed(() => {
+  return props.count
 });
 const icon = computed(() => {
-  let text = props.item[props.textLabel]
-  return text?.length ? props.icon : props.emptyIcon
+  return props.icon
 });
 const image = computed(() => {
-  let image_url = props.item[props.imageLabel]
-  return image_url?.length ? image_url : ""
+  return props.image
+});
+const text = computed(() => {
+  return props.text
 });
 
-const count = computed(() => {
-  return props.item[props.badgeLabel]
-});
 function onClick(e) {
   if (props.clickable) {
     emit('click', props.item);
@@ -42,11 +41,12 @@ function onClick(e) {
 </script>
 
 <template>
-  <Chip :label="text" :image="image" :icon="icon" :class="{ clickable : props.clickable }" @click="onClick">
+  <Chip :class="{ clickable : props.clickable }" @click="onClick">
     <template #default>
       <div class="chip-content">
-        <span :class="['pi', icon]" v-if="!image.length"/>
-        <img :src="image" class="p-chip-image" v-if="image.length"/>
+        <Avatar :label="avatar" shape="circle" v-if="avatar"/>
+        <span :class="['pi', icon]" v-if="icon" />
+        <img :src="image" class="p-chip-image" v-if="image" />
         <span class="label no-select">{{text}}</span>
         <Badge :value="count" severity="info" />
       </div>
@@ -62,5 +62,9 @@ function onClick(e) {
 }
 .p-chip:hover {
   background-color: lightblue;
+}
+.p-avatar {
+  background: var(--p-badge-warn-background);
+  color: var(--p-badge-warn-color);
 }
 </style>
