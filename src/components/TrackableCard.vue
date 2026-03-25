@@ -41,6 +41,9 @@ watchEffect(async ()=> {
       trackable.value = props.trackable;
     } else if (typeof props.trackable == "string") {
       trackable.value = await trackableService.getTrackableByNumber(props.trackable);
+      if (trackable.value == null) {
+        console.warn(`TrackableCard: tracking number ${props.trackable} is unknown`)
+      }
     } else if (typeof props.trackable == "Number") {
       console.warn("TrackableCard: internal id as reference currently not supported");
       // TODO
@@ -142,6 +145,11 @@ const active = computed(()=>{
 </template>
 
 <style scoped>
+a:link, a:visited {
+ text-decoration: none;
+ color: black;
+}
+
 .trackable-card {
   overflow: hidden;
   width: 256px;
