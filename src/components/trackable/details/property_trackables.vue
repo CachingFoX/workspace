@@ -19,7 +19,6 @@ const storeTrackable = useTrackableStore();
 const storeTrackables = useTrackableListStore();
 const router = useRouter();
 
-const property_name = 'linkedTrackables'
 const isChanged = ref(false)
 const trackablesModel = ref([])
 const query = ref('')
@@ -28,10 +27,10 @@ const sortTrackablesByTitle = (a,b) => {return a.title.localeCompare(b.title)}
 
 function demarshallTrackables(trackables, tracking_numbers_string) {
   /* Demarshalling a string of tracking numbers in an array of trackable objects sorted by their titles */
-  if ( !tracking_numbers_string?.property_value?.trim().length || !trackables?.length ) {
+  if ( !tracking_numbers_string?.trim().length || !trackables?.length ) {
     return []
   }
-  let tokens = tracking_numbers_string.property_value.split(' ');
+  let tokens = tracking_numbers_string.trim().split(' ');
 
   return trackables.filter( t => {
     return tokens.includes(t.private_code) || tokens.includes(t.public_code)
@@ -50,8 +49,7 @@ function marshallTrackables(trackables) {
 }
 
 function updateModel(trackables) {
-    let tracking_numbers_string = storeTrackable.getPropertyByName(property_name);
-    trackablesModel.value = demarshallTrackables(trackables, tracking_numbers_string)
+  trackablesModel.value = demarshallTrackables(trackables, getTrackingNumbersString())
 }
 
 watch(
@@ -77,11 +75,12 @@ const suggestedTrackables = computed(() => {
   loading.value = true
 
   let own_id = storeTrackable.id
+  let own_series = storeTrackable.series
   let queryLowerCase = query.value.toLowerCase()
   let queryUpperCase = query.value.toUpperCase()
 
   let result = notSelectedTags.value.filter( i => {
-    return i.id != own_id &&
+    return i.id != own_id && /* i.series != own_series &&*/
           (
             i.title.toLowerCase().includes(queryLowerCase) ||
             i.series.toLowerCase().includes(queryLowerCase) ||
@@ -109,6 +108,7 @@ function onClick(tagId) {
 }
 
 function onRemove(event, value, removeCallback) {
+  // removes item from the internal data structure NOT from the database
   event.stopPropagation() // verhindert, dass @click ausgelöst wird
   removeCallback(event) // item-select
 }
@@ -116,17 +116,12 @@ function onRemove(event, value, removeCallback) {
 function onSave() {
   isChanged.value = false;
   let tracking_numbers_string = marshallTrackables(trackablesModel.value);
-  storeTrackable.setPropertyByName(property_name, tracking_numbers_string);
-  // TODO emit('update', tracking_numbers_string);
+  emit('update', props.property, tracking_numbers_string)
 }
-
-// TODO remove
-// TODO emit('remove', trackable_property_id);
 
 function onCancel() {
   isChanged.value = false;
-  let tracking_numbers_string = storeTrackable.getPropertyByName(property_name);
-  trackablesModel.value = demarshallTrackables(storeTrackables.trackables, tracking_numbers_string)
+  trackablesModel.value = demarshallTrackables(storeTrackables.trackables, getTrackingNumbersString())
 }
 
 // -----------------
@@ -145,9 +140,19 @@ onBeforeMount(()=>{
 })
 
 const trackables = computed(()=>{
-  let tracking_numbers_string = storeTrackable.getPropertyByName(property_name);
-  return demarshallTrackables(storeTrackables.trackables, tracking_numbers_string)
+  return demarshallTrackables(storeTrackables.trackables, getTrackingNumbersString())
 })
+
+function getProperty() {
+  // return storeTrackable.getPropertyByName(property_name);
+  return props.property
+}
+
+function getTrackingNumbersString() {
+  return props.property?.property_value
+}
+
+
 /*
 
 const confirm_delete = {
@@ -165,7 +170,7 @@ const confirm_delete = {
   },
   accept: async () => {
     try {
-      storeTrackable.removePropertyByName(property_name)
+      // remove it (send event)
       editing.value = false;
     } catch (error) {
       console.error(error);
