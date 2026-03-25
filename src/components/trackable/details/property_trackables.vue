@@ -8,6 +8,8 @@ import { useRouter } from 'vue-router';
 import { useToast } from 'primevue';
 import { useTrackableStore, useTrackableListStore, useTagsStore } from "@/di/trackables.js"
 import { useConfirm } from "primevue/useconfirm";
+import Carousel from 'primevue/carousel';
+import TrackableCard from '@/components/TrackableCard.vue';
 // components
 import AutoComplete from 'primevue/autocomplete'
 import Chip from 'primevue/chip'
@@ -39,7 +41,7 @@ function demarshallTrackables(trackables, tracking_numbers_string) {
 function marshallTrackables(trackables) {
   /* Marshalling an array of trackable objects to a string of tracking numbers in alphabetic order */
   if ( !trackables?.length ) {
-    return []
+    return ""
   }
 
   return trackablesModel.value.map( t =>{
@@ -64,24 +66,28 @@ const search = (event) => {
 }
 
 const notSelectedTags = computed(()=>{
-  let own_id = storeTrackable.id
+
   return storeTrackables.trackables.filter( a => {
-    // not in the selected list and not the own tracking code
-    return !trackablesModel.value.some(b => a.id == b.id || a.id == own_id )
+    // not in the selected list
+    return !trackablesModel.value.some(b => (a.id == b.id ) )
   })
 })
 
 const suggestedTrackables = computed(() => {
   loading.value = true
-  nextTick();
+
+  let own_id = storeTrackable.id
   let queryLowerCase = query.value.toLowerCase()
   let queryUpperCase = query.value.toUpperCase()
 
   let result = notSelectedTags.value.filter( i => {
-    return i.title.toLowerCase().includes(queryLowerCase) ||
-           i.series.toLowerCase().includes(queryLowerCase) ||
-           i.private_code.startsWith(queryUpperCase) ||
-           i.public_code.startsWith(queryUpperCase);
+    return i.id != own_id &&
+          (
+            i.title.toLowerCase().includes(queryLowerCase) ||
+            i.series.toLowerCase().includes(queryLowerCase) ||
+            i.private_code.startsWith(queryUpperCase) ||
+            i.public_code.startsWith(queryUpperCase)
+          );
   }).sort(sortTrackablesByTitle)
 
   loading.value = false;
@@ -138,6 +144,10 @@ onBeforeMount(()=>{
   updateModel(storeTrackables.trackables);
 })
 
+const trackables = computed(()=>{
+  let tracking_numbers_string = storeTrackable.getPropertyByName(property_name);
+  return demarshallTrackables(storeTrackables.trackables, tracking_numbers_string)
+})
 /*
 
 const confirm_delete = {
@@ -168,57 +178,78 @@ const confirm_delete = {
 </script>
 
 <template>
-  <InputGroup>
-    <AutoComplete class="w-full" ref="acRef"
-      v-model="trackablesModel"
-      multiple
-      optionLabel="title"
-      dropdown
-      size="normal"
-      :suggestions="suggestedTrackables"
-      :typeahead="true"
-      :loading="loading"
-      @remove="handleRemove"
-      @complete="search"
-      @option-unselect="onUnselect"
-      @option-select="onSelect"
-    >
-      <template #chip="{ value, removeCallback }">
-        <div class="custom-chip no-select">
-          <Chip class="chip" :label="value.title" :image="value.icon_url" removable size="small" @click="onClick(value.id)"
-          @remove="onRemove($event, value, removeCallback)"
-            :xpt="{
-              root: { style: { padding: '5px 5px', fontSize: '14px', borderRadius: '8px', 'gap': '0.4rem' } },
-              label: { style: { fontSize: '14px' } },
-              icon: { style: { marginTop: '2px', padding: '0px 3px' } }
-            }"
-          />
-        </div>
-      </template>
-      <template #option="slotProps">
-        <div class="flex align-items-center gap-2 p-0">
-          <img
-            :src="slotProps.option.icon_url"
-            class="w-8 h-8 rounded-full"
-          />
-          <div>
-            <div>
-              <span class="font-semibold mr-2">{{ slotProps.option.title }}</span>
+  <div class="flex flex-column">
+    <div>
+      <InputGroup>
+        <AutoComplete class="w-full" ref="acRef"
+          v-model="trackablesModel"
+          multiple
+          optionLabel="title"
+          dropdown
+          size="normal"
+          :suggestions="suggestedTrackables"
+          :typeahead="true"
+          :loading="loading"
+          @remove="handleRemove"
+          @complete="search"
+          @option-unselect="onUnselect"
+          @option-select="onSelect"
+        >
+          <template #chip="{ value, removeCallback }">
+            <div class="custom-chip no-select">
+              <Chip class="chip" :label="value.title" :image="value.icon_url" removable size="small" @click="onClick(value.id)"
+              @remove="onRemove($event, value, removeCallback)"
+                :xpt="{
+                  root: { style: { padding: '5px 5px', fontSize: '14px', borderRadius: '8px', 'gap': '0.4rem' } },
+                  label: { style: { fontSize: '14px' } },
+                  icon: { style: { marginTop: '2px', padding: '0px 3px' } }
+                }"
+              />
             </div>
-            <div class="text-sm text-gray-500">
-              <span class="">{{ slotProps.option.series }}</span>
-              <span v-if="slotProps.option.private_code"> • {{slotProps.option.private_code}}</span>
-              <span class=""> • {{slotProps.option.public_code}}</span>
+          </template>
+          <template #option="slotProps">
+            <div class="flex align-items-center gap-2 p-0">
+              <img
+                :src="slotProps.option.icon_url"
+                class="w-8 h-8 rounded-full"
+              />
+              <div>
+                <div>
+                  <span class="font-semibold mr-2">{{ slotProps.option.title }}</span>
+                </div>
+                <div class="text-sm text-gray-500">
+                  <span class="">{{ slotProps.option.series }}</span>
+                  <span v-if="slotProps.option.private_code"> • {{slotProps.option.private_code}}</span>
+                  <span class=""> • {{slotProps.option.public_code}}</span>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </template>
-    </AutoComplete>
-    <Button severity="primary" label="Speichern" icon="pi pi-check" @click="onSave"
-      v-if="isChanged"/>
-    <Button severity="danger" label="Verwerfen" icon="pi pi-times" @click="onCancel"
-      v-if="isChanged"/>
-  </InputGroup>
+          </template>
+        </AutoComplete>
+        <Button severity="primary" label="Speichern" icon="pi pi-check" @click="onSave"
+          v-if="isChanged"/>
+        <Button severity="danger" label="Verwerfen" icon="pi pi-times" @click="onCancel"
+          v-if="isChanged"/>
+      </InputGroup>
+    </div>
+    <div>
+      <Carousel :value="trackables" :numVisible="3" :numScroll="3" class="w-full">
+        <template #item="slotProps">
+          <TrackableCard :trackable="slotProps.data"
+            trackable-owner="south-west"
+            trackable-icon="north-west"
+            trackable-number="north-east"
+          />
+        </template>
+        <template #empty>
+          <div></div>
+        </template>
+      </Carousel>
+    </div>
+  </div>
+
+
+
 </template>
 
 <style scoped>

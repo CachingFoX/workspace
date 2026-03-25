@@ -103,7 +103,6 @@ function onAddTrackable() {
         <div v-if="storeTrackable.complete" class="pt-2">
           <TrackableProperties/>
           <TrackableImages/>
-          <TrackableLinkedTrackables property="linkedTrackables"/>
           <TrackableSameSeries :series="storeTrackable.series" :self="storeTrackable.private_code"/>
           <TrackableSameTag :series="storeTrackable.series" :self="storeTrackable.private_code" :tags="storeTrackable.tags"/>
         </div>
