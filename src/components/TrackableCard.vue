@@ -55,11 +55,6 @@ watchEffect(async ()=> {
   progress.value = false;
 });
 
-
-function goToTrackable(tracking_code) {
-  router.push("/trackable/"+tracking_code)
-}
-
 function goToOwner(owner) {
   // TODO router.push("/trackables/owner/"+owner)
 }
@@ -90,66 +85,60 @@ const active = computed(()=>{
 </script>
 
 <template>
-  <Card class="mx-2 my-2 trackable-card" @click.stop="goToTrackable(item.public_code)">
-    <template #header>
-      <div class="mx-3 mt-3" style="position: relative; aspect-ratio: 1 / 1;">
-        <template v-if="trackable">
+  <a :href="`/trackable/${item.public_code}`">
+    <Card class="mx-2 my-2 trackable-card">
+      <template #header>
+        <div class="mx-3 mt-3" style="position: relative; aspect-ratio: 1 / 1;">
+          <template v-if="trackable">
 
-          <Tag v-if="props.trackableOwner"
-            class="trackable-card-corner-overlay m-1"
-            :class="`trackable-card-${props.trackableOwner}`"
-            :value="trackable.owner ? trackable.owner : 'not activated'"
-            :icon="trackable.owner ? 'pi pi-user' : 'pi pi-times'"
-            :severity="trackable.owner ? 'info' : 'secondary'"
-            :style="{ cursor: item.owner ? 'pointer' : 'default'}"
-            @click.stop="item.owner ? goToOwner(item.owner) : void(0)"
-          />
+            <Tag v-if="props.trackableOwner"
+              class="trackable-card-corner-overlay m-1"
+              :class="`trackable-card-${props.trackableOwner}`"
+              :value="trackable.owner ? trackable.owner : 'not activated'"
+              :icon="trackable.owner ? 'pi pi-user' : 'pi pi-times'"
+              :severity="trackable.owner ? 'info' : 'secondary'"
+              :style="{ cursor: item.owner ? 'pointer' : 'default'}"
+              @click.stop="item.owner ? goToOwner(item.owner) : void(0)"
+            />
 
-          <Tag v-if="props.trackableNumber"
-            class="trackable-card-corner-overlay m-1"
-            :class="`trackable-card-${props.trackableNumber}`"
-            :value="trackable.public_code"
-            severity="info"
-            @click.stop="item.owner ? goToOwner(item.owner) : void(0)"
-          />
-          <!--
-          <Tag class="trackable-card-corner-overlay trackable-card-north-east m-1" :value="value_ne" :icon="icon_ne"/>
-          <Tag class="trackable-card-corner-overlay trackable-card-south-west m-1" :value="value_sw" :icon="icon_sw"/>
-          <Tag class="trackable-card-corner-overlay trackable-card-south-east m-1" :value="value_se" :icon="icon_se"/>
-          -->
-          <div v-if="props.trackableIcon && main_image" style="position: absolute;  z-index: 1000;" class="m-1"
-            :class="`trackable-card-${props.trackableIcon}`">
-              <img :src="icon" class="card"/>
-          </div>
-        </template>
+            <Tag v-if="props.trackableNumber"
+              class="trackable-card-corner-overlay m-1"
+              :class="`trackable-card-${props.trackableNumber}`"
+              :value="trackable.public_code"
+              severity="info"
+              @click.stop="item.owner ? goToOwner(item.owner) : void(0)"
+            />
+            <!--
+            <Tag class="trackable-card-corner-overlay trackable-card-north-east m-1" :value="value_ne" :icon="icon_ne"/>
+            <Tag class="trackable-card-corner-overlay trackable-card-south-west m-1" :value="value_sw" :icon="icon_sw"/>
+            <Tag class="trackable-card-corner-overlay trackable-card-south-east m-1" :value="value_se" :icon="icon_se"/>
+            -->
+            <div v-if="props.trackableIcon && main_image" style="position: absolute;  z-index: 1000;" class="m-1"
+              :class="`trackable-card-${props.trackableIcon}`">
+                <img :src="icon" class="card"/>
+            </div>
+          </template>
 
-        <div class="trackable-card-image w-full flex justify-content-center align-items-center">
-          <ProgressSpinner v-if="progress"/>
-          <img v-else-if="main_image" :src="main_image" class="card card-img"/>
-          <img v-else-if="icon" :src="icon" class="card card-icon"/>
-          <div v-else-if="!trackable" style="text-align: center">
-            <i class="pi pi-exclamation-triangle mb-3" style="font-size: 48pt; font-weight: bold; color: red;" />
-            <br/>
-            <span style="font-size: 16pt; font-weight: normal; color: red;">No Trackable</span></div>
-          <div v-else style="text-align: center">
-            <i class="pi pi-image mb-3" style="font-size: 48pt; font-weight: bold; color: lightgray;" />
-            <br/>
-            <span style="font-size: 16pt; font-weight: normal; color: lightgray;">No Image</span>
+          <div class="trackable-card-image w-full flex justify-content-center align-items-center">
+            <ProgressSpinner v-if="progress"/>
+            <img v-else-if="main_image" :src="main_image" class="card card-img"/>
+            <img v-else-if="icon" :src="icon" class="card card-icon"/>
+            <div v-else-if="!trackable" style="text-align: center">
+              <i class="pi pi-exclamation-triangle mb-3" style="font-size: 48pt; font-weight: bold; color: red;" />
+              <br/>
+              <span style="font-size: 16pt; font-weight: normal; color: red;">No Trackable</span></div>
+            <div v-else style="text-align: center">
+              <i class="pi pi-image mb-3" style="font-size: 48pt; font-weight: bold; color: lightgray;" />
+              <br/>
+              <span style="font-size: 16pt; font-weight: normal; color: lightgray;">No Image</span>
+            </div>
           </div>
         </div>
-      </div>
-    </template>
-    <template #title><div class="trackable-card-text">{{ title }}</div></template>
-    <template #subtitle><div class="trackable-card-text">{{ series }}</div></template>
-    <!--
-    <template #footer>
-      <div class="flex gap-1 mt-1">
-        <Button label="Details" class="w-full" @click="goToTrackable(item.public_code)" :disabled="!active"/>
-        <Button icon="pi pi-tag" class="px-3" @click="goToTrackable(item.public_code)" :disabled="!active"/>
-      </div>
-    </template>
-    -->
-  </Card>
+      </template>
+      <template #title><div class="trackable-card-text">{{ title }}</div></template>
+      <template #subtitle><div class="trackable-card-text">{{ series }}</div></template>
+    </Card>
+  </a>
 </template>
 
 <style scoped>
