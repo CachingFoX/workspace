@@ -9,6 +9,17 @@ import { useRouter } from 'vue-router';
 import { useToast } from 'primevue';
 import { marked } from 'marked'
 
+const renderer = {
+  link(href, title, text) {
+    const link = marked.Renderer.prototype.link.call(this, href, title, text);
+    return link.replace("<a","<a target='_blank' rel='noreferrer' ");
+  }
+};
+
+marked.use({
+    renderer
+});
+
 const props = defineProps({
   value: { type: [String, Number, null], default: null, required: true },
   placeholder: { type: String, default: null, required: false },
@@ -60,7 +71,7 @@ const compiledMarkdown = computed(()=>{
 
 <template>
   <div>
-    <div v-show="!editing" @click="onEdit">
+    <div v-show="!editing" @click="!isValueAvailable && onEdit()" @dblclick="isValueAvailable && onEdit()">
       <div v-if="isValueAvailable" class="markdown" v-html="compiledMarkdown"></div>
       <pre v-else="isValueAvailable" class="no-select" :style="{ color: isValueAvailable ? '#000' : '#666' }">{{ displayText }}</pre>
     </div>
