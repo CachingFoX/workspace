@@ -14,6 +14,7 @@ import TrackableCard from '@/components/TrackableCard.vue';
 import AutoComplete from 'primevue/autocomplete'
 import Chip from 'primevue/chip'
 import InputGroup from 'primevue/inputgroup';
+import { responsiveOptions } from '@/components/responsiveOptions.js'
 
 const storeTrackable = useTrackableStore();
 const storeTrackables = useTrackableListStore();
@@ -238,7 +239,7 @@ const confirm_delete = {
       </InputGroup>
     </div>
     <div>
-      <Carousel :value="trackables" :numVisible="3" :numScroll="3" class="w-full">
+      <Carousel :value="trackables" :numVisible="5" :numScroll="4" :responsiveOptions="responsiveOptions" class="w-full">
         <template #item="slotProps">
           <TrackableCard :trackable="slotProps.data"
             trackable-owner="south-west"
@@ -252,9 +253,6 @@ const confirm_delete = {
       </Carousel>
     </div>
   </div>
-
-
-
 </template>
 
 <style scoped>

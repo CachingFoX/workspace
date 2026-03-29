@@ -59,26 +59,28 @@ const compiledMarkdown = computed(()=>{
 </script>
 
 <template>
-  <div v-show="!editing" @click="onEdit">
-    <div v-if="isValueAvailable" class="markdown" v-html="compiledMarkdown"></div>
-    <pre v-else="isValueAvailable" class="no-select" :style="{ color: isValueAvailable ? '#000' : '#666' }">{{ displayText }}</pre>
-  </div>
-  <div v-show="editing">
-    <div class="flex flex-column" >
-      <div class="flex-grow-1" >
-        <Textarea fluid class="w-full" size="small" ref="refInput"
-          v-model="model"
-          @keydown.esc.prevent="editing = false"
-        />
-      </div>
-      <div class="flex items-center justify-content-between mb-2">
-        <ButtonGroup>
-          <Button label="Speichern" icon="pi pi-check" severity="" @click="onSave" size="small" :disabled="disableSave"/>
-          <Button label="Verwerfen" icon="pi pi-times" severity="danger" size="small" @click="editing = false" />
-        </ButtonGroup>
-        <ButtonGroup class="">
-          <Button label="Löschen" icon="pi pi-trash"  size="small" severity="" @click="onRemove" :disabled="disableSave"/>
-        </ButtonGroup>
+  <div>
+    <div v-show="!editing" @click="onEdit">
+      <div v-if="isValueAvailable" class="markdown" v-html="compiledMarkdown"></div>
+      <pre v-else="isValueAvailable" class="no-select" :style="{ color: isValueAvailable ? '#000' : '#666' }">{{ displayText }}</pre>
+    </div>
+    <div v-show="editing">
+      <div class="flex flex-column" >
+        <div class="flex-grow-1" >
+          <Textarea fluid class="w-full" size="small" ref="refInput"
+            v-model="model"
+            @keydown.esc.prevent="editing = false"
+          />
+        </div>
+        <div class="flex items-center justify-content-between mb-2">
+          <ButtonGroup>
+            <Button label="Speichern" icon="pi pi-check" severity="" @click="onSave" size="small" :disabled="disableSave"/>
+            <Button label="Verwerfen" icon="pi pi-times" severity="danger" size="small" @click="editing = false" />
+          </ButtonGroup>
+          <ButtonGroup class="">
+            <Button label="Löschen" icon="pi pi-trash"  size="small" severity="" @click="onRemove" :disabled="disableSave"/>
+          </ButtonGroup>
+        </div>
       </div>
     </div>
   </div>

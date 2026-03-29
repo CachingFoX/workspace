@@ -25,10 +25,6 @@ const collapsed = useLocalStorageRef('details.layout.properties.collapsed', fals
 function getProperty(property_name) {
   return storeTrackable.properties.find(prop => prop.property_name === property_name);
 }
-const filteredProperties = computed(() => {
-  const excludedNames = [];
-  return storeTrackable.properties.filter(prop => !excludedNames.includes(prop.property_name));
-});
 
 function onUpdate(property, newValue) {
   console.log("onUpdate", property, newValue)
@@ -57,8 +53,8 @@ const comp = {
   'string.hyperlink': { component: PropertyString, bindings: { 'hyperlink': true } },
   'string.lowercase': { component: PropertyString, bindings: { 'format': 'lowercase' } },
   'string.uppercase': { component: PropertyString, bindings: { 'format': 'uppercase' } },
-  'text':             { component: PropertyText },
-  'trackingnumbers':  { component: PropertyTrackables },
+  'text':             { component: PropertyText, fullline: true },
+  'trackingnumbers':  { component: PropertyTrackables, fullline: true },
 }
 
 function getPlaceholderText(propertyName) {
@@ -70,14 +66,20 @@ function getPlaceholderText(propertyName) {
 </script>
 
 <template>
-  <Panel class="mx-2" v-model:collapsed="collapsed" header="Eigenschaften" toggleable>
-    <div class="grid-container">
-      <div class="grid-item left" >Schlagwörter</div>
-      <div class="grid-item right"><Tags class="w-full"/></div>
+  <!--
+  <div class="sm:block hidden">sm</div>
+  <div class="md:block hidden">md</div>
+  <div class="lg:block hidden">lg</div>
+  <div class="xl:block hidden">xl</div>
+  -->
 
-      <template v-for="property in filteredProperties" :key="property.id">
-        <div class="grid-item left" >{{ property.property_name }}</div>
-        <div class="grid-item right">
+  <Panel class="mx-2" v-model:collapsed="collapsed" header="Eigenschaften" toggleable>
+    <div class="grid-container sm:grid-container md:grid-container lg:grid-container xl:grid-container">
+
+      <template v-for="property in storeTrackable.properties" :key="property.id">
+        <div class="grid-item bold" v-if="!(comp[property.property_type]?.fullline)" >{{ property.property_name }}</div>
+        <div class="grid-item" :class="comp[property.property_type]?.fullline ? 'full' : ''">
+          <div v-if="comp[property.property_type]?.fullline" class="mt-1 mb-1" style="font-weight: bold;">{{ property.property_name }}</div>
           <component v-if="comp[property.property_type]" :is="comp[property.property_type].component"
             :value="property.property_value"
             :property="property"
@@ -93,13 +95,21 @@ function getPlaceholderText(propertyName) {
           </div>
         </div>
       </template>
+
+      <div class="grid-item full mt-2">
+        <div class="mt-2 mb-1" style="font-weight: bold;">Schlagwörter</div>
+        <Tags class="w-full"/>
+      </div>
     </div>
   </Panel>
 </template>
 
 <style scoped>
+:deep(.p-panel-title) {
+  font-size: 18pt;
+}
 
-  .title {
+.title {
   margin:0;
   font-size: 26pt;
   font-weight: bold;
@@ -108,11 +118,57 @@ function getPlaceholderText(propertyName) {
 /* Container für das Grid */
 .grid-container {
   display: grid; /* Grid aktivieren */
-  grid-template-columns: auto 1fr; /* auto 2fr auto 1fr; */
+  grid-template-columns: auto;
   grid-gap: 3px; /* Abstand zwischen den Elementen */
   column-gap: 10px;
   padding: 0;
 }
+
+/* sm */
+@media screen and (min-width: 576px) {
+  .sm\:grid-container {
+    grid-template-columns: auto 1fr;
+  }
+  .sm\:grid-container > .grid-item.full {
+    grid-column: 1 / span 2;
+    grid-column-start: 1;
+  }
+}
+
+/* md */
+@media screen and (min-width: 768px) {
+  .md\:grid-container {
+    grid-template-columns: auto 1fr;
+  }
+  .md\:grid-container > .grid-item.full {
+    grid-column: 1 / span 2;
+    grid-column-start: 1;
+  }
+}
+
+/* lg */
+@media screen and (min-width: 992px) {
+  .lg\:grid-container {
+    grid-template-columns: auto 1fr auto 1fr;
+  }
+  .lg\:grid-container > .grid-item.full {
+    grid-column: 1 / span 4;
+    grid-column-start: 1;
+  }
+}
+
+/* xl */
+@media screen and (min-width: 1200px) {
+  .xl\:grid-container {
+    grid-template-columns: auto 1fr auto 1fr;
+  }
+  .xl\:grid-container > .grid-item.full {
+    grid-column: 1 / span 4;
+    grid-column-start: 1;
+  }
+}
+
+
 
 /* Grid-Items */
 .grid-container > div {
@@ -121,9 +177,13 @@ function getPlaceholderText(propertyName) {
   align-self: top;
 }
 
-.grid-container > .grid-item.left {
+.grid-container > .grid-item.bold {
   padding-top: 6px;
   font-weight: bold;
+}
+
+.grid-container > .grid-item.full {
+  grid-column-start: 1;
 }
 
 

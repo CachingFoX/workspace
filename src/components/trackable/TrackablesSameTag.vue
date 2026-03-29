@@ -5,6 +5,7 @@ import { useTrackableListStore } from "@/di/trackables.js"
 import Carousel from 'primevue/carousel';
 import PersistentPanel from '@/components/trackable/panel.vue'
 import TrackableCard from '@/components/TrackableCard.vue';
+import { responsiveOptions } from '@/components/responsiveOptions.js'
 
 const storeTrackables = useTrackableListStore();
 const props = defineProps({
@@ -28,7 +29,7 @@ const trackables = computed(()=>{
   <PersistentPanel storage-key="trackable.details.trackablesseries" title="Trackables mit gleichen Schlagwörtern"
     :badge="trackables.length"
   >
-     <Carousel :value="trackables" :numVisible="3" :numScroll="3" class="w-full">
+     <Carousel :value="trackables" :numVisible="5" :numScroll="4" :responsiveOptions="responsiveOptions" class="w-full">
       <template #item="slotProps">
         <TrackableCard :trackable="slotProps.data"
           trackable-owner="south-west"
