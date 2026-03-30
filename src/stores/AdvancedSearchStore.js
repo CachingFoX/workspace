@@ -5,6 +5,7 @@ import { useTrackableListStore, useTagsStore } from "@/di/trackables.js"
 import { seriesService } from "@/di/trackables.js"
 
 const sortItemsByLabel = (a, b) => { return a.label.localeCompare(b.label) }
+const sortItemsBySortLabel = (a, b) => { return a.sortLabel.localeCompare(b.sortLabel) }
 
 export const ADVANCED_SEARCH_TYPES = {
   TRACKABLE: "trackable",
@@ -86,6 +87,30 @@ export const useAdvancedSearchStore = defineStore('advanced-search', () => {
     }
   }
 
+  function replaceMonthYear(str) {
+    const months = {
+      January: "01",
+      February: "02",
+      March: "03",
+      April: "04",
+      May: "05",
+      June: "06",
+      July: "07",
+      August: "08",
+      September: "09",
+      October: "10",
+      November: "11",
+      December: "12"
+    };
+
+    str = str.replace(
+      /\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{4})\b/g,
+      (_, month, year) => `${year}/${months[month]}`
+    );
+
+    return str.replace(/\s\s+/g, ' ')
+  }
+
   const suggestions = computed(() => {
     if (!_input.value?.trim().length) {
       console.log("no suggests");
@@ -105,7 +130,7 @@ export const useAdvancedSearchStore = defineStore('advanced-search', () => {
     // ------------
 
     addItems(suggestedItems, _grouped.value, 'Trackables', filteredTrackables.value.map((i) => {
-      return { type: ADVANCED_SEARCH_TYPES.TRACKABLE, label: i.title, route: `/trackable/${i.public_code}`, data: i }
+      return { type: ADVANCED_SEARCH_TYPES.TRACKABLE, label: i.title, sortLabel: replaceMonthYear(i.title), route: `/trackable/${i.public_code}`, data: i }
     }))
 
     // ------------
@@ -115,7 +140,7 @@ export const useAdvancedSearchStore = defineStore('advanced-search', () => {
     })
 
     addItems(suggestedItems, _grouped.value, 'Tags', results.map((i) => {
-      return { type: ADVANCED_SEARCH_TYPES.TAG, label: i.name, route: `/tag/${i.id}?label=${i.name}`, data: i }
+      return { type: ADVANCED_SEARCH_TYPES.TAG, label: i.name, sortLabel: i.name, route: `/tag/${i.id}?label=${i.name}`, data: i }
     }))
 
     // ------------
@@ -125,13 +150,17 @@ export const useAdvancedSearchStore = defineStore('advanced-search', () => {
     })
 
     addItems(suggestedItems, _grouped.value, 'Series', results.map((i) => {
-      return { type: ADVANCED_SEARCH_TYPES.SERIES, label: i.series, route: `/series/${i.series}`, data: i }
+      return { type: ADVANCED_SEARCH_TYPES.SERIES, label: i.series, sortLabel: replaceMonthYear(i.series), route: `/series/${i.series}`, data: i }
     }))
 
     // ----------
 
-    if (!_grouped.value) {
-      suggestedItems.sort(sortItemsByLabel);
+    if (_grouped.value) {
+      suggestedItems.forEach(g => {
+        g.items.sort(sortItemsBySortLabel)
+      })
+    } else {
+      suggestedItems.sort(sortItemsBySortLabel);
     }
 
     _loading.value = false;
